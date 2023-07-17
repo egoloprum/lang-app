@@ -1,0 +1,45 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+{% if messages %}
+  <ul class="messages" style="color:#e80d0d;">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<section class="user-register-form">
+  <form method="POST" action="">
+    {% csrf_token %}
+    <div>
+      <label class="form-label">Enter username</label><br>
+      <input type="text" name="username" class="form-control" placeholder="Username" required><br>
+    </div>
+
+    <div>
+      <label class="form-label">Enter email</label><br>
+      <input type="email" name="email" class="form-control" placeholder="example@email.com" required><br>
+    </div>
+
+    <div>
+      <label class="form-label">Enter password</label><br>
+      <input type="password" id="profile-update-password" class="form-control register-password" name="password" aria-labelledby="passwordHelpBlock">
+      <div id="passwordHelpBlock" class="form-text">
+        Your password must be <span class="profile-update-requirement-1">8-20 characters long</span>, contain <span class="profile-update-requirement-2">letters</span>,
+        <span class="profile-update-requirement-3">capital letters</span>
+         and <span class="profile-update-requirement-4">numbers</span>, and must not contain spaces, special characters, or emoji.
+      </div><br>
+    </div>
+
+    <div>
+      <label class="form-label">Repeat password</label><br>
+      <input type="password" name="password2" class="form-control register-password2" placeholder="********" required><br>
+    </div>
+
+    <button type="submit" class="btn btn-primary register-button" disabled>Login</button>
+  </form>
+</section>
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+{% if messages %}
+  <ul class="messages" style="color:#e80d0d;">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+  <section class="user-login-form">
+    <form method="POST" action="">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="inputUsername5" class="form-label">Input username</label>
+        <input type="username" class="form-control" name="username" placeholder="Joe">
+      </div>
+
+      <div class="mb-3">
+        <label for="inputPassword5" class="form-label">Input password</label>
+        <input type="password" class="form-control" name="password" aria-labelledby="passwordHelpBlock"
+        placeholder="********">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Use a google account ?</label><br>
+        <a href="#">Google</a>
+      </div>
+
+      <a type="button" class="btn btn-outline-primary" href="{% url 'register' %}">Register</a>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+  </section>
+
+{% endblock %}
