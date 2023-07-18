@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+  <section class="topic-page-section">
+    <div class="row">
+      {% for course in courses %}
+        <div class="col">
+          <p>{{ course.name }} / <span>{{ course.topic.name }}</span> </p><hr>
+          <p>{{ course.body }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+{% endblock %}

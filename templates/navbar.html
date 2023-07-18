@@ -8,7 +8,12 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         
         {% if user.is_authenticated %}
-        <div class="dropdown">
+        <ul class="navbar-page-header-ul">
+          <li><a class="nav-item" href="{% url 'profile' user.id %}">PROFILE <span disabled>({{ request.user.username }})</span> </a></li>
+          <li><a class="nav-item" href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+
+        {% comment %} <div class="dropdown">
           <div class="dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Click
           </div>
@@ -17,7 +22,7 @@
             <li><a class="dropdown-item" href="{% url 'profile' user.id %}">PROFILE <span disabled>({{ request.user.username }})</span> </a></li>
             <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
           </ul>
-        </div>
+        </div> {% endcomment %}
   
         {% else %}
           {% if request.path != "/user/login" %}
@@ -31,7 +36,7 @@
         
         <ul class="navbar-page-header-ul">
           <li>
-            <a href="#">COURSE</a>
+            <a href="{% url 'course' %}">COURSE</a>
           </li>
           <li>
             <a href="#">LOREM</a>

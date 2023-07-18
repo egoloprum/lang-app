@@ -84,6 +84,14 @@ body p {
   border-radius: var(--form-border-radius);
 }
 
+.create-course-form {
+  margin: var(--form-margin);
+  padding: var(--form-padding);
+  width: var(--form-width);
+  border: var(--form-border);
+  border-radius: var(--form-border-radius);
+}
+
 /* footer.html */
 
 .footer-page-footer {
@@ -144,9 +152,47 @@ body p {
   position: fixed;
 }
 
-
 .index-page-list div a {
-  border-left: 1px solid #7b9cea;
   padding: var(--form-padding);
   margin: var(--form-padding);
+}
+
+.index-page-list div a:nth-child(odd) {
+  border-left: 2px solid #7b9cea;
+}
+
+.index-page-list div a:nth-child(even) {
+  border-left: 2px solid #eac07b;
+}
+
+/* Course */
+
+.course-page-section,
+.course-page-section .row div {
+  margin: var(--form-margin);
+  padding: var(--form-padding);
+}
+
+.course-page-section .row .col {
+  border: var(--form-border);
+  border-radius: var(--form-border-radius);  
+}
+
+.topic-page-section,
+.topic-page-section .row div {
+  margin: var(--form-margin);
+  padding: var(--form-padding);
+}
+
+.topic-page-section .row .col {
+  border: var(--form-border);
+  border-radius: var(--form-border-radius);  
+}
+
+
+.course-each-page-section {
+  margin: var(--form-margin);
+  padding: var(--form-padding);
+  border: var(--form-border);
+  border-radius: var(--form-border-radius);  
 }

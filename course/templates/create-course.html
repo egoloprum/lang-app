@@ -1,0 +1,53 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<section class="create-course-form">
+  {% if messages %}
+    <ul class="messages" style="color:#e80d0d;">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <form method="POST" action="">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Topic</label>
+      <input type="text" class="form-control" name="topic" placeholder="engrish" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Name of Course</label>
+      <input type="text" class="form-control" name="name" placeholder="learning is so hard" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Body of Course</label>
+      <textarea class="form-control" name="body" aria-label="With textarea" required></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Max Number of Users</label>
+      <input type="number" name="max-user_num" class="form-control" min="1" placeholder="200" >
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+  </form>
+</section>
+
+<script>
+const tx = document.getElementsByTagName("textarea");
+for (let i = 0; i < tx.length; i++) {
+  tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+  tx[i].addEventListener("input", OnInput, false);
+}
+
+function OnInput() {
+  this.style.height = 0;
+  this.style.height = (this.scrollHeight) + "px";
+}
+</script>
+
+{% endblock %}

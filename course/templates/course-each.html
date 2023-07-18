@@ -1,0 +1,13 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+  <section class="course-each-page-section">
+    <a href="#">new content ?</a>
+    <div class="col">
+      <p>{{ course.name }} / <span>{{ course.topic.name }}</span> </p><hr>
+      <p>{{ course.body }}</p>
+    </div>
+  </section>
+
+{% endblock %}
