@@ -3,9 +3,10 @@ from . import views
 
 urlpatterns = [
   path('', views.course, name='course'),
-  path('<str:pk>', views.courseEach, name='course-each'),
+  path('each/<str:pk>', views.courseEach, name='course-each'),
+  path('each/<str:pk>/edit', views.courseEachEdit, name='course-each-edit'),
   path('create', views.createCourse, name='create-course'),
-  path('topic/<str:pk>/', views.topic, name='topic'),  
+  path('topic/<str:pk>/', views.topic, name='topic'),
 
   # path('login', views.loginUser, name='login'),
   # path('register', views.registerUser, name='register'),

@@ -58,6 +58,33 @@ def courseEach(request, pk):
 
   return render(request, 'course-each.html', context)
 
+def courseEachEdit(request, pk):
+   course = Course.objects.get(id=pk)
+
+   if request.method == 'POST':
+      name = request.POST.get('name')
+      body = request.POST.get('body')
+      max_user_num = request.POST.get('max_user_num')
+
+      if max_user_num:
+          course.name = name
+          course.body = body
+          course.max_user_num = max_user_num
+          course.save()
+
+          return redirect('/course/each/%d'%course.id)
+
+      course.name = name
+      course.body = body
+      course.save()
+      return redirect('/course/each/%d'%course.id)
+
+      
+
+   context = {'course': course}
+
+   return render(request, 'course-each-edit.html', context)
+
 def topic(request, pk):
   topic = Topic.objects.get(id=pk)
   courses = Course.objects.filter(topic=topic)

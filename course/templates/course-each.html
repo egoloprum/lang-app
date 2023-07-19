@@ -3,11 +3,29 @@
 {% block content %}
 
   <section class="course-each-page-section">
-    <a href="#">new content ?</a>
+    {% if course.host.is_authenticated %}
+      <a class="btn btn-primary" href="{% url 'course-each-edit' course.id %}">Edit ?</a>
+    {% endif %}
+      <a class="btn btn-secondary" href="{% url 'course' %}">Back</a><hr>
     <div class="col">
-      <p>{{ course.name }} / <span>{{ course.topic.name }}</span> </p><hr>
-      <p>{{ course.body }}</p>
+      <article>
+        <p>{{ course.name }} / 
+          <span>{{ course.topic.name }}</span> / 
+          <a href="{% url 'profile' course.host.id %}"><span>{{ course.host.username }}</span></a> /
+          <span>{{ course.created_at }}</span>
+        </p><hr>
+        <p>{{ course.body }}</p>
+      </article>
+
+      <article>
+        <h3>Content of Course</h3><hr>
+      </article>
+
     </div>
+
+    <button class="btn btn-primary">add content</button>
+
+
   </section>
 
 {% endblock %}

@@ -196,3 +196,10 @@ body p {
   border: var(--form-border);
   border-radius: var(--form-border-radius);  
 }
+
+.course-each-edit-page-form {
+  margin: var(--form-margin);
+  padding: var(--form-padding);
+  border: var(--form-border);
+  border-radius: var(--form-border-radius);  
+}
