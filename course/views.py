@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.http import HttpResponse
 
 from django.db import IntegrityError
 
@@ -17,7 +18,12 @@ def createCourse(request):
         body = request.POST.get('body')
         max_user_num = request.POST.get('max_user_num')
 
-        topic, created = Topic.objects.get_or_create(name=topic_html)
+        if Topic.objects.filter(name=topic_html):
+          topic = Topic.objects.get(name=topic_html)
+        else:
+          topic = Topic.objects.create(name=topic_html)
+
+        # topic, created = Topic.objects.get_or_create(name=topic_html)
 
         if topic:
           if max_user_num:
@@ -53,10 +59,28 @@ def course(request):
 
 def courseEach(request, pk):
   course = Course.objects.get(id=pk)
+  contents = None
+  contents = Content.objects.filter(course=course)
 
-  context = {'course': course}
+  if Content.objects.filter(course=course):
+    contents = Content.objects.filter(course=course)
+    context = {'course': course, 'contents':contents}
+  else:
+    context = {'course': course, 'contents':contents}
 
   return render(request, 'course-each.html', context)
+
+def courseEachContent(request):
+  if request.method == 'POST':
+    name = request.POST.get('name')
+    body = request.POST.get('body')
+    course_id = request.POST.get('course-id')
+
+    Content.objects.get_or_create(name=name, body=body, course=course)
+
+    messages.success(request, 'Content has been created')
+    return HttpResponse('success !')
+   
 
 def courseEachEdit(request, pk):
    course = Course.objects.get(id=pk)

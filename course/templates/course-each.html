@@ -2,30 +2,118 @@
 
 {% block content %}
 
-  <section class="course-each-page-section">
-    {% if course.host.is_authenticated %}
-      <a class="btn btn-primary" href="{% url 'course-each-edit' course.id %}">Edit ?</a>
+<section class="course-each-page-section">
+  {% if course.host.is_authenticated %}
+    <a class="btn btn-primary" href="{% url 'course-each-edit' course.id %}">Edit ?</a>
+  {% endif %}
+    <a class="btn btn-secondary" href="{% url 'course' %}">Back</a><hr>
+  <div class="col">
+    <article>
+      <p>{{ course.name }} / 
+        <span>{{ course.topic.name }}</span> / 
+        <a href="{% url 'profile' course.host.id %}"><span>{{ course.host.username }}</span></a> /
+        <span>{{ course.created_at }}</span>
+      </p><hr>
+      <p>{{ course.body }}</p>
+    </article>
+
+    <article>
+      <h3>Content of Course</h3><hr>
+    </article>
+
+  </div>
+
+  <button class="btn btn-primary">Add Content</button><hr>
+
+  <section>
+    {% if messages %}
+      <ul class="messages" style="color:#32e80d;">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
     {% endif %}
-      <a class="btn btn-secondary" href="{% url 'course' %}">Back</a><hr>
-    <div class="col">
-      <article>
-        <p>{{ course.name }} / 
-          <span>{{ course.topic.name }}</span> / 
-          <a href="{% url 'profile' course.host.id %}"><span>{{ course.host.username }}</span></a> /
-          <span>{{ course.created_at }}</span>
-        </p><hr>
-        <p>{{ course.body }}</p>
-      </article>
 
-      <article>
-        <h3>Content of Course</h3><hr>
-      </article>
+    <form method="POST" action="" id="content-form">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Name of Content</label>
+        <input type="text" class="form-control" id="content-name" name="name" required>
+      </div><br>
 
-    </div>
+      <div class="mb-3">
+        <label class="form-label">Body of Content</label>
+        <textarea class="form-control" id="content-body" name="body" required></textarea>
+      </div><hr>
 
-    <button class="btn btn-primary">add content</button>
+      <input type="hidden" name="course-id" value="{{ course.id }}" >
 
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+  </section><hr>
 
+  <section>
+    {% for content in contents %}
+      {% if content.course is course %}
+        <div class="mb-3">
+          <label class="form-label">{{ content.name }}</label>
+          <p class="form-control">{{ content.body }}</p>
+        </div>
+      {% endif %}
+    {% endfor %}
   </section>
+
+</section>
+
+<script src="https://code.jquery.com/jquery-3.7.0.slim.min.js"
+integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE="
+crossorigin="anonymous">
+
+  // var csrf_token = '{{ csrf_token }}'
+
+  // document.getElementById('').onclick = () => {
+  //   const obj = new XMLHttpRequest();
+  //   obj.onreadystatechange = function() {
+  //     if(this.readyState == 4 && this.status == 200) {
+  //       console.log(this.responseText)
+  //     }
+  //   }
+
+  //   obj.open("GET", '/get');
+  //   obj.send();
+  // }
+
+  // document.getElementById('').onclick = () => {
+  //   const obj = new XMLHttpRequest();
+  //   obj.onreadystatechange = function() {
+  //     if(this.readyState == 4 && this.status == 200) {
+  //       console.log(this.responseText)
+  //     }
+  //   }
+
+  //   obj.open("POST", '/post');
+  //   obj.setRequestHeader("X-CSRFToken", csrf_token);
+  //   obj.send();
+  // }
+
+    $(document).on('submit', '#content-form', function(e) {
+      e.preventDefault();
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'course-each-content' course.id %}",
+        data: {
+          name: $('#content-name').val(),
+          body: $('#content-body').val(),
+          csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+        },
+        success: function(data){
+          console.log(data);
+        }
+      });
+    });
+
+</script>
+
+
 
 {% endblock %}
