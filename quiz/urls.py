@@ -2,13 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-  path('', views.course, name='course'),
-  path('each/<str:pk>', views.courseEach, name='course-each'),
-
-  path('each/<str:pk>/edit', views.courseEachEdit, name='course-each-edit'),
-  path('create', views.createCourse, name='create-course'),
-  path('topic/<str:pk>/', views.topic, name='topic'),
-
+  path('', views.quiz, name='quiz'),
+  path('create', views.quizCreate, name='quiz-create'),
   # path('login', views.loginUser, name='login'),
   # path('register', views.registerUser, name='register'),
   # path('logout', views.logoutUser, name='logout'),

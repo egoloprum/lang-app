@@ -29,11 +29,22 @@
         <div class="mb-3">
           <label class="form-label">Max Number of Users</label>
           <input type="number" class="form-control" name="max_user_num" value="{{ course.max_user_num }}" >
-        </div><br>
+        </div><hr>
 
         <div class="mb-3">
           <label class="form-label">Content of Course</label>
-          <p>...</p>
+          {% for content in contents %}
+            <div class="mb-3">
+              <label class="form-label">Name of Content</label>
+              <input type="text" class="form-control" name="content-name-{{content.id}}" value="{{ content.name }}" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Name of Content</label>
+              <textarea class="form-control" name="content-body-{{content.id}}" aria-label="With textarea" required>{{ content.body }}</textarea>
+            </div><br>
+
+          {% endfor %}
         </div>
 
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">

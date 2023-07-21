@@ -1,0 +1,50 @@
+{% extends 'main.html' %}
+
+{% block content %}
+  <section>
+    <div class="m-3">
+      <h3>Quiz Create Form</h3>
+      <form method="POST" action="">
+        {% csrf_token %}
+
+        {% comment %} quiz-part {% endcomment %}
+
+        <div class="mb-3">
+          <label class="form-label">Name of Quiz</label>
+          <input class="form-control" type="text" name="quiz-name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Duration of Quiz</label>
+          <input class="form-control" type="time" name="quiz-duration">
+        </div>
+
+        {% comment %} question-part {% endcomment %}
+
+        <ul id="quiz-create-list-question">
+          <div class="mb-3">
+            <label class="form-label">Body of Question</label>
+            <button class="btn btn-primary m-2">Add More Question ?</button>
+            <input class="form-control" type="text" name="question-body">
+          </div>
+
+          {% comment %} answer-part {% endcomment %}
+
+          <ul id="quiz-create-list-answer">
+            <div class="mb-3">
+              <label class="form-label">Body of Answer</label>
+              <button class="btn btn-primary m-2">Add More Question ?</button>
+              <input class="form-control" type="text" name="answer-body">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Correct of Answer</label>
+              <input class="" type="checkbox" name="answer-correct">
+            </div>
+          </ul>
+
+        </ul>
+        <button class="btn btn-primary m-2">Create</button>
+        <a class="btn btn-secondary" href="{% url 'quiz' %}">Cancel</a>
+      </form>
+    </div>
+  </section>
+{% endblock %}

@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.password_validation import validate_password
 
 from .models import *
+from course.models import Course
 
 def loginUser(request):
     context = {}
@@ -72,8 +73,9 @@ def forgotPass(request):
 def profilePath(request, pk):
     user = User.objects.get(id=pk)
     profile = Profile.objects.get(user=pk)
+    courses = Course.objects.filter(host=pk)
 
-    context = {'user': user, 'profile': profile}
+    context = {'user': user, 'profile': profile, 'courses': courses}
 
     return render(request, 'profile.html', context)
 

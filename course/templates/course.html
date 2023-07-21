@@ -3,22 +3,42 @@
 {% block content %}
 
 <section class="course-page-section">
-  <div>
-    <a class="btn btn-primary" href="{% url 'create-course' %}" >Create ?</a>
-  </div><hr>
+  <a class="btn btn-primary" href="{% url 'create-course' %}" >Create ?</a><hr>
+
   <div class="row">
-    <div class="col-1">
+
+    {% comment %} topic side column {% endcomment %}
+
+    <div class="col">
       {% for topic in topics %}
         <p><a href="{% url 'topic' topic.id %}"> {{ topic.name }}</a></p><hr>
       {% endfor %}
     </div>
-    {% for course in courses %}
-    <div class="col">
-      <p><a href="{% url 'course-each' course.id %}">{{ course.name }}</a> / <span>{{ course.topic.name }}</span> </p><hr>
-      <p>{{ course.body }}</p>
+
+    {% comment %} main side column {% endcomment %}
+
+    <article class="col-9">
+      {% for course in courses %}
+        <div class="mb-3 col">
+          <label class="form-label" id="list-item-{{ course.id }}"><a href="{% url 'course-each' course.id %}">{{ course.name }}</a> /
+            <span class="text-muted">{{ course.topic.name }}</span> 
+          </label><hr>
+          <p>{{ course.body }}</p>
+        </div>
+      {% endfor %}
+    </article>
+
+    {% comment %} map side column {% endcomment %}
+  
+    <div class="course-page-list col">
+      <div id="list-example">
+        {% for course in courses %}
+        <a class="" href="#list-item-{{ course.id }}">{{ course.name }}</a>
+        {% endfor %}
+      </div>
     </div>
-  {% endfor %}
   </div>
+
 </section>
 
 {% endblock %}

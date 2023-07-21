@@ -4,3 +4,4 @@ from .models import *
 
 admin.site.register(Course)
 admin.site.register(Topic)
+admin.site.register(Content)

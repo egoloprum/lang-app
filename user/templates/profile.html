@@ -4,6 +4,7 @@
 
   <div class="container text-center">
     <div class="row">
+
       <section class="profile-page-form col-4">
         <div>
           {% if request.user == user %}
@@ -14,39 +15,54 @@
         </div>
         
         <div>
-          <label for="inputEmail3" class="col-sm-2 col-form-label">Username</label>
+          <label for="inputEmail3" class="col-form-label">Username</label>
           <p>{{ user.username }}</p>
         </div><hr>
         <div>
-          <label for="inputEmail3" class="col-sm-2 col-form-label">First name</label>
+          <label for="inputEmail3" class="col-form-label">First name</label>
           <p>{{ user.first_name }}</p>
         </div><hr>
         <div>
-          <label for="inputEmail3" class="col-sm-2 col-form-label">Last name</label>
+          <label for="inputEmail3" class="col-form-label">Last name</label>
           <p>{{ user.last_name }}</p>
         </div><hr>
         <div>
-          <label for="inputEmail3" class="col-sm-2 col-form-label">Birthday</label>
+          <label for="inputEmail3" class="col-form-label">Birthday</label>
           <p>{{ user.birthday }}</p>
         </div><hr>
         <div>
-          <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+          <label for="inputEmail3" class="col-form-label">Email</label>
           <p>{{ user.email }}</p>
         </div><hr>
         <div>
-          <label for="inputEmail3" class="col-sm-2 col-form-label">Password</label>
+          <label for="inputEmail3" class="col-form-label">Password</label>
           <p>{{ user.password }}</p>
+        </div>
+
+      </section>
+
+      <section class="profile-page-form col">
+        <div class="mb-3">
+          <label>Quiz</label>
+          {% if user.is_authenticated %}
+            <a class="btn btn-primary">Add Quiz</a>
+          {% endif %}
         </div>
       </section>
 
       <section class="profile-page-form col">
-        <div>
-          Add quiz
-        </div>
-      </section>
-      <section class="profile-page-form col">
-        <div>
-          Something here
+        <div class="mb-3">
+          <label class="form-label">Contribution</label>
+          <div class="row">
+            {% for course in courses %}
+              <div class="col border">
+                <a href="{% url 'course-each' course.id %}">{{ course.name }}</a><hr>
+                <p>{{ course.body|truncatewords:10 }}</p>
+              </div>
+              {% empty %}
+                <p>Currently, no course has been created by this user.</p>
+            {% endfor %}
+          </div>
         </div>
       </section>
     </div>

@@ -2,115 +2,143 @@
 
 {% block content %}
 
-<section class="course-each-page-section">
-  {% if course.host.is_authenticated %}
-    <a class="btn btn-primary" href="{% url 'course-each-edit' course.id %}">Edit ?</a>
-  {% endif %}
-    <a class="btn btn-secondary" href="{% url 'course' %}">Back</a><hr>
-  <div class="col">
+<section class="course-each-page-section row">
+  <div class="course-each-page-wrapper col-10">
     <article>
-      <p>{{ course.name }} / 
-        <span>{{ course.topic.name }}</span> / 
-        <a href="{% url 'profile' course.host.id %}"><span>{{ course.host.username }}</span></a> /
-        <span>{{ course.created_at }}</span>
-      </p><hr>
-      <p>{{ course.body }}</p>
-    </article>
-
-    <article>
-      <h3>Content of Course</h3><hr>
-    </article>
-
-  </div>
-
-  <button class="btn btn-primary">Add Content</button><hr>
-
-  <section>
-    {% if messages %}
-      <ul class="messages" style="color:#32e80d;">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-
-    <form method="POST" action="" id="content-form">
-      {% csrf_token %}
-      <div class="mb-3">
-        <label class="form-label">Name of Content</label>
-        <input type="text" class="form-control" id="content-name" name="name" required>
-      </div><br>
-
-      <div class="mb-3">
-        <label class="form-label">Body of Content</label>
-        <textarea class="form-control" id="content-body" name="body" required></textarea>
-      </div><hr>
-
-      <input type="hidden" name="course-id" value="{{ course.id }}" >
-
-      <button type="submit" class="btn btn-primary">Save</button>
-    </form>
-  </section><hr>
-
-  <section>
-    {% for content in contents %}
-      {% if content.course is course %}
-        <div class="mb-3">
-          <label class="form-label">{{ content.name }}</label>
-          <p class="form-control">{{ content.body }}</p>
+      <div>
+        {% if course.host.is_authenticated %}
+        <a class="btn btn-primary" href="{% url 'course-each-edit' course.id %}">Edit ?</a>
+        {% endif %}
+        <a class="btn btn-secondary" href="{% url 'course' %}">Back</a><hr>
+      </div>
+  
+      <div class="col">
+        <div>
+          <h3>{{ course.name }} </h3>
+              <a href="{% url 'topic' course.topic.id %}"><span>{{ course.topic.name }}</span></a> | 
+              <a href="{% url 'profile' course.host.id %}"><span>{{ course.host.username }}</span></a> |
+              <span class="text-muted">{{ course.created_at }}</span><hr>
+          
+          <p>{{ course.body }}</p>
         </div>
-      {% endif %}
-    {% endfor %}
-  </section>
+  
+      </div>
+    </article>
+  
+    <button class="btn btn-primary" onclick="myFunction()">Add Content</button><hr>
+  
+    <article id="course-each-content-add" style="display:none;"">
+  
+      <form method="POST" action="" id="course-each-content-form" >
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Name of Content</label>
+          <input type="text" class="form-control" id="content-name" name="name" required>
+        </div><br>
+  
+        <div class="mb-3">
+          <label class="form-label">Body of Content</label>
+          <textarea class="form-control" id="content-body" name="body" required></textarea>
+        </div>
+  
+        <div class="mb-3" id="course-each-content-add-file-div">
+          <label class="form-label">File of Content</label>
+          <input type="file" class="form-control" id="content-file" name="file" required>
+        </div>
+        <button class="btn btn-primary" id="course-each-content-add-button" onclick="course_each_content_add_button()">
+          Add More Files ?</button><hr>
+        <button type="submit" class="btn btn-primary" >Save</button><hr>
+      </form>
+  
+    </article>
+  
+    <article>
+  
+      <h3>Contents of Course</h3><hr>
+      {% for content in contents %}
+        {% if content.course.id is course.id %}
+          <div class="mb-3">
+            <label class="form-label" id="list-item-{{ content.id }}">{{ content.name }}</label>
+            <p class="form-control">{{ content.body }}</p>
+          </div>
+        {% endif %}
+      {% endfor %}
+      <div class="mb-3" id="course-each-content-div">
+      </div>
+    </article>
+  </div>
+  
+  <div class="index-page-list col">
+    <div id="list-example">
+      {% for content in contents %}
+      <a class="" href="#list-item-{{ content.id }}">{{ content.name }}</a>
+      {% endfor %}
+    </div>
+  </div>
 
 </section>
 
-<script src="https://code.jquery.com/jquery-3.7.0.slim.min.js"
-integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE="
-crossorigin="anonymous">
+<script type="text/javascript">
 
-  // var csrf_token = '{{ csrf_token }}'
-
-  // document.getElementById('').onclick = () => {
-  //   const obj = new XMLHttpRequest();
-  //   obj.onreadystatechange = function() {
-  //     if(this.readyState == 4 && this.status == 200) {
-  //       console.log(this.responseText)
-  //     }
-  //   }
-
-  //   obj.open("GET", '/get');
-  //   obj.send();
-  // }
-
-  // document.getElementById('').onclick = () => {
-  //   const obj = new XMLHttpRequest();
-  //   obj.onreadystatechange = function() {
-  //     if(this.readyState == 4 && this.status == 200) {
-  //       console.log(this.responseText)
-  //     }
-  //   }
-
-  //   obj.open("POST", '/post');
-  //   obj.setRequestHeader("X-CSRFToken", csrf_token);
-  //   obj.send();
-  // }
-
-    $(document).on('submit', '#content-form', function(e) {
+    $(document).on('submit', '#course-each-content-form', function(e) {
       e.preventDefault();
       $.ajax({
         type: 'POST',
-        url: "{% url 'course-each-content' course.id %}",
+        url: "{% url 'course-each' course.id %}",
         data: {
           name: $('#content-name').val(),
           body: $('#content-body').val(),
-          csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+          csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
         },
         success: function(data){
-          console.log(data);
-        }
+          var content_result_label = document.createElement('label');
+          content_result_label.innerHTML = data.name;
+          content_result_label.className = 'form-label';
+
+          var content_result_p = document.createElement('p');
+          content_result_p.innerHTML = data.body;
+          content_result_p.className = 'form-control';
+
+          content_result_div = document.getElementById('course-each-content-div');
+          content_result_div.append(content_result_label, content_result_p);
+          alert('Content has been created !');
+        } 
       });
     });
+
+    function myFunction() {
+      var course_each_add_btn = document.getElementById("course-each-content-add");
+      if (course_each_add_btn.style.display === "none") {
+        course_each_add_btn.style.display = "block";
+      } else {
+        course_each_add_btn.style.display = "none";
+      }
+    }
+
+    function course_each_content_add_button() {
+      content_files_div = document.getElementById("course-each-content-add-file-div");
+      content_files_space = document.createElement('br');
+      content_files_delete = document.createElement('button');
+      content_files_delete.innerHTML = 'remove';
+      content_files_delete.className = 'btn btn-danger';
+
+      var content_files = document.createElement('input');
+      content_files.className = 'form-control';
+      content_files.type = 'file';
+      content_files_div.append(content_files_space, content_files, content_files_delete);
+    }
+
+    const tx = document.getElementsByTagName("textarea");
+    for (let i = 0; i < tx.length; i++) {
+      tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+      tx[i].addEventListener("input", OnInput, false);
+    }
+  
+    function OnInput() {
+      this.style.height = 0;
+      this.style.height = (this.scrollHeight) + "px";
+    }
+
 
 </script>
 

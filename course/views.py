@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from django.db import IntegrityError
 
@@ -59,33 +59,40 @@ def course(request):
 
 def courseEach(request, pk):
   course = Course.objects.get(id=pk)
-  contents = None
+  is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+  if request.method == 'POST' and is_ajax:
+    name = request.POST.get('name')
+    body = request.POST.get('body')
+
+    content = Content.objects.create(name=name, body=body, course=course)
+
+    return JsonResponse({'name': content.name, 'body': content.body})
+
   contents = Content.objects.filter(course=course)
 
-  if Content.objects.filter(course=course):
-    contents = Content.objects.filter(course=course)
+  if contents:
     context = {'course': course, 'contents':contents}
   else:
+    contents = None
     context = {'course': course, 'contents':contents}
 
   return render(request, 'course-each.html', context)
-
-def courseEachContent(request):
-  if request.method == 'POST':
-    name = request.POST.get('name')
-    body = request.POST.get('body')
-    course_id = request.POST.get('course-id')
-
-    Content.objects.get_or_create(name=name, body=body, course=course)
-
-    messages.success(request, 'Content has been created')
-    return HttpResponse('success !')
    
 
 def courseEachEdit(request, pk):
    course = Course.objects.get(id=pk)
+   contents = Content.objects.filter(course=course)
+   content_name = []
+   content_body = []
+   num = Content.objects.filter(course=course).count()
 
    if request.method == 'POST':
+
+      for content in contents:
+        content_name.append(request.POST.get('content-name-' + str(content.id)))
+        content_body.append(request.POST.get('content-body-' + str(content.id)))         
+
       name = request.POST.get('name')
       body = request.POST.get('body')
       max_user_num = request.POST.get('max_user_num')
@@ -96,16 +103,29 @@ def courseEachEdit(request, pk):
           course.max_user_num = max_user_num
           course.save()
 
+          x = 0
+          for content in contents:
+            content.name = content_name[x]
+            content.body = content_body[x]
+            content.save()
+            x += 1
+          
           return redirect('/course/each/%d'%course.id)
 
       course.name = name
       course.body = body
       course.save()
+
+      x = 0
+      for content in contents:
+        content.name = content_name[x]
+        content.body = content_body[x]
+        content.save()
+        x += 1
+
       return redirect('/course/each/%d'%course.id)
 
-      
-
-   context = {'course': course}
+   context = {'course': course, 'contents': contents}
 
    return render(request, 'course-each-edit.html', context)
 

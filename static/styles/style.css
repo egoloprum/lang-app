@@ -33,7 +33,7 @@ body p {
 /* main.html */
 
 .main-container {
-  padding-top: 70px;
+  padding-top: 60px;
 }
 
 .profile-update-form {
@@ -150,6 +150,7 @@ body p {
   max-width: 200px;
   width: 100%;
   position: fixed;
+  top: 170px;
 }
 
 .index-page-list div a {
@@ -173,9 +174,25 @@ body p {
   padding: var(--form-padding);
 }
 
-.course-page-section .row .col {
-  border: var(--form-border);
-  border-radius: var(--form-border-radius);  
+.course-page-list div {
+  display: flex;
+  flex-direction: column;
+  max-width: 200px;
+  width: 100%;
+  position: fixed;
+}
+
+.course-page-list div a {
+  padding: var(--form-padding);
+  margin: var(--form-padding);
+}
+
+.course-page-list div a:nth-child(odd) {
+  border-left: 2px solid #7b9cea;
+}
+
+.course-page-list div a:nth-child(even) {
+  border-left: 2px solid #eac07b;
 }
 
 .topic-page-section,
@@ -183,12 +200,6 @@ body p {
   margin: var(--form-margin);
   padding: var(--form-padding);
 }
-
-.topic-page-section .row .col {
-  border: var(--form-border);
-  border-radius: var(--form-border-radius);  
-}
-
 
 .course-each-page-section {
   margin: var(--form-margin);
@@ -199,6 +210,13 @@ body p {
 
 .course-each-edit-page-form {
   margin: var(--form-margin);
+  padding: var(--form-padding);
+  border: var(--form-border);
+  border-radius: var(--form-border-radius);  
+}
+
+.border {
+  margin: var(--form-padding);
   padding: var(--form-padding);
   border: var(--form-border);
   border-radius: var(--form-border-radius);  
