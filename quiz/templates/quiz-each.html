@@ -1,0 +1,30 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+  <section class="row">
+    <div class="col-9">
+      <h3>{{ quiz.name }}</h3>
+      {% for question in questions %}
+
+        <div class="col-3">
+          <label class="form-label">{{ question.body }}</label>
+          {% for answer in answers %}
+            {% if answer.question == question %}
+
+            <a class="btn btn-warning form-control mb-3">{{ answer.body }}</a>
+            {% endif %}
+
+          {% endfor %}
+        </div>
+        
+      {% endfor %}
+    </div>
+    <div class="col">
+      {% for num in number_of_questions|make_list %}
+        <li>{{ num }}</li>
+      {% endfor %}
+    </div>
+  </section>
+
+{% endblock %}

@@ -6,6 +6,13 @@
   --form-width: 500px;
   --form-border: 2px solid rgba(0,0,0,0.2);
   --form-border-radius: 10px;
+  --color-grey: #e2e0e0;
+
+  /* --text: #fcfbfe;
+--background: #000000;
+--primary: #6425ad;
+--secondary: #20043f;
+--accent: #7029c2; */
 }
 
 * {
@@ -28,6 +35,10 @@ body a:hover {
 
 body p {
   word-wrap: break-word;
+}
+
+body li {
+  list-style: none;
 }
 
 /* main.html */
@@ -217,3 +228,28 @@ body p {
   border: var(--form-border);
   border-radius: var(--form-border-radius);  
 }
+
+.quiz-create-page-question {
+  border: var(--form-border);
+  border-radius: var(--form-border-radius);  
+}
+
+.quiz-page-quiz-column {
+  margin: var(--form-padding);
+  padding: var(--form-padding);
+  border: var(--form-border);
+  border-radius: var(--form-border-radius); 
+}
+
+.profile-page-quiz-column {
+  margin: var(--form-padding);
+  padding: var(--form-padding);
+  border: var(--form-border);
+  border-radius: var(--form-border-radius); 
+}
+
+/* .quiz-create-list-question {
+}
+
+.quiz-create-list-answer{
+} */

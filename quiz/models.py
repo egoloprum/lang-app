@@ -5,11 +5,10 @@ import random
 
 class Quiz(models.Model):
     host = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    number_of_questions = models.IntegerField()
-    duration = models.TimeField(help_text="duration of the quiz in minutes")
-    required_score = models.IntegerField(help_text="required score in %")
-    difficulty = models.CharField(max_length=50)
+    name = models.CharField(max_length=200, null=False)
+    duration = models.TimeField(help_text="duration of the quiz in minutes", null=True)
+    required_score = models.IntegerField(help_text="required score in %", null=True)
+    difficulty = models.CharField(max_length=50, null=True)
 
     def __str__(self):
         return self.name
@@ -17,12 +16,11 @@ class Quiz(models.Model):
     def get_questions(self):
         questions = list(self.question_set.all())
         random.shuffle(questions)
-        return questions[:self.number_of_questions]
+        return questions[:self.len(questions)]
 
 class Question(models.Model):
-    body = models.CharField(max_length=200)
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    body = models.CharField(max_length=200, null=False)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False)
 
     def __str__(self):
         return self.body
@@ -31,17 +29,16 @@ class Question(models.Model):
         return self.answer_set.all()
 
 class Answer(models.Model):
-    body = models.CharField(max_length=200)
-    correct = models.BooleanField(default=False)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    body = models.CharField(max_length=200, null=False)
+    correct = models.BooleanField(default=False, null=False)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=False)
 
     def __str__(self):
       return self.body
 
 class Result(models.Model):
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     score = models.FloatField()
 
     def __str__(self):

@@ -10,16 +10,18 @@
       <label class="form-label">Quizes</label>
       {% for quiz in quizs %}
 
-        <div class="col">
-          <label class="form-label">{{quiz.name}}</label>
-          <p class="text-muted">
-            <a href="{% url 'profile' quiz.host.id %}"><span>{{quiz.host}}</span></a> / 
-            <span>{{quiz.number_of_questions}}</span> / 
-            <span>{{quiz.duration}}</span> / 
-            <span>{{quiz.required_score}}</span> / 
-            <span>{{quiz.difficulty}}</span>
-          </p>
-        </div>
+        <a href="{% url 'quiz-each' quiz.id %}" class="quiz-page-quiz-column col">
+          <div class="">
+            <label class="form-label">{{ quiz.name }}</label>
+            <p class="text-muted">
+              <span>{{quiz.host}}</span> / 
+              <span>{{quiz.number_of_questions}}</span> / 
+              <span>{{quiz.duration}}</span> / 
+              <span>{{quiz.required_score}}</span> / 
+              <span>{{quiz.difficulty}}</span>
+            </p>
+          </div>
+        </a>
 
       {% endfor %}
     </div>

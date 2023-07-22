@@ -48,13 +48,17 @@
           {% endif %}
           <h3>Quizs</h3>
           {% for quiz in quizs %}
-            <label class="form-label"><a href="#">{{quiz.name}}</a></label>
-            <p class="text-muted">
-              <span>{{quiz.number_of_questions}}</span> / 
-              <span>{{quiz.duration}}</span> / 
-              <span>{{quiz.required_score}}</span> / 
-              <span>{{quiz.difficulty}}</span>
-            </p>
+            <a href="{% url 'quiz-each' quiz.id %}">
+              <div class="border">
+                <label class="form-label">{{quiz.name}}</label>
+                <p class="text-muted">
+                  <span>{{quiz.number_of_questions}}</span> / 
+                  <span>{{quiz.duration}}</span> / 
+                  <span>{{quiz.required_score}}</span> / 
+                  <span>{{quiz.difficulty}}</span>
+                </p>
+              </div>
+            </a>
           {% endfor %}
         </div>
       </section>
@@ -64,10 +68,12 @@
           <label class="form-label">Contribution</label>
           <div class="row">
             {% for course in courses %}
-              <div class="col border">
-                <a href="{% url 'course-each' course.id %}">{{ course.name }}</a><hr>
-                <p>{{ course.body|truncatewords:10 }}</p>
-              </div>
+              <a href="{% url 'course-each' course.id %}">
+                <div class="col border">
+                  <label>{{ course.name }}</label><hr>
+                  <p>{{ course.body|truncatewords:10 }}</p>
+                </div>
+              </a>
               {% empty %}
                 <p>Currently, no course has been created by this user.</p>
             {% endfor %}

@@ -66,12 +66,14 @@ profile_update_password.addEventListener("keyup", (e) => {
 
 });
 
+// quiz create html
+
 function quiz_create_list_answer_btn(id) {
   id = id[id.length - 1];
   console.log(id);
   answer_ul = document.getElementById('quiz-create-list-answer-' + id);
   answer_div = document.createElement('div');
-  answer_div.className = 'mb-3';
+  answer_div.className = 'mb-3 col-6';
 
   children = answer_ul.children;
   quiz_create_answer_input_count = 1;
@@ -87,8 +89,8 @@ function quiz_create_list_answer_btn(id) {
   answer_label.innerHTML = 'Body of Answer ' + quiz_create_answer_input_count;
 
   answer_delete = document.createElement('a');
-  answer_delete.className = 'btn btn-danger';
-  answer_delete.innerHTML = 'Delete';
+  answer_delete.className = 'btn btn-danger m-2';
+  answer_delete.innerHTML = 'remove';
 
   answer_input = document.createElement('input');
   answer_input.className = 'form-control';
@@ -113,7 +115,7 @@ function quiz_create_list_answer_btn(id) {
     function quiz_create_question_btn() {
       question_ul = document.getElementById('quiz-create-list-question');
       question_div = document.createElement('div');
-      question_div.className = 'mb-3';
+      question_div.className = 'mb-3 col-6 quiz-create-page-question';
 
       children = question_ul.children;
       quiz_create_question_input_count = ++children.length;
@@ -125,7 +127,7 @@ function quiz_create_list_answer_btn(id) {
       space = document.createElement('br');
       question_delete = document.createElement('a');
       question_delete.innerHTML = 'remove';
-      question_delete.className = 'btn btn-danger';
+      question_delete.className = 'btn btn-danger m-2';
 
       document.getElementById('quiz-number-of-question').value = quiz_create_question_input_count;
 
@@ -138,15 +140,16 @@ function quiz_create_list_answer_btn(id) {
 
       answer_ul = document.createElement('div');
       answer_ul.id = 'quiz-create-list-answer-' + quiz_create_question_input_count;
+      answer_ul.className = 'row quiz-create-list-answer';
       answer_div = document.createElement('div');
-      answer_div.className = 'mb-3';
+      answer_div.className = 'mb-3 col-6';
 
       answer_label = document.createElement('label');
       answer_label.className = 'form-label';
       answer_label.innerHTML = 'Body of Answer 1';
 
       answer_btn = document.createElement('a');
-      answer_btn.className = 'btn btn-primary';
+      answer_btn.className = 'btn btn-primary m-2';
       answer_btn.innerHTML = 'Add';
       answer_btn.id = 'quiz-create-list-btn-' + quiz_create_question_input_count;
       // answer_btn.addEventListener("click", quiz_create_list_answer_btn);

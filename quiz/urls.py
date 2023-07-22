@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
   path('', views.quiz, name='quiz'),
   path('create', views.quizCreate, name='quiz-create'),
+  path('<str:pk>', views.quizEach, name='quiz-each'),
   # path('login', views.loginUser, name='login'),
   # path('register', views.registerUser, name='register'),
   # path('logout', views.logoutUser, name='logout'),

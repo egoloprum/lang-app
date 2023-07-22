@@ -35,18 +35,18 @@
 
         {% comment %} question-part {% endcomment %}
 
-        <div id="quiz-create-list-question" class="row">
-          <div class="mb-3">
+        <div id="quiz-create-list-question" class="row quiz-create-list-question">
+          <div class="mb-3 col-6 quiz-create-page-question">
             <label class="form-label">Body of Question 1</label>
-            <a class="btn btn-primary" onclick="quiz_create_question_btn()">Add</a>
+            <a class="btn btn-primary m-2" onclick="quiz_create_question_btn()">Add</a>
             <input class="form-control" type="text" name="question-body-1" required>
 
             {% comment %} answer-part {% endcomment %}
 
-            <div id="quiz-create-list-answer-1" class="row">
-              <div class="mb-3">
-                <label class="form-label" id="quiz_create_list_answer_label1">Body of Answer 1</label><br>
-                <a class="btn btn-primary" id="quiz-create-list-btn-1" onclick="quiz_create_list_answer_btn(this.id)">Add</a>
+            <div id="quiz-create-list-answer-1" class="row quiz-create-list-answer">
+              <div class="mb-3 col-6">
+                <label class="form-label" id="quiz_create_list_answer_label1">Body of Answer 1</label>
+                <a class="btn btn-primary m-2" id="quiz-create-list-btn-1" onclick="quiz_create_list_answer_btn(this.id)">Add</a>
                 <input class="form-control" type="text" name="answer-body-1-1">
   
                 <label class="form-label" id="quiz_create_list_answer_label2">Correct of Answer 1</label>
