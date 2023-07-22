@@ -68,6 +68,7 @@ profile_update_password.addEventListener("keyup", (e) => {
 
 function quiz_create_list_answer_btn(id) {
   id = id[id.length - 1];
+  console.log(id);
   answer_ul = document.getElementById('quiz-create-list-answer-' + id);
   answer_div = document.createElement('div');
   answer_div.className = 'mb-3';
@@ -117,8 +118,6 @@ function quiz_create_list_answer_btn(id) {
       children = question_ul.children;
       quiz_create_question_input_count = ++children.length;
 
-      console.log(children.length,quiz_create_question_input_count);
-
       question_label = document.createElement('label');
       question_label.className = "form-label";
       question_label.innerHTML = "Body of Question " + quiz_create_question_input_count;
@@ -152,7 +151,7 @@ function quiz_create_list_answer_btn(id) {
       answer_btn.id = 'quiz-create-list-btn-' + quiz_create_question_input_count;
       // answer_btn.addEventListener("click", quiz_create_list_answer_btn);
       answer_btn.addEventListener("click", function() {
-        quiz_create_list_answer_btn(answer_btn.id);
+        quiz_create_list_answer_btn(this.id);
       });
 
       answer_input_body = document.createElement('input');
