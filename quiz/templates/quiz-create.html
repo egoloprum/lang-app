@@ -35,27 +35,28 @@
 
         {% comment %} question-part {% endcomment %}
 
-        <ul id="quiz-create-list-question">
+        <div id="quiz-create-list-question" class="row">
           <div class="mb-3">
             <label class="form-label">Body of Question 1</label>
-            <a class="btn btn-primary m-2" onclick="quiz_create_question_btn()">Add More Question ?</a>
+            <a class="btn btn-primary" onclick="quiz_create_question_btn()">Add</a>
             <input class="form-control" type="text" name="question-body-1" required>
+
+            {% comment %} answer-part {% endcomment %}
+
+            <div id="quiz-create-list-answer-1" class="row">
+              <div class="mb-3">
+                <label class="form-label" id="quiz_create_list_answer_label1">Body of Answer 1</label><br>
+                <a class="btn btn-primary" id="quiz-create-list-btn-1" onclick="quiz_create_list_answer_btn(id)">Add</a>
+                <input class="form-control" type="text" name="answer-body-1-1">
+  
+                <label class="form-label" id="quiz_create_list_answer_label2">Correct of Answer 1</label>
+                <input class="" type="checkbox" name="answer-correct-1-1">
+              </div>
+            </div>
+
           </div>
 
-          {% comment %} answer-part {% endcomment %}
-
-          <ul id="quiz-create-list-answer">
-            <div class="mb-3">
-              <label class="form-label" id="quiz_create_list_answer_label1">Body of Answer 1</label>
-              <a class="btn btn-primary m-2" onclick="quiz_create_list_answer_btn()">Add More Answer ?</a>
-              <input class="form-control input" type="text" name="answer-body-1">
-
-              <label class="form-label" id="quiz_create_list_answer_label2">Correct of Answer 1</label>
-              <input class="m-2" type="checkbox" name="answer-correct-1">
-            </div>
-          </ul>
-
-        </ul>
+        </div>
         <button class="btn btn-primary m-2">Create</button>
         <a class="btn btn-secondary" href="{% url 'quiz' %}">Cancel</a>
       </form>
@@ -63,70 +64,5 @@
   </section>
 
   <script>
-    var quiz_create_question_input_count = 2;
-
-    function quiz_create_question_btn() {
-      quiz_create_list_question = document.getElementById('quiz-create-list-question');
-      var quiz_create_question_div = document.createElement('div');
-
-      quiz_create_list_question_label1 = document.createElement('label');
-      quiz_create_list_question_label1.className = "form-label";
-      quiz_create_list_question_label1.innerHTML = "Body of Question " + quiz_create_question_input_count;
-
-      quiz_create_list_answer_space = document.createElement('br');
-      quiz_create_list_answer_delete = document.createElement('a');
-      quiz_create_list_answer_delete.innerHTML = 'remove';
-      quiz_create_list_answer_delete.className = 'btn btn-danger m-2';
-
-      document.getElementById('quiz-number-of-question').value = quiz_create_question_input_count;
-
-      var quiz_create_list_question_input = document.createElement('input');
-      quiz_create_list_question_input.className = 'form-control input';
-      quiz_create_list_question_input.type = 'text';
-      quiz_create_list_question_input.name = 'question-body-' + quiz_create_question_input_count++;
-
-      quiz_create_question_div.append(quiz_create_list_answer_space, quiz_create_list_question_label1,
-                                      quiz_create_list_answer_delete, quiz_create_list_question_input);
-      quiz_create_list_question.append(quiz_create_question_div);
-    }
-
-
-    var quiz_create_list_answer_div_input_count = 2;
-
-    function quiz_create_list_answer_btn() {
-      quiz_create_list_answer = document.getElementById('quiz-create-list-answer');
-      var quiz_create_list_answer_div = document.createElement('div');
-
-      quiz_create_list_answer_label1 = document.createElement('label');
-      quiz_create_list_answer_label1.className = "form-label";
-      quiz_create_list_answer_label1.innerHTML = "Body of Answer " + quiz_create_list_answer_div_input_count;
-
-      quiz_create_list_answer_label2 = document.createElement('label');
-      quiz_create_list_answer_label2.className = "form-label";
-      quiz_create_list_answer_label2.innerHTML = "Correct of Answer " + quiz_create_list_answer_div_input_count;
-
-      quiz_create_list_answer_space = document.createElement('br');
-      quiz_create_list_answer_delete = document.createElement('a');
-      quiz_create_list_answer_delete.innerHTML = 'remove';
-      quiz_create_list_answer_delete.className = 'btn btn-danger m-2';
-
-      var quiz_create_list_answer_input = document.createElement('input');
-      quiz_create_list_answer_input.className = 'form-control input';
-      quiz_create_list_answer_input.type = 'text';
-      quiz_create_list_answer_input.name = 'answer-body-' + quiz_create_list_answer_div_input_count;
-
-      var quiz_create_list_answer_input_checkbox = document.createElement('input');
-      quiz_create_list_answer_input_checkbox.className = 'm-2';
-      quiz_create_list_answer_input_checkbox.type = 'checkbox';
-      quiz_create_list_answer_input_checkbox.name = 'answer-correct-' + quiz_create_list_answer_div_input_count++;
-
-      quiz_create_list_answer_div.append(quiz_create_list_answer_space, quiz_create_list_answer_label1,
-                                        quiz_create_list_answer_delete, quiz_create_list_answer_input, 
-                                        quiz_create_list_answer_label2, quiz_create_list_answer_input_checkbox);
-
-      quiz_create_list_answer.append(quiz_create_list_answer);
-
-    }
-
   </script>
 {% endblock %}
