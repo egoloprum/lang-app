@@ -43,10 +43,19 @@
 
       <section class="profile-page-form col">
         <div class="mb-3">
-          <label>Quiz</label>
           {% if user.is_authenticated %}
-            <a class="btn btn-primary">Add Quiz</a>
+            <a class="btn btn-primary" href="{% url 'quiz-create' %}">Add Quiz</a>
           {% endif %}
+          <h3>Quizs</h3>
+          {% for quiz in quizs %}
+            <label class="form-label"><a href="#">{{quiz.name}}</a></label>
+            <p class="text-muted">
+              <span>{{quiz.number_of_questions}}</span> / 
+              <span>{{quiz.duration}}</span> / 
+              <span>{{quiz.required_score}}</span> / 
+              <span>{{quiz.difficulty}}</span>
+            </p>
+          {% endfor %}
         </div>
       </section>
 

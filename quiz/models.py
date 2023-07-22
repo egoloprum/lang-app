@@ -11,6 +11,9 @@ class Quiz(models.Model):
     required_score = models.IntegerField(help_text="required score in %")
     difficulty = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.name
+
     def get_questions(self):
         questions = list(self.question_set.all())
         random.shuffle(questions)

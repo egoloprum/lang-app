@@ -56,10 +56,6 @@ body p {
   text-align: left;
 }
 
-.custom-breadcrumbs {
-  background: red;
-}
-
 .profile-delete-form {
   margin: var(--form-margin);
   padding: var(--form-padding);

@@ -10,6 +10,7 @@ from django.contrib.auth.password_validation import validate_password
 
 from .models import *
 from course.models import Course
+from quiz.models import Quiz
 
 def loginUser(request):
     context = {}
@@ -74,8 +75,9 @@ def profilePath(request, pk):
     user = User.objects.get(id=pk)
     profile = Profile.objects.get(user=pk)
     courses = Course.objects.filter(host=pk)
+    quizs = Quiz.objects.filter(host=user)
 
-    context = {'user': user, 'profile': profile, 'courses': courses}
+    context = {'user': user, 'profile': profile, 'courses': courses, 'quizs': quizs}
 
     return render(request, 'profile.html', context)
 
