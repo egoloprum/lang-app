@@ -196,7 +196,8 @@ function quiz_create_question_btn() {
 }
 
 function quiz_create_answer_delete_btn(id) {
-  id = id.slice(-4, id.length);
+  id = id.slice(29, id.length);
+  console.log(id);
   create_answer_div = document.getElementById('create-answer' + id);
   create_answer_div.remove();
 }

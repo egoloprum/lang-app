@@ -15,7 +15,7 @@
               <label class="form-label">{{ quiz.name }}</label>
               <a href="{% url 'quiz-each' quiz.id %}" class="btn btn-primary">Start</a>
               {% if request.user == quiz.host %}
-                <a href="#" class="btn btn-warning">Edit</a>
+                <a href="{% url 'quiz-edit' quiz.id %}" class="btn btn-warning">Edit</a>
               {% endif %}
               <input type="hidden" value="{{ quiz.id }}" name="quiz" id="quiz-id">
               <button type="submit" class="btn btn-info" id="quiz-toggle-function-{{ forloop.counter }}" onclick="quiz_toggle_function(this.id)">Details</button>
@@ -26,7 +26,7 @@
                   <p class="form-control">{{quiz.host}}</p>
     
                   <label class="form-label">Number of Questions</label>
-                  <p class="form-control">{{num_of_question}}</p>
+                  <p class="form-control">{{quiz.child_count}}</p>
     
                   {% if quiz.duration %}
                     <label class="form-label">Duration</label>
