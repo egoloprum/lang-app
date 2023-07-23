@@ -5,7 +5,21 @@ from .models import *
 
 def quiz(request):
     quizs = Quiz.objects.all()
-    context = {'quizs': quizs}
+    num_of_question = 0
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if request.method == 'GET':
+        try:
+            quiz = float(request.GET.get('quiz'))
+            quiz = int(quiz)
+            num_of_question = Question.objects.filter(quiz=quiz).count 
+        except :
+            quiz = 10
+        
+    else:
+        num_of_question = 5
+
+    context = {'quizs': quizs, 'num_of_question': num_of_question}
     return render(request, 'quiz.html', context)
 
 def quizCreate(request):
@@ -60,7 +74,7 @@ def quizEach(request, pk):
         for a in Answer.objects.filter(question=question):
             answers.append(a)
 
-    context = {'quiz': quiz, 'questions': questions, 'answers': answers, 'number_of_questions': number_of_questions}
+    context = {'quiz': quiz, 'questions': questions, 'answers': answers, 'number_of_questions': range(number_of_questions)}
 
     return render(request, 'quiz-each.html', context)
 

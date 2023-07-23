@@ -4,22 +4,44 @@
 
   <section>
     <a class="btn btn-primary" href="{% url 'quiz-create' %}">Add Quiz ?</a>
-    <a class="btn btn-secondary" href="#">Back</a>
+    <a class="btn btn-secondary" href="{% url 'home' %}">Back</a>
 
     <div class="m-3 row">
       <label class="form-label">Quizes</label>
       {% for quiz in quizs %}
+          <div class="quiz-page-quiz-column col-3">
 
-        <a href="{% url 'quiz-each' quiz.id %}" class="quiz-page-quiz-column col">
-          <div class="">
-            <label class="form-label">{{ quiz.name }}</label>
-            <p class="text-muted">
-              <span>{{quiz.host}}</span> / 
-              <span>{{quiz.number_of_questions}}</span> / 
-              <span>{{quiz.duration}}</span> / 
-              <span>{{quiz.required_score}}</span> / 
-              <span>{{quiz.difficulty}}</span>
-            </p>
+            <form method="GET" action="" id="quiz-form">
+              <label class="form-label">{{ quiz.name }}</label>
+              <a href="{% url 'quiz-each' quiz.id %}" class="btn btn-primary">Start</a>
+              {% if request.user == quiz.host %}
+                <a href="#" class="btn btn-warning">Edit</a>
+              {% endif %}
+              <input type="hidden" value="{{ quiz.id }}" name="quiz" id="quiz-id">
+              <button type="submit" class="btn btn-info" id="quiz-toggle-function-{{ forloop.counter }}" onclick="quiz_toggle_function(this.id)">Details</button>
+
+              <div id="quiz-each-form-div-{{ forloop.counter }}" style="display: none;">
+                <div class="text-muted">
+                  <label class="form-label">Creator</label>
+                  <p class="form-control">{{quiz.host}}</p>
+    
+                  <label class="form-label">Number of Questions</label>
+                  <p class="form-control">{{num_of_question}}</p>
+    
+                  {% if quiz.duration %}
+                    <label class="form-label">Duration</label>
+                    <p class="form-control">{{quiz.duration}}</p>
+                  {% endif %}
+    
+                  <label class="form-label">Required score</label>
+                  <p class="form-control">{{quiz.required_score}}</p>
+    
+                  <label class="form-label">Difficulty</label>
+                  <p class="form-control">{{quiz.difficulty}}</p>
+              </div>
+            </form>
+
+            </div>
           </div>
         </a>
 
@@ -27,6 +49,39 @@
     </div>
 
   </section>
+
+  <script>
+    $(document).on('submit', '#quiz-form', function(e) { 
+      e.preventDefault();
+      $.ajax({
+        type: 'GET',
+        url: this.url,
+        data: {
+          quiz: parseInt(document.getElementById('quiz-id').value),
+          csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+        },
+        complete: function(){
+          
+        },
+        success: function(data){
+          console.log('ajax success');
+        }
+      });
+    });
+
+    function quiz_toggle_function(id) {
+      id = id[id.length - 1]
+      var quiz_each_form_div = document.getElementById('quiz-each-form-div-' + id);
+      if(quiz_each_form_div.style.display === "none") {
+        quiz_each_form_div.style.display = 'block';
+      }
+      else {
+        quiz_each_form_div.style.display = 'none';
+      }
+    }
+
+
+  </script>
 
 
 {% endblock %}
