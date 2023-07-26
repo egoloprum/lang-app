@@ -4,14 +4,14 @@
 
   <section class="">
     <h3>{{ quiz.name }}</h3>
-    <a href="{% url 'quiz' %}" class="btn btn-primary">Go Back</a>
+    <a href="{% url 'quiz' %}" class="btn btn-primary mb-3">Go Back</a>
 
     <article class="row">
       <div class="row col-9">
 
         {% for question in questions %}
-        <div class="col-3 border">
-          <label class="form-control"><span id="question-{{forloop.counter}}">{{ forloop.counter }}. </span>{{ question.body }}</label>
+        <div class="col-3 quiz-page-quiz-column">
+          <label class=""><span id="question-{{forloop.counter}}">{{ forloop.counter }}. </span>{{ question.body }}</label>
           {% for answer in answers %}
             {% if answer.question == question %}
   

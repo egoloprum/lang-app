@@ -1,5 +1,5 @@
 {% extends 'main.html' %}
-
+{% load static %}
 {% block content %}
 
   <section>
@@ -7,81 +7,80 @@
     <a class="btn btn-secondary" href="{% url 'home' %}">Back</a>
 
     <div class="m-3 row">
-      <label class="form-label">Quizes</label>
+      <h3 class="form-label">Quizes</h3>
       {% for quiz in quizs %}
-          <div class="quiz-page-quiz-column col-3">
+          <div class="for-loop col-3">
+            <img class="quiz-page-img" src="{% static 'images/pic.jpg' %}">
 
-            <form method="GET" action="" id="quiz-form">
-              <label class="form-label">{{ quiz.name }}</label>
-              <a href="{% url 'quiz-each' quiz.id %}" class="btn btn-primary">Start</a>
-              {% if request.user == quiz.host %}
-                <a href="{% url 'quiz-edit' quiz.id %}" class="btn btn-warning">Edit</a>
-              {% endif %}
-              <input type="hidden" value="{{ quiz.id }}" name="quiz" id="quiz-id">
-              <button type="submit" class="btn btn-info" id="quiz-toggle-function-{{ forloop.counter }}" onclick="quiz_toggle_function(this.id)">Details</button>
+            <h4 class="form-label">{{ quiz.name }}</h4>
+            <a type="button" class="btn btn-primary modal-btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
+              data-id="{{ quiz.id }}" data-host="{{ quiz.host }}" data-num-quest="{{ quiz.child_count }}"
+              data-durat="{{ quiz.duration }}" data-require="{{ quiz.required_score }}"
+              data-diff="{{ quiz.difficulty }}">Start
+            </a>
+            {% if request.user == quiz.host %}
+              <a href="{% url 'quiz-edit' quiz.id %}" class="btn btn-warning">Edit</a>
+            {% endif %}
+          </div>
 
-              <div id="quiz-each-form-div-{{ forloop.counter }}" style="display: none;">
-                <div class="text-muted">
-                  <label class="form-label">Creator</label>
-                  <p class="form-control">{{quiz.host}}</p>
-    
-                  <label class="form-label">Number of Questions</label>
-                  <p class="form-control">{{quiz.child_count}}</p>
-    
-                  {% if quiz.duration %}
-                    <label class="form-label">Duration</label>
-                    <p class="form-control">{{quiz.duration}}</p>
-                  {% endif %}
-    
-                  <label class="form-label">Required score</label>
-                  <p class="form-control">{{quiz.required_score}}</p>
-    
-                  <label class="form-label">Difficulty</label>
-                  <p class="form-control">{{quiz.difficulty}}</p>
+          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                  
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <a href="{% url 'quiz-each' quiz.id %}" class="btn btn-primary">Start</a>
+                </div>
               </div>
-            </form>
-
             </div>
           </div>
-        </a>
 
       {% endfor %}
     </div>
 
   </section>
 
-  <script>
-    $(document).on('submit', '#quiz-form', function(e) { 
-      e.preventDefault();
-      $.ajax({
-        type: 'GET',
-        url: this.url,
-        data: {
-          quiz: parseInt(document.getElementById('quiz-id').value),
-          csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-        },
-        complete: function(){
-          
-        },
-        success: function(data){
-          console.log('ajax success');
-        }
-      });
-    });
+<script>
+  modalBtns = [...document.getElementsByClassName("modal-btn")];
+  const modalBody = document.getElementById('modal-body');
 
-    function quiz_toggle_function(id) {
-      id = id[id.length - 1]
-      var quiz_each_form_div = document.getElementById('quiz-each-form-div-' + id);
-      if(quiz_each_form_div.style.display === "none") {
-        quiz_each_form_div.style.display = 'block';
-      }
-      else {
-        quiz_each_form_div.style.display = 'none';
-      }
-    }
+  modalBtns.forEach(modalBtn=> modalBtn.addEventListener('click', ()=>{
+    pk = modalBtn.getAttribute('data-id');
+    host = modalBtn.getAttribute('data-host');
+    num_of_quest = modalBtn.getAttribute('data-num-quest');
+    duration = modalBtn.getAttribute('data-durat');
+    require = modalBtn.getAttribute('data-require');
+    difficulty = modalBtn.getAttribute('data-diff');
 
+    modalBody.innerHTML = `
+                  <div class="text-muted">
+                    <label class="form-label">Creator</label>
+                    <p class="form-control">${host}</p>
+      
+                    <label class="form-label">Number of Questions</label>
+                    <p class="form-control">${num_of_quest}</p>
+      
+                    {% if quiz.duration %}
+                      <label class="form-label">Duration</label>
+                      <p class="form-control">${duration}</p>
+                    {% endif %}
+      
+                    <label class="form-label">Required score</label>
+                    <p class="form-control">${require}</p>
+      
+                    <label class="form-label">Difficulty</label>
+                    <p class="form-control">${difficulty}</p>
+                  </div>
+    `
 
-  </script>
+  }))
 
+</script>
 
 {% endblock %}

@@ -19,7 +19,7 @@
 
     <article class="col-9">
       {% for course in courses %}
-        <div class="mb-3 col">
+        <div class="mb-3 col for-loop">
           <label class="form-label" id="list-item-{{ course.id }}"><a href="{% url 'course-each' course.id %}">{{ course.name }}</a> /
             <span class="text-muted">{{ course.topic.name }}</span> 
           </label><hr>

@@ -2,12 +2,12 @@
 
 {% block content %}
 
-<section class="course-each-page-section row">
-  <div class="course-each-page-wrapper col-10">
+<section class="wrapper-margin-padding row">
+  <div class="col-10">
     <article>
       <div>
         {% if course.host.is_authenticated %}
-        <a class="btn btn-primary" href="{% url 'course-each-edit' course.id %}">Edit ?</a>
+        <a class="btn btn-warning" href="{% url 'course-each-edit' course.id %}">Edit ?</a>
         {% endif %}
         <a class="btn btn-secondary" href="{% url 'course' %}">Back</a><hr>
       </div>
@@ -57,7 +57,7 @@
       <h3>Contents of Course</h3><hr>
       {% for content in contents %}
         {% if content.course.id is course.id %}
-          <div class="mb-3">
+          <div class="for-loop mb-3">
             <label class="form-label" id="list-item-{{ content.id }}">{{ content.name }}</label>
             <p class="form-control">{{ content.body }}</p>
           </div>

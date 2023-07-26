@@ -6,7 +6,12 @@
   --form-width: 500px;
   --form-border: 2px solid rgba(0,0,0,0.2);
   --form-border-radius: 10px;
-  --color-grey: #f3f2f2;
+
+  --color-background: #f6f6f9;
+  --color-light: rgba(55, 57, 71, 0.18);
+  --color-white: #fff;
+  
+  --box-shadow: 0 2rem 3rem var(--color-light);
 
   /* --text: #fcfbfe;
 --background: #000000;
@@ -234,11 +239,24 @@ body li {
   border-radius: var(--form-border-radius);  
 }
 
-.quiz-page-quiz-column {
+.for-loop {
   margin: var(--form-padding);
   padding: var(--form-padding);
-  border: var(--form-border);
-  border-radius: var(--form-border-radius); 
+  background: var(--color-white);
+  /* border: var(--form-border);
+  border-radius: var(--form-border-radius); */
+  box-shadow: 0 2rem 3rem var(--color-light); 
+}
+
+.wrapper-margin-padding {
+  margin: var(--form-padding);
+  padding: var(--form-padding);
+}
+
+.quiz-page-img {
+  height: auto;
+  width: 100%;
+  max-width: 300px;
 }
 
 .profile-page-quiz-column {
