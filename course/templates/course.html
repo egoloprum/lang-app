@@ -22,9 +22,15 @@
         <div class="mb-3 col for-loop">
           <label class="form-label" id="list-item-{{ course.id }}"><a href="{% url 'course-each' course.id %}">{{ course.name }}</a> /
             <span class="text-muted">{{ course.topic.name }}</span> 
-          </label><hr>
+          </label>
+          {% if request.user == course.host %}
+          <a type="button" class="btn btn-danger" id="course-id-{{ course.id }}"
+            data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="courseDeleteBtn(this.id)">Delete</a>
+          {% endif %}
+          <hr>
           <p>{{ course.body }}</p>
         </div>
+        
       {% endfor %}
     </article>
 
@@ -40,5 +46,39 @@
   </div>
 
 </section>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <div class="text-muted">
+          <p>Are you sure ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <form method="POST" action="">
+            {% csrf_token %}
+            <input type="hidden" id="modalCourseDeleteBtn" name="course-delete" value="">
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function courseDeleteBtn(id) {
+    id = id.slice(10, id.length);
+    console.log(id);
+    modalCourseDeleteBtn = document.getElementById('modalCourseDeleteBtn');
+    modalCourseDeleteBtn.value = id;
+  }
+</script>
 
 {% endblock %}

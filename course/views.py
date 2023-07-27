@@ -53,6 +53,12 @@ def course(request):
     topics = Topic.objects.all()
     courses = Course.objects.all()
 
+    if request.method == 'POST':
+      course_id = request.POST.get('course-delete')
+      course = courses.get(id=course_id)
+      course.delete()
+      return redirect('course')   
+
     context = {'topics': topics, 'courses': courses}
 
     return render(request, 'course.html', context)

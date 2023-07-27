@@ -86,8 +86,8 @@ function quiz_create_list_answer_btn(id) {
   space = document.createElement('br');
 
   answer_label = document.createElement('label');
-  answer_label.className = 'form-label';
-  answer_label.innerHTML = 'Body of Answer ' + quiz_create_answer_input_count;
+  answer_label.className = 'form-label answer-label';
+  answer_label.innerHTML = 'Answer';
 
   answer_delete = document.createElement('a');
   answer_delete.className = 'btn btn-danger m-2';
@@ -103,8 +103,8 @@ function quiz_create_list_answer_btn(id) {
   answer_input.name = 'answer-body-' + id + '-' + quiz_create_answer_input_count;
 
   answer_label2 = document.createElement('label');
-  answer_label2.className = 'form-label';
-  answer_label2.innerHTML = 'Correct of Answer ' + quiz_create_answer_input_count;
+  answer_label2.className = 'form-label answer-label';
+  answer_label2.innerHTML = 'Answer ';
 
   answer_input2 = document.createElement('input');
   answer_input2.className = '';
@@ -128,13 +128,13 @@ function quiz_create_question_btn() {
   question_div.id = 'create-question-' + quiz_create_question_input_count;
 
   question_label = document.createElement('label');
-  question_label.className = "form-label";
-  question_label.innerHTML = "Body of Question " + quiz_create_question_input_count;
+  question_label.className = "form-label question-label";
+  question_label.innerHTML = "Question " + quiz_create_question_input_count;
 
   space = document.createElement('br');
   question_delete = document.createElement('a');
   question_delete.innerHTML = 'remove';
-  question_delete.className = 'btn btn-danger m-2';
+  question_delete.className = 'btn btn-danger m-2 delete-question-btn';
   question_delete.id = 'quiz-create-question-delete-btn-' + quiz_create_question_input_count;
   question_delete.addEventListener("click", function() {
     quiz_create_question_delete_btn(this.id);
@@ -156,8 +156,8 @@ function quiz_create_question_btn() {
   answer_div.className = 'mb-3 col-6';
 
   answer_label = document.createElement('label');
-  answer_label.className = 'form-label';
-  answer_label.innerHTML = 'Body of Answer 1';
+  answer_label.className = 'form-label answer-label';
+  answer_label.innerHTML = 'Answer';
 
   answer_btn = document.createElement('a');
   answer_btn.className = 'btn btn-primary m-2';
@@ -174,8 +174,8 @@ function quiz_create_question_btn() {
   answer_input_body.name = 'answer-body-' + quiz_create_question_input_count + '-1';
 
   answer_label2 = document.createElement('label');
-  answer_label2.className = 'form-label';
-  answer_label2.innerHTML = 'Correct of Answer 1';
+  answer_label2.className = 'form-label answer-label';
+  answer_label2.innerHTML = 'Answer';
   
   answer_input_check = document.createElement('input');
   answer_input_check.type = 'checkbox';
@@ -197,7 +197,6 @@ function quiz_create_question_btn() {
 
 function quiz_create_answer_delete_btn(id) {
   id = id.slice(29, id.length);
-  console.log(id);
   create_answer_div = document.getElementById('create-answer' + id);
   create_answer_div.remove();
 }
@@ -206,4 +205,12 @@ function quiz_create_question_delete_btn(id) {
   id = id[id.length - 1];
   create_question_div = document.getElementById('create-question-' + id);
   create_question_div.remove();
+
+  question_labels = [...document.getElementsByClassName('question-label')];
+
+  for(let [index, label] of question_labels.entries()) {
+    index = index + 2;
+    label.innerHTML = 'Question ' + index;
+  }
+
 }

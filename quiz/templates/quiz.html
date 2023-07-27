@@ -33,10 +33,6 @@
                 <div class="modal-body" id="modal-body">
                   
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <a href="{% url 'quiz-each' quiz.id %}" class="btn btn-primary">Start</a>
-                </div>
               </div>
             </div>
           </div>
@@ -57,6 +53,7 @@
     duration = modalBtn.getAttribute('data-durat');
     require = modalBtn.getAttribute('data-require');
     difficulty = modalBtn.getAttribute('data-diff');
+    url = window.location.href
 
     modalBody.innerHTML = `
                   <div class="text-muted">
@@ -77,6 +74,11 @@
                     <label class="form-label">Difficulty</label>
                     <p class="form-control">${difficulty}</p>
                   </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="${ url + pk }" class="btn btn-primary">Start</a>
+                  </div>
+                  
     `
 
   }))
