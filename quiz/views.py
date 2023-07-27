@@ -31,12 +31,9 @@ def quizCreate(request):
         quiz_required_score = request.POST.get('quiz-required-score')
         quiz_difficulty = request.POST.get('quiz-difficulty')
 
-        if quiz_duration:
-            quiz = Quiz.objects.create(name=quiz_name, duration=quiz_duration, difficulty=quiz_difficulty,
-                                        host=request.user,required_score=quiz_required_score)
-        else:
-            quiz = Quiz.objects.create(name=quiz_name, host=request.user, required_score=quiz_required_score,
-                                       difficulty=quiz_difficulty)
+            
+        quiz = Quiz.objects.create(name=quiz_name, duration=quiz_duration, difficulty=quiz_difficulty,
+                                        host=request.user, required_score=quiz_required_score)
 
         x = 1
         y = 1
@@ -70,14 +67,55 @@ def quizEach(request, pk):
     questions = Question.objects.filter(quiz=quiz)
     number_of_questions = len(questions)
     answers = []
+    answers_correct_num = []
 
     for question in questions:
+        count = 0
         for a in Answer.objects.filter(question=question):
             answers.append(a)
+            if a.correct is True:
+                count += 1
+        
+        answers_correct_num.append(count)
 
     context = {'quiz': quiz, 'questions': questions, 'answers': answers, 'number_of_questions': range(number_of_questions)}
 
+    if request.method == 'POST':
+        quiz_answers = []
+        result = 0
+
+        for answer in answers:
+            if request.POST.get('answer-' + str(answer.id)) == 'on':
+                quiz_answers.append(True)
+            else:
+                quiz_answers.append("")
+    
+        temp_quiz = quiz_answers.copy()
+        temp_answers = answers.copy()
+        length_answers = len(answers_correct_num)
+
+        for question in questions:
+            count = 0
+            for n in range(len(question.get_answers())):
+                if temp_answers[n].correct is temp_quiz[n]:
+                    count += 1
+
+            for n in range(len(question.get_answers())):
+                temp_quiz.pop(0)
+                temp_answers.pop(0)
+
+            result += count / answers_correct_num[0];
+            answers_correct_num.pop(0);
+
+        
+        result = (result / length_answers) * 100
+
+        quiz_result = Result.objects.create(quiz=quiz, user=request.user, score=result)
+
+        return redirect('quiz')
+
     return render(request, 'quiz-each.html', context)
+
 
 def quizEdit(request, pk):
     quiz = Quiz.objects.get(id=pk)

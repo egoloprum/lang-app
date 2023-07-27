@@ -7,20 +7,25 @@
     <a href="{% url 'quiz' %}" class="btn btn-primary mb-3">Go Back</a>
 
     <article class="row">
-      <div class="row col-9">
+      <div class="row col-9"> 
+        <form method="POST" action="">
+          {% csrf_token %}
+          {% for question in questions %}
+          <div class="col-3 quiz-page-quiz-column">
+            <label class=""><span id="question-{{forloop.counter}}">{{ forloop.counter }}. </span>{{ question.body }}</label><hr>
+            {% for answer in answers %}
+              {% if answer.question == question %}
+                <p class="form-control"><input type="checkbox" name="answer-{{ answer.id }}"> {{ answer.body }} / {{ answer.correct }}</p>
+              {% endif %}
+    
+            {% endfor %}
+          </div>
+        {% endfor %}
+          <button class="btn btn-info mb-3" type="submit">Finish</button>
 
-        {% for question in questions %}
-        <div class="col-3 quiz-page-quiz-column">
-          <label class=""><span id="question-{{forloop.counter}}">{{ forloop.counter }}. </span>{{ question.body }}</label>
-          {% for answer in answers %}
-            {% if answer.question == question %}
-  
-            <a class="btn btn-warning form-control mb-3"><p>{{ answer.body }}</p></a>
-            {% endif %}
-  
-          {% endfor %}
-        </div>
-      {% endfor %}
+        </form>
+
+
       </div>
   
       <div class="col">
