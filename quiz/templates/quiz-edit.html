@@ -33,6 +33,12 @@
                   <div class="mb-3 col">
                     <label class="form-label">Answer</label>
                     <input class="form-control" name="answer-body-{{question.id}}-{{answer.id}}" value="{{ answer.body }}">
+
+                    {% if answer.correct is True %}
+                      <input type="checkbox" name="answer-correct-{{question.id}}-{{answer.id}}" checked>
+                    {% else %}
+                      <input type="checkbox" name="answer-correct-{{question.id}}-{{answer.id}}">
+                    {% endif %}
                   </div>
                 {% endif %}
               {% endfor %}

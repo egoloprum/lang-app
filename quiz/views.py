@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from .models import *
 from django.http import HttpResponse, JsonResponse
 
@@ -6,25 +7,24 @@ from django.http import HttpResponse, JsonResponse
 
 def quiz(request):
     quizs = Quiz.objects.all()
+    num_of_question = Question.objects.filter(quiz=request.GET.get('quiz')).count
 
-    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    data = [{
+        'id': 1,
+    }]
+    # return JsonResponse(data, safe=False)
 
-    if is_ajax:
-        quiz = request.GET.get('quiz')
-        num_of_question = Question.objects.filter(quiz=quiz).count
-
-        data = [{
-            'id': 1,
-        }]
-        return JsonResponse(data, safe=False)
+    if request.method == 'POST':
+        quiz_id = Quiz.objects.get(pk=request.POST.get('quiz-id'))
+        quiz_id.delete()
     
     count = Quiz.objects.annotate(child_count = models.Count('question'))
 
     context = {'quizs': count}
     return render(request, 'quiz.html', context)
 
+@login_required
 def quizCreate(request):
-
     if request.method == 'POST':
         quiz_name = request.POST.get('quiz-name')
         quiz_duration = request.POST.get('quiz-duration')
@@ -36,7 +36,6 @@ def quizCreate(request):
                                         host=request.user, required_score=quiz_required_score)
 
         x = 1
-        y = 1
 
         while(request.POST.get('question-body-' + str(x))):
             question_body = request.POST.get('question-body-' + str(x))
@@ -62,6 +61,7 @@ def quizCreate(request):
     context = {}
     return render(request, 'quiz-create.html', context)
 
+@login_required
 def quizEach(request, pk):
     quiz = Quiz.objects.get(id=pk)
     questions = Question.objects.filter(quiz=quiz)
@@ -104,9 +104,8 @@ def quizEach(request, pk):
                 temp_quiz.pop(0)
                 temp_answers.pop(0)
 
-            result += count / answers_correct_num[0];
-            answers_correct_num.pop(0);
-
+            result += count / answers_correct_num[0]
+            answers_correct_num.pop(0)
         
         result = (result / length_answers) * 100
 
@@ -116,7 +115,7 @@ def quizEach(request, pk):
 
     return render(request, 'quiz-each.html', context)
 
-
+@login_required
 def quizEdit(request, pk):
     quiz = Quiz.objects.get(id=pk)
     questions = Question.objects.filter(quiz=quiz)
@@ -148,6 +147,11 @@ def quizEdit(request, pk):
                 if answer.question.id == question.id:
                     answer_body = request.POST.get('answer-body-' + str(question.id) + '-' + str(answer.id))
                     answer.body = answer_body
+                    answer_correct = request.POST.get('answer-correct-' + str(question.id) + '-' + str(answer.id))
+                    if answer_correct == 'on':
+                        answer.correct = True
+                    else:
+                        answer.correct = False
                     answer.save()
             question.save()
 

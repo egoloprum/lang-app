@@ -101,6 +101,7 @@ function quiz_create_list_answer_btn(id) {
   answer_input.className = 'form-control';
   answer_input.type = 'text';
   answer_input.name = 'answer-body-' + id + '-' + quiz_create_answer_input_count;
+  answer_input.required = true
 
   answer_label2 = document.createElement('label');
   answer_label2.className = 'form-label answer-label';
@@ -146,6 +147,7 @@ function quiz_create_question_btn() {
   question_input.className = 'form-control';
   question_input.type = 'text';
   question_input.name = 'question-body-' + quiz_create_question_input_count;
+  question_input.required = true
 
   // nested answer of question
 
@@ -172,6 +174,7 @@ function quiz_create_question_btn() {
   answer_input_body.className = 'form-control';
   answer_input_body.type = 'text';
   answer_input_body.name = 'answer-body-' + quiz_create_question_input_count + '-1';
+  answer_input_body.required = true
 
   answer_label2 = document.createElement('label');
   answer_label2.className = 'form-label answer-label';

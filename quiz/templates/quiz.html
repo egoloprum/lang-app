@@ -20,8 +20,37 @@
             </a>
             {% if request.user == quiz.host %}
               <a href="{% url 'quiz-edit' quiz.id %}" class="btn btn-warning">Edit</a>
+              <a data-bs-toggle="modal" data-bs-target="#delete-modal" class="btn btn-danger">Delete</a>
             {% endif %}
           </div>
+
+          <!-- delete-modal -->
+
+          <div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="text-muted">
+                    <p>Are you sure to delete this quiz ?</p>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <form method="POST" action="">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ quiz.id }}" name="quiz-id">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- start-modal -->
 
           <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -31,8 +60,8 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="modal-body">
-                  
-                </div>
+
+                </div>                  
               </div>
             </div>
           </div>
