@@ -2,11 +2,11 @@
 {% load static %}
 {% block content %}
 
-  <section>
+  <section class="p-3">
     <a class="btn btn-primary" href="{% url 'quiz-create' %}">Add Quiz ?</a>
     <a class="btn btn-secondary" href="{% url 'home' %}">Back</a>
 
-    <div class="m-3 row">
+    <div class="p-3 row">
       <h3 class="form-label">Quizes</h3>
       {% for quiz in quizs %}
           <div class="for-loop col-3">

@@ -2,14 +2,14 @@
 
 {% block content %}
 
-  <div class="container">
+  <div class="for-loop p-3">
     {% if user.is_authenticated %}
-    <h1>Hello world</h1>
+      <h1>Hello world</h1>
     {% else %}
-    <section class="index-page-section row">
+    <section class="m-3 row">
       <div data-spy="scroll" data-target="#list-example" data-offset="0" class="col-10">
-        <ul class="index-page-ul bg-light">
-          <li>
+        <ul class="border m-3 p-3">
+          <li class="m-3">
             <h4 id="list-item-1">Item 1</h4><hr>
               <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
               Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when 
@@ -19,7 +19,7 @@
               Letraset sheets containing Lorem Ipsum passages, and more recently with desktop 
               publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
           </li>
-          <li>
+          <li class="m-3">
             <h4 id="list-item-2">Item 2</h4><hr>
               <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
               Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when 
@@ -29,7 +29,7 @@
               Letraset sheets containing Lorem Ipsum passages, and more recently with desktop 
               publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
           </li>
-          <li>
+          <li class="m-3">
             <h4 id="list-item-3">Item 3</h4><hr>
               <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
               Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when 
@@ -39,7 +39,7 @@
               Letraset sheets containing Lorem Ipsum passages, and more recently with desktop 
               publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
           </li>
-          <li>
+          <li class="m-3">
             <h4 id="list-item-4">Item 4</h4><hr>
               <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
               Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when 

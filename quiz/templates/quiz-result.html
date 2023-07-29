@@ -13,6 +13,8 @@
     <p class="text-muted">{{ result.quiz.required_score }}% to pass the quiz</p>
     <p class="text-muted">{{ result.created_at }}</p>
 
+    <!-- left side -->
+
     <div class="col-3 m-3">
       <h3>{{ quiz.name }}</h3>
       <div>
@@ -21,22 +23,32 @@
           <p class="form-control">{{ question.body }}</p>
           <ul>
 
-            {% for answer, sel_answer in answers %}
+            {% for answer, sel_answer in answers.items %}
               {% if answer.question == question %}
-                {% if answer.correct or sel_answer.correct %}
-                  <p class="form-control btn btn-success">{{ answer.body }}</p>
+                {% if sel_answer.correct %}
+                  <p class="form-control btn btn-info">{{ answer.body }} {{ answer.correct }} / {{ sel_answer.correct }}</p>
                 {% else %}
-                  <p class="form-control btn btn-danger">{{ answer.body }}</p>
+                  <p class="form-control btn">{{ answer.body }} {{ answer.correct }} / {{ sel_answer.correct }}</p>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+
+            {% for answer, sel_answer in answers.items %}
+              {% if answer.question == question %}
+                {% if answer.correct %}
+                  <label class="form-label">Correct Answer</label>
+                  <p class="form-control btn btn-success">{{ answer.body }} {{ answer.correct }} / {{ sel_answer.correct }} </p>
+                  {{ break }}
                 {% endif %}
               {% endif %}
             {% endfor %}
 
           </ul>
-
         {% endfor %}
-      </div>
-      
+      </div>    
     </div>
+
+    <!-- right side -->
 
     <div class="col-3 m-3">
       <label class="form-label">Quiz Name</label>
@@ -53,8 +65,10 @@
       <label class="form-label">Attempts</label>
       <p class="form-control">{{ results|length }}</p>
     </div>
-    <h3 class="m-3">Previous Attempts</h3>
 
+    <!-- bottom side -->
+
+    <h3 class="m-3">Previous Attempts</h3>
     <div class="row m-3">
       {% for res in results %}
         <div class="col-3 m-3">

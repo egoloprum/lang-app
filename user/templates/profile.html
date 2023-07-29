@@ -2,51 +2,51 @@
 
 {% block content %}
 
-  <div class="container text-center">
-    <div class="row">
+  <div class="row m-3">
 
-      <section class="profile-page-form col-4">
-        <div>
+      <!-- profile info side -->
+
+      <section class="for-loop col-4 m-3">
+        <div class="m-3">
           {% if request.user == user %}
-          <a type="button" class="btn btn-outline-primary" href="{% url 'profile-update' %}">Update</a>
-          <a type="button" class="btn btn-outline-danger" href="{% url 'delete' %}">Delete</a>
+            <a type="button" class="btn btn-outline-primary" href="{% url 'profile-update' %}">Update</a>
+            <a type="button" class="btn btn-outline-danger" href="{% url 'delete' %}">Delete</a>
           {% endif %}
           <a type="button" class="btn btn-outline-secondary" href="{% url 'home' %}">Return</a>
         </div>
         
-        <div>
-          <label for="inputEmail3" class="col-form-label">Username</label>
-          <p>{{ user.username }}</p>
-        </div><hr>
-        <div>
-          <label for="inputEmail3" class="col-form-label">First name</label>
-          <p>{{ user.first_name }}</p>
-        </div><hr>
-        <div>
-          <label for="inputEmail3" class="col-form-label">Last name</label>
-          <p>{{ user.last_name }}</p>
-        </div><hr>
-        <div>
-          <label for="inputEmail3" class="col-form-label">Birthday</label>
-          <p>{{ user.birthday }}</p>
-        </div><hr>
-        <div>
-          <label for="inputEmail3" class="col-form-label">Email</label>
-          <p>{{ user.email }}</p>
-        </div><hr>
-        <div>
-          <label for="inputEmail3" class="col-form-label">Password</label>
-          <p>{{ user.password }}</p>
+        <div class="m-3">
+          <div class="mb-2">
+            <label class="form-label">Username</label>
+            <p class="form-control">{{ user.username }}</p>
+          </div>
+          <div class="mb-2">
+            <label class="col-form-label">First name</label>
+            <p class="form-control">{{ user.first_name }}</p>
+          </div>
+          <div class="mb-2">
+            <label class="col-form-label">Last name</label>
+            <p class="form-control">{{ user.last_name }}</p>
+          </div>
+          <div class="mb-2">
+            <label class="col-form-label">Birthday</label>
+            <p class="form-control">{{ profile.birthday|date:"d / M / Y" }}</p>
+          </div>
+          <div class="mb-2">
+            <label class="col-form-label">Email</label>
+            <p class="form-control">{{ user.email }}</p>
+          </div>
         </div>
-
       </section>
 
-      <section class="profile-page-form col">
-        <div class="mb-3">
+      <!-- quiz side -->
+
+      <section class="for-loop col m-3">
+        <div class="m-3">
           {% if user.is_authenticated %}
-            <a class="btn btn-primary" href="{% url 'quiz-create' %}">Add Quiz</a>
+            <a class="btn btn-outline-primary mb-3" href="{% url 'quiz-create' %}">Add Quiz</a>
           {% endif %}
-          <h3>Quizs</h3>
+          <h3>Quizes</h3>
           {% for quiz in quizs %}
             <a href="{% url 'quiz-each' quiz.id %}">
               <div class="border">
@@ -59,13 +59,20 @@
                 </p>
               </div>
             </a>
+            {% empty %}
+              <p>Currently, no quiz has been created by this user.</p>
           {% endfor %}
         </div>
       </section>
 
-      <section class="profile-page-form col">
-        <div class="mb-3">
-          <label class="form-label">Contribution</label>
+      <!-- course side -->
+
+      <section class="for-loop col m-3">
+        <div class="m-3">
+          {% if user.is_authenticated %}
+            <a class="btn btn-outline-primary mb-3" href="{% url 'create-course' %}">Create Course</a><br>
+          {% endif %}
+          <h3 class="form-label">Courses</h3>
           <div class="row">
             {% for course in courses %}
               <a href="{% url 'course-each' course.id %}">
@@ -80,7 +87,41 @@
           </div>
         </div>
       </section>
-    </div>
+
+      <!-- bottom side -->
+
+      <section class="row m-3">
+        <div class="for-loop col-6">
+          <h3 class="m-3">Progress</h3>
+          <div class="m-3">
+            {% for quiz in quiz_result %}
+              <h4>{{ quiz.name }}</h4>
+
+              <label class="form-label">Average score</label>
+              {% for score in average_score reversed %}
+                {% if score.quiz == quiz %}
+                  <p class="form-control">{{ score.score|floatformat:2 }} %</p>
+                {% else %}
+                  {{ break }}
+                {% endif %}
+              {% endfor %}
+            
+              <!-- <div class="">
+                {% for result in results reversed %}
+                  {% if quiz.name == result.quiz.name %}
+                    <label>Attempt: {{ forloop.counter }}</label>
+                    <p class="form-control">{{ result.created_at }}</p>
+                    <p class="form-control">{{ result.score }} %</p>
+                  {% endif %}
+                {% endfor %}
+              </div> -->
+
+            {% endfor %}
+          </div>
+
+        </div>
+      </section>
+
   </div>
 
   

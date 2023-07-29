@@ -23,7 +23,7 @@ def quiz(request):
     context = {'quizs': count}
     return render(request, 'quiz.html', context)
 
-@login_required
+@login_required(login_url='login')
 def quizCreate(request):
     if request.method == 'POST':
         quiz_name = request.POST.get('quiz-name')
@@ -61,7 +61,7 @@ def quizCreate(request):
     context = {}
     return render(request, 'quiz-create.html', context)
 
-@login_required
+@login_required(login_url='login')
 def quizEach(request, pk):
     quiz = Quiz.objects.get(id=pk)
     questions = Question.objects.filter(quiz=quiz)
@@ -117,7 +117,7 @@ def quizEach(request, pk):
 
     return render(request, 'quiz-each.html', context)
 
-@login_required
+@login_required(login_url='login')
 def quizEdit(request, pk):
     quiz = Quiz.objects.get(id=pk)
     questions = Question.objects.filter(quiz=quiz)
@@ -165,7 +165,7 @@ def quizEdit(request, pk):
 
     return render(request, 'quiz-edit.html', context)
 
-@login_required
+@login_required(login_url='login')
 def quizResult(request, pk):
     result = Result.objects.filter(quiz=pk).last
     results = Result.objects.filter(quiz=pk).order_by('-id')
@@ -179,19 +179,23 @@ def quizResult(request, pk):
         for a in Answer.objects.filter(question=question):
             answers.append(a)
             try:
-                selected_answers.append(Selected_Answer.objects.filter(answer=a))
+                selected_answers.append(Selected_Answer.objects.filter(answer=a).last)
+                # Selected_Answer.objects.get(answer=a).delete()
             except ObjectDoesNotExist:
                 ...
 
-    list_answers = zip(answers, selected_answers)
-    print(list_answers)
-
+    list_answers = dict(zip(answers, selected_answers))
     average_score = 0
 
     for res in results:
         average_score += res.score
 
     average_score = average_score / len(results)
+
+    if Average_score.objects.filter(quiz=quiz, user=request.user).exists:
+        Average_score.objects.filter(quiz=quiz, user=request.user).delete()
+
+    Average_score.objects.create(quiz=quiz, user=request.user, score=average_score)
 
     context = {'result': result, 'results': results, 'average_score': average_score,
                'quiz': quiz, 'questions': questions, 'answers': list_answers, 'ans': answers}

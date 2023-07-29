@@ -2,8 +2,8 @@
 
 {% block content %}
 
-  <section>
-    <form method="POST" action="">
+  <section class="p-3">
+    <form method="POST" action="" class="for-loop">
       {% csrf_token %}
       <div class="mb-3">
         <label class="form-label">Quiz name</label>
@@ -23,34 +23,38 @@
       </div>
       <label class="form-label">Questions</label>
       <div class="mb-3 row">
-          {% for question in questions %}
+        {% for question in questions %}
 
-            <div class="m-2 col row">
-              <label class="form-label">Question {{ forloop.counter }} </label>
-              <input class="form-control m-2" name="question-body-{{ question.id }}" value="{{ question.body }}">
-              {% for answer in answers %}
-                {% if answer.question.id == question.id %}
-                  <div class="mb-3 col">
-                    <label class="form-label">Answer</label>
-                    <input class="form-control" name="answer-body-{{question.id}}-{{answer.id}}" value="{{ answer.body }}">
+          <div class="m-3 col row">
+            <label class="form-label">Question {{ forloop.counter }} </label>
+            <input class="form-control m-2" style="max-width: 235px;" name="question-body-{{ question.id }}" value="{{ question.body }}">
 
+            {% for answer in answers %}
+              {% if answer.question.id == question.id %}
+                <div class="">
+                  <label class="form-label">Answer</label>
+                  <div style="display: flex;">
                     {% if answer.correct is True %}
-                      <input type="checkbox" name="answer-correct-{{question.id}}-{{answer.id}}" checked>
+                      <input class="m-1" type="checkbox" name="answer-correct-{{question.id}}-{{answer.id}}" checked>
                     {% else %}
-                      <input type="checkbox" name="answer-correct-{{question.id}}-{{answer.id}}">
+                      <input class="m-1" type="checkbox" name="answer-correct-{{question.id}}-{{answer.id}}">
                     {% endif %}
+                    <input class="form-control" name="answer-body-{{question.id}}-{{answer.id}}" value="{{ answer.body }}">
                   </div>
-                {% endif %}
-              {% endfor %}
-            </div>
+                </div>
+              {% endif %}
+            {% endfor %}
 
-          {% endfor %}
+          </div>
+
+        {% endfor %}
       </div>
-      <div class="mb-3">
+
+      <div class="m-3">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
           Save
         </button>
-        <a class="btn btn-secondary m-2" href="#">Cancel</a>
+        <a class="btn btn-secondary m-2" href="{% url 'quiz' %}">Cancel</a>
       </div>
 
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

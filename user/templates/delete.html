@@ -2,7 +2,7 @@
 
 {% block content %}
 
-  <section class="profile-delete-form">
+  <section class="p-2 col-5">
     {% if messages %}
       <ul class="messages" style="color:#e80d0d;">
         {% for message in messages %}
@@ -11,15 +11,15 @@
       </ul>
     {% endif %}
 
-    <form method="POST" action="">
+    <form method="POST" action="" class="for-loop">
       {% csrf_token %}
-      <div class="mb-3">
+      <div class="m-3">
         <label for="inputPassword5" class="form-label">Input password</label>
         <input type="password" class="form-control" name="password" aria-labelledby="passwordHelpBlock"
         placeholder="********">
       </div>
 
-      <a href="{% url 'profile' user.id %}">Cancel</a>
+      <a class="btn btn-secondary m-3" href="{% url 'profile' user.id %}">Cancel</a>
       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Delete
       </button>

@@ -2,39 +2,39 @@
 
 {% block content %}
 
-<section class="wrapper-margin-padding row">
-  <div class="col-10">
+<section class="p-3 row">
+  <div class="for-loop m-3 col-10">
     <article>
-      <div>
-        {% if course.host.is_authenticated %}
-        <a class="btn btn-warning" href="{% url 'course-each-edit' course.id %}">Edit ?</a>
+
+      <div class="m-3">
+        {% if request.user == course.host %}
+        <a class="btn btn-warning" href="{% url 'course-each-edit' course.id %}">Edit</a>
+        <a type="button" class="btn btn-danger" id="course-id-{{ course.id }}"
+          data-bs-toggle="modal" data-bs-target="#exampleModal">Delete</a>
         {% endif %}
         <a class="btn btn-secondary" href="{% url 'course' %}">Back</a><hr>
       </div>
   
-      <div class="col">
-        <div>
-          <h3>{{ course.name }} </h3>
-              <a href="{% url 'topic' course.topic.id %}"><span>{{ course.topic.name }}</span></a> | 
-              <a href="{% url 'profile' course.host.id %}"><span>{{ course.host.username }}</span></a> |
-              <span class="text-muted">{{ course.created_at }}</span><hr>
-          
-          <p>{{ course.body }}</p>
-        </div>
-  
+      <div class="m-3">
+        <h3>{{ course.name }} </h3>
+        <a href="{% url 'topic' course.topic.id %}"><span>{{ course.topic.name }}</span></a> | 
+        <a href="{% url 'profile' course.host.id %}"><span>{{ course.host.username }}</span></a> |
+        <span class="text-muted">{{ course.created_at }}</span><hr>
+        <p>{{ course.body }}</p>
       </div>
     </article>
   
-    <button class="btn btn-primary" onclick="myFunction()">Add Content</button><hr>
-  
-    <article id="course-each-content-add" style="display:none;"">
-  
-      <form method="POST" action="" id="course-each-content-form" >
+    <!-- create content -->
+
+    <button class="btn btn-outline-primary m-3" id="add-content-btn" onclick="myFunction()">Add Content</button>
+    <article id="course-each-content-add" style="display:none;"">  
+      <form method="POST" action="" class="m-3" name="add" id="course-each-content-form" >
         {% csrf_token %}
+        <input type="hidden" name="add" value="post">
         <div class="mb-3">
           <label class="form-label">Name of Content</label>
           <input type="text" class="form-control" id="content-name" name="name" required>
-        </div><br>
+        </div>
   
         <div class="mb-3">
           <label class="form-label">Body of Content</label>
@@ -45,15 +45,16 @@
           <label class="form-label">File of Content</label>
           <input type="file" class="form-control" id="content-file" name="file" required>
         </div>
+
         <button class="btn btn-primary" id="course-each-content-add-button" onclick="course_each_content_add_button()">
           Add More Files ?</button><hr>
         <button type="submit" class="btn btn-primary" >Save</button><hr>
       </form>
-  
     </article>
   
-    <article>
-  
+    <!-- content of course -->
+
+    <article class="m-3">
       <h3>Contents of Course</h3><hr>
       {% for content in contents %}
         {% if content.course.id is course.id %}
@@ -64,8 +65,10 @@
         {% endif %}
       {% endfor %}
       <div class="mb-3" id="course-each-content-div">
+
       </div>
     </article>
+
   </div>
   
   <div class="index-page-list col">
@@ -73,6 +76,32 @@
       {% for content in contents %}
       <a class="" href="#list-item-{{ content.id }}">{{ content.name }}</a>
       {% endfor %}
+    </div>
+  </div>
+
+  <!-- delete modal -->
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body">
+          <div class="text-muted">
+            <p>Are you sure ?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <form method="POST" action="">
+              {% csrf_token %}
+              <input type="hidden" name="delete" value="post">
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -108,10 +137,15 @@
 
     function myFunction() {
       var course_each_add_btn = document.getElementById("course-each-content-add");
+      let add_content_btn = document.getElementById('add-content-btn');
       if (course_each_add_btn.style.display === "none") {
         course_each_add_btn.style.display = "block";
+        add_content_btn.innerHTML = "Remove content";
+        add_content_btn.className = "btn btn-outline-danger m-3";
       } else {
         course_each_add_btn.style.display = "none";
+        add_content_btn.innerHTML = "Add Content";
+        add_content_btn.className = "btn btn-outline-primary m-3";
       }
     }
 

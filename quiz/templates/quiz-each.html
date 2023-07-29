@@ -2,17 +2,17 @@
 
 {% block content %}
 
-  <section class="">
-    <h3>{{ quiz.name }}</h3>
-    <a href="{% url 'quiz' %}" class="btn btn-primary mb-3">Go Back</a>
+  <section class="m-3 for-loop">
+    <h3 class="m-3">{{ quiz.name }}</h3>
+    <a href="{% url 'quiz' %}" class="btn btn-primary m-3">Go Back</a>
 
-    <article class="row">
-      <div class="row col-9"> 
+    <article class="m-3 row">
+      <div class="row col-10"> 
         <form method="POST" action="">
           {% csrf_token %}
           <div id="quiz-each-form">
             {% for question in questions %}
-              <div class="col-3 quiz-page-quiz-column">
+              <div class="col-6 border quiz-page-quiz-column">
                 <label class=""><span id="question-{{forloop.counter}}">{{ forloop.counter }}. </span>{{ question.body }}</label><hr>
                 {% for answer in answers %}
                   {% if answer.question == question %}
@@ -22,7 +22,7 @@
                 {% endfor %}
               </div>
             {% endfor %}
-            <button type="button" class="btn btn-info mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button type="button" class="btn btn-info m-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
               Finish
             </button>
           </div>
@@ -49,7 +49,6 @@
 
         </form>
 
-
       </div>
   
       <div class="col">
@@ -57,6 +56,7 @@
           <li><a href="#question-{{forloop.counter}}">{{ forloop.counter }}</a></li>
         {% endfor %}
       </div>
+
     </article>
   </section>
 

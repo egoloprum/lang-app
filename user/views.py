@@ -10,7 +10,7 @@ from django.contrib.auth.password_validation import validate_password
 
 from .models import *
 from course.models import Course
-from quiz.models import Quiz
+from quiz.models import Quiz, Result, Average_score
 
 def loginUser(request):
     context = {}
@@ -77,7 +77,13 @@ def profilePath(request, pk):
     courses = Course.objects.filter(host=pk)
     quizs = Quiz.objects.filter(host=user)
 
-    context = {'user': user, 'profile': profile, 'courses': courses, 'quizs': quizs}
+    quiz_result = Quiz.objects.all()
+    results = Result.objects.filter(user=user)
+
+    average_score = Average_score.objects.filter(user=user)
+
+    context = {'user': user, 'profile': profile, 'courses': courses, 'average_score': average_score,
+                'quizs': quizs, 'results': results, 'quiz_result': quiz_result}
 
     return render(request, 'profile.html', context)
 
@@ -103,39 +109,45 @@ def deleteUser(request):
 @login_required(login_url='login')
 def profileUpdate(request):
     user = request.user
-    profile = Profile.objects.all()
     context = {'user': user}
 
     if request.method == "POST":
+        user_name = request.POST.get('user_name')
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
+        cur_password = request.POST.get('current-password')
         password = request.POST.get('password')
 
-        if email:
-            user.email = email
-            try:
+        if check_password(cur_password, user.password):
+            if email:
+                user.email = email
+                try:
+                    user.save()
+                except:
+                    messages.error(request, 'This email is already used')
+                    return redirect('profile-update')
+            if password:
+                try:
+                    validate_password(password)
+                except ValidationError:
+                    messages.error(request, 'Your password sucks')
+                    return redirect('profile-update')
+                user.password = make_password(password)
                 user.save()
-            except:
-                messages.error(request, 'This email is already used')
-                return redirect('profile-update')
-        if password:
-            try:
-                validate_password(password)
-            except ValidationError:
-                messages.error(request, 'Your password sucks')
-                return redirect('profile-update')
-            user.password = make_password(password)
-            user.save()
-        if first_name:
-            user.first_name = first_name
-            user.save()
-        if last_name:
-            user.last_name = last_name
-            user.save()
-        
-        login(request, user)
-        # profile.get_or_create(first_name=first_name, last_name=last_name)
-        return redirect('profile/%d/'%request.user.id)
+            if first_name:
+                user.first_name = first_name
+                user.save()
+            if last_name:
+                user.last_name = last_name
+                user.save()
+            
+            login(request, user)
+            # profile.get_or_create(first_name=first_name, last_name=last_name)
+            return redirect('profile/%d/'%request.user.id)
+
+        else:
+            messages.error(request, "Please enter correct password")
+            return redirect('profile-update')
 
     return render(request, 'profileUpdate.html', context)

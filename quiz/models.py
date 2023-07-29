@@ -50,5 +50,10 @@ class Result(models.Model):
 
     def __str__(self):
         return str(self.pk)
-    
+
+class Average_score(models.Model):
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    score = models.FloatField()
 

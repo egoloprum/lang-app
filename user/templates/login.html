@@ -10,16 +10,16 @@
   </ul>
 {% endif %}
 
-  <section class="user-login-form col-3">
-    <form method="POST" action="">
+  <section class="m-3 for-loop col-4">
+    <form method="POST" action="" class="m-3">
       {% csrf_token %}
       <div class="mb-3">
-        <label for="inputUsername5" class="form-label">Input username</label>
+        <label class="form-label">Input username</label>
         <input type="username" class="form-control" name="username" placeholder="Joe">
       </div>
 
       <div class="mb-3">
-        <label for="inputPassword5" class="form-label">Input password</label>
+        <label class="form-label">Input password</label>
         <input type="password" class="form-control" name="password" aria-labelledby="passwordHelpBlock"
         placeholder="********">
       </div>

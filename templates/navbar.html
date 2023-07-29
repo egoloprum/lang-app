@@ -10,7 +10,7 @@
         {% if user.is_authenticated %}
         <ul class="navbar-page-header-ul">
           <li><a class="nav-item" href="{% url 'profile' user.id %}">PROFILE <span disabled>({{ request.user.username }})</span> </a></li>
-          <li><a class="nav-item" href="{% url 'logout' %}">Logout</a></li>
+          <li><a class="nav-item" href="{% url 'logout' %}">LOGOUT</a></li>
         </ul>
 
         {% comment %} <div class="dropdown">
