@@ -14,6 +14,31 @@
     <p class="text-muted">{{ result.created_at }}</p>
 
     <div class="col-3 m-3">
+      <h3>{{ quiz.name }}</h3>
+      <div>
+        {% for question in questions %}
+          <label class="form-label">Question {{ forloop.counter }}</label>
+          <p class="form-control">{{ question.body }}</p>
+          <ul>
+
+            {% for answer, sel_answer in answers %}
+              {% if answer.question == question %}
+                {% if answer.correct or sel_answer.correct %}
+                  <p class="form-control btn btn-success">{{ answer.body }}</p>
+                {% else %}
+                  <p class="form-control btn btn-danger">{{ answer.body }}</p>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+
+          </ul>
+
+        {% endfor %}
+      </div>
+      
+    </div>
+
+    <div class="col-3 m-3">
       <label class="form-label">Quiz Name</label>
       <p class="form-control">{{ result.quiz.name }}</p>
       <label class="form-label">User</label>
@@ -29,6 +54,7 @@
       <p class="form-control">{{ results|length }}</p>
     </div>
     <h3 class="m-3">Previous Attempts</h3>
+
     <div class="row m-3">
       {% for res in results %}
         <div class="col-3 m-3">

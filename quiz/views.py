@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.http import HttpResponse, JsonResponse
-
+from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 
 def quiz(request):
@@ -87,8 +87,10 @@ def quizEach(request, pk):
         for answer in answers:
             if request.POST.get('answer-' + str(answer.id)) == 'on':
                 quiz_answers.append(True)
+                Selected_Answer.objects.create(answer=answer, correct=True)
             else:
                 quiz_answers.append("")
+                Selected_Answer.objects.create(answer=answer, correct=False)
     
         temp_quiz = quiz_answers.copy()
         temp_answers = answers.copy()
@@ -167,6 +169,22 @@ def quizEdit(request, pk):
 def quizResult(request, pk):
     result = Result.objects.filter(quiz=pk).last
     results = Result.objects.filter(quiz=pk).order_by('-id')
+    quiz = Quiz.objects.get(id=pk)
+    questions = Question.objects.filter(quiz=quiz)
+    answers = []
+    selected_answers = []
+    
+
+    for question in questions:
+        for a in Answer.objects.filter(question=question):
+            answers.append(a)
+            try:
+                selected_answers.append(Selected_Answer.objects.filter(answer=a))
+            except ObjectDoesNotExist:
+                ...
+
+    list_answers = zip(answers, selected_answers)
+    print(list_answers)
 
     average_score = 0
 
@@ -175,7 +193,8 @@ def quizResult(request, pk):
 
     average_score = average_score / len(results)
 
-    context = {'result': result, 'results': results, 'average_score': average_score}
+    context = {'result': result, 'results': results, 'average_score': average_score,
+               'quiz': quiz, 'questions': questions, 'answers': list_answers, 'ans': answers}
 
     return render(request, 'quiz-result.html', context)
 

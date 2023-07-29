@@ -36,11 +36,19 @@ class Answer(models.Model):
     def __str__(self):
       return self.body
 
+class Selected_Answer(models.Model):
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    correct = models.BooleanField(default=False, null=False)
+
+
 class Result(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    selected_answer = models.ForeignKey(Selected_Answer, on_delete=models.CASCADE, null=True)
     score = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.pk)
+    
+
