@@ -10,18 +10,42 @@
       <div class="row col-9"> 
         <form method="POST" action="">
           {% csrf_token %}
-          {% for question in questions %}
-          <div class="col-3 quiz-page-quiz-column">
-            <label class=""><span id="question-{{forloop.counter}}">{{ forloop.counter }}. </span>{{ question.body }}</label><hr>
-            {% for answer in answers %}
-              {% if answer.question == question %}
-                <p class="form-control"><input type="checkbox" name="answer-{{ answer.id }}"> {{ answer.body }} / {{ answer.correct }}</p>
-              {% endif %}
-    
+          <div id="quiz-each-form">
+            {% for question in questions %}
+              <div class="col-3 quiz-page-quiz-column">
+                <label class=""><span id="question-{{forloop.counter}}">{{ forloop.counter }}. </span>{{ question.body }}</label><hr>
+                {% for answer in answers %}
+                  {% if answer.question == question %}
+                    <p class="form-control"><input type="checkbox" class="answer-checkbox" name="answer-{{ answer.id }}"> {{ answer.body }} / {{ answer.correct }}</p>
+                  {% endif %}
+        
+                {% endfor %}
+              </div>
             {% endfor %}
+            <button type="button" class="btn btn-info mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              Finish
+            </button>
           </div>
-        {% endfor %}
-          <button class="btn btn-info mb-3" type="submit">Finish</button>
+
+          <!-- finish modal -->
+
+          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Are you sure that you want to edit ?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button class="btn btn-info" type="submit" onclick="quiz_each_btn()">Finish</button>
+                </div>
+              </div>
+            </div>
+          </div>
 
         </form>
 
@@ -35,5 +59,24 @@
       </div>
     </article>
   </section>
+
+  <script type='text/javascript'>
+    function quiz_each_btn(){
+      quiz_each_form = document.getElementById('quiz-each-form');
+      sessionStorage.setItem('quiz-each-form', quiz_each_form.innerHTML);
+    }
+
+    checkboxes = [...document.getElementsByClassName('answer-checkbox')];
+
+    // modalBtns.forEach(modalBtn=> modalBtn.addEventListener('click', ()=>{
+    checkboxes.forEach(checkbox => checkbox.addEventListener('click', ()=> {
+      if (checkbox.checked) {
+        checkbox.checked = true;
+      }
+     
+    }));
+
+    
+  </script>
 
 {% endblock %}

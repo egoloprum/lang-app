@@ -6,6 +6,7 @@ urlpatterns = [
   path('create', views.quizCreate, name='quiz-create'),
   path('<str:pk>', views.quizEach, name='quiz-each'),
   path('<str:pk>/edit', views.quizEdit, name='quiz-edit'),
+  path('<str:pk>/result', views.quizResult, name='quiz-result'),
   # path('login', views.loginUser, name='login'),
   # path('register', views.registerUser, name='register'),
   # path('logout', views.logoutUser, name='logout'),

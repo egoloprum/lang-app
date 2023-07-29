@@ -1,0 +1,58 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+  <section class="row" id="quiz-result">
+    <h3 class="m-3">Last Attempt: 
+      {% if result.score >= result.quiz.required_score %}
+        <span>Passed</span>
+      {% else %}
+        <span>Failed</span>
+      {% endif %}
+    </h3>
+    <p class="text-muted">{{ result.quiz.required_score }}% to pass the quiz</p>
+    <p class="text-muted">{{ result.created_at }}</p>
+
+    <div class="col-3 m-3">
+      <label class="form-label">Quiz Name</label>
+      <p class="form-control">{{ result.quiz.name }}</p>
+      <label class="form-label">User</label>
+      <p class="form-control">{{ result.user }}</p>
+      <label class="form-label">Score</label>
+      <p class="form-control">{{ result.score|floatformat:2 }} %</p>
+    </div>
+
+    <div class="col-3 m-3">
+      <label class="form-label">Average Score</label>
+      <p class="form-control">{{ average_score|floatformat:2 }} %</p>
+      <label class="form-label">Attempts</label>
+      <p class="form-control">{{ results|length }}</p>
+    </div>
+    <h3 class="m-3">Previous Attempts</h3>
+    <div class="row m-3">
+      {% for res in results %}
+        <div class="col-3 m-3">
+          <h4>Attempt: {{ forloop.revcounter }}</h4>
+          <label class="form-label">Quiz Name</label>
+          <p class="form-control">{{ res.quiz.name }}</p>
+          <label class="form-label">User</label>
+          <p class="form-control">{{ res.user }}</p>
+          <label class="form-label">Score</label>
+          <p class="form-control">{{ res.score|floatformat:2 }} %</p>
+        </div>
+
+      {% endfor %}
+    </div>
+    <div id="1">
+
+    </div>
+  </section>
+
+  <script>
+
+    // div = document.getElementById('1');
+    // div.innerHTML = sessionStorage.getItem('quiz-each-form');
+
+  </script>
+
+{% endblock %}

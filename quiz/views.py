@@ -111,7 +111,7 @@ def quizEach(request, pk):
 
         quiz_result = Result.objects.create(quiz=quiz, user=request.user, score=result)
 
-        return redirect('quiz')
+        return redirect('quiz-result', quiz.id)
 
     return render(request, 'quiz-each.html', context)
 
@@ -162,4 +162,20 @@ def quizEdit(request, pk):
     context = {'quiz': quiz, 'questions': questions, 'answers': answers, 'number_of_questions': range(number_of_questions)}
 
     return render(request, 'quiz-edit.html', context)
+
+@login_required
+def quizResult(request, pk):
+    result = Result.objects.filter(quiz=pk).last
+    results = Result.objects.filter(quiz=pk).order_by('-id')
+
+    average_score = 0
+
+    for res in results:
+        average_score += res.score
+
+    average_score = average_score / len(results)
+
+    context = {'result': result, 'results': results, 'average_score': average_score}
+
+    return render(request, 'quiz-result.html', context)
 
