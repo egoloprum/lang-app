@@ -20,8 +20,8 @@
           <label class="form-label">Question {{ forloop.counter }}</label>
           <p class="form-control">{{ question.body }}</p>
           <ul>
-
-            {% for answer, sel_answer in answers %}
+            
+            {% for answer, sel_answer in answers.items %}
               {% if answer.question == question %}
                 {% if answer.correct or sel_answer.correct %}
                   <p class="form-control btn btn-success">{{ answer.body }}</p>
