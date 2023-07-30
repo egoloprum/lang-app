@@ -18,7 +18,7 @@ def quiz(request):
         quiz_id = Quiz.objects.get(pk=request.POST.get('quiz-id'))
         quiz_id.delete()
     
-    count = Quiz.objects.annotate(child_count = models.Count('question'))
+    count = Quiz.objects.annotate(child_count = models.Count('question')).order_by('-id')
 
     context = {'quizs': count}
     return render(request, 'quiz.html', context)
@@ -45,11 +45,13 @@ def quizCreate(request):
 
             while(request.POST.get('answer-body-' + str(x) + '-' + str(y))):
                 answer_body = request.POST.get('answer-body-' + str(x) + '-' + str(y))
-                answer_correct = request.POST.get('answer-correct-' + str(x) + '-' + str(y))
-                if answer_correct == 'on':
+                answer_correct = False
+
+                if request.POST.get('answer-correct-' + str(x) + '-' + str(y)) == 'on':
                     answer_correct = True
                 else:
                     answer_correct = False
+
                 answer = Answer.objects.create(body=answer_body, correct=answer_correct, question=question)
 
                 y += 1

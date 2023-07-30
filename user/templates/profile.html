@@ -47,7 +47,7 @@
             <a class="btn btn-outline-primary mb-3" href="{% url 'quiz-create' %}">Add Quiz</a>
           {% endif %}
           <h3>Quizes</h3>
-          {% for quiz in quizs %}
+          {% for quiz in quizs reversed %}
             <a href="{% url 'quiz-each' quiz.id %}">
               <div class="border">
                 <label class="form-label">{{quiz.name}}</label>
@@ -95,16 +95,17 @@
           <h3 class="m-3">Progress</h3>
           <div class="m-3">
             {% for quiz in quiz_result %}
-              <h4>{{ quiz.name }}</h4>
 
-              <label class="form-label">Average score</label>
-              {% for score in average_score reversed %}
+              {% for score in average_score %}
                 {% if score.quiz == quiz %}
+                  <h4>{{ quiz.name }}</h4>
+                  <label class="form-label">Average score</label>
                   <p class="form-control">{{ score.score|floatformat:2 }} %</p>
                 {% else %}
                   {{ break }}
                 {% endif %}
               {% endfor %}
+
             
               <!-- <div class="">
                 {% for result in results reversed %}

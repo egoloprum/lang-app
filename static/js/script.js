@@ -183,7 +183,7 @@ function quiz_create_question_btn() {
   answer_input_check = document.createElement('input');
   answer_input_check.type = 'checkbox';
   answer_input_check.className = '';
-  answer_input_check.name = 'answer-body-' + quiz_create_question_input_count + '-1';
+  answer_input_check.name = 'answer-correct-' + quiz_create_question_input_count + '-1';
 
   answer_div.append(answer_label, answer_btn, answer_input_body,
                     answer_label2, answer_input_check)
