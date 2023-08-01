@@ -18,7 +18,7 @@ def quiz(request):
         quiz_id = Quiz.objects.get(pk=request.POST.get('quiz-id'))
         quiz_id.delete()
     
-    count = Quiz.objects.annotate(child_count = models.Count('question')).order_by('-id')
+    count = Quiz.objects.annotate(child_count = models.Count('question_quiz')).order_by('-id')
 
     context = {'quizs': count}
     return render(request, 'quiz.html', context)
@@ -73,7 +73,7 @@ def quizEach(request, pk):
 
     for question in questions:
         count = 0
-        for a in Answer.objects.filter(question=question):
+        for a in Answer.objects.filter(question=question).select_related('question'):
             answers.append(a)
             if a.correct is True:
                 count += 1
@@ -108,7 +108,11 @@ def quizEach(request, pk):
                 temp_quiz.pop(0)
                 temp_answers.pop(0)
 
-            result += count / answers_correct_num[0]
+            try:
+                result += count / answers_correct_num[0]
+            except ZeroDivisionError:
+                return redirect('quiz-each', quiz.id)
+
             answers_correct_num.pop(0)
         
         result = (result / length_answers) * 100
@@ -127,7 +131,7 @@ def quizEdit(request, pk):
     answers = []
 
     for question in questions:
-        for a in Answer.objects.filter(question=question):
+        for a in Answer.objects.filter(question=question).select_related('question'):
             answers.append(a)
 
     if request.method == "POST":
@@ -147,6 +151,7 @@ def quizEdit(request, pk):
         for question in questions:
             question_body = request.POST.get('question-body-' + str(question.id))
             question.body = question_body
+
             for answer in answers:
                 if answer.question.id == question.id:
                     answer_body = request.POST.get('answer-body-' + str(question.id) + '-' + str(answer.id))
@@ -169,19 +174,18 @@ def quizEdit(request, pk):
 
 @login_required(login_url='login')
 def quizResult(request, pk):
-    result = Result.objects.filter(quiz=pk).last
-    results = Result.objects.filter(quiz=pk).order_by('-id')
     quiz = Quiz.objects.get(id=pk)
-    questions = Question.objects.filter(quiz=quiz)
+    result = Result.objects.select_related('quiz').filter(quiz=quiz).last
+    results = Result.objects.select_related('quiz').filter(quiz=quiz).order_by('-id')
+    questions = Question.objects.select_related('quiz').filter(quiz=quiz)
     answers = []
     selected_answers = []
-    
 
     for question in questions:
-        for a in Answer.objects.filter(question=question):
+        for a in Answer.objects.filter(question=question).select_related('question'):
             answers.append(a)
             try:
-                selected_answers.append(Selected_Answer.objects.filter(answer=a).last)
+                selected_answers.append(Selected_Answer.objects.select_related('answer').filter(answer=a).last)
                 # Selected_Answer.objects.get(answer=a).delete()
             except ObjectDoesNotExist:
                 ...

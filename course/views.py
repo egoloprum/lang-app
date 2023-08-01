@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404
 
 from django.db import IntegrityError
 
@@ -64,22 +65,13 @@ def course(request):
     return render(request, 'course.html', context)
 
 def courseEach(request, pk):
-  course = Course.objects.get(id=pk)
-  is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+  course = get_object_or_404(Course, id=pk)
 
-  if request.method == 'POST' and is_ajax:
-    if request.POST.get('add') == 'post':
-      name = request.POST.get('name')
-      body = request.POST.get('body')
-      content = Content.objects.create(name=name, body=body, course=course)
+  if request.method == 'POST':
+    course.delete()
+    return redirect('course')
 
-      return JsonResponse({'name': content.name, 'body': content.body})
-    
-    elif request.POST.get('delete') == 'post':
-      course.delete()
-      return render('course')
-
-  contents = Content.objects.filter(course=course)
+  contents = Content.objects.select_related('course').filter(course=course)
 
   if contents:
     context = {'course': course, 'contents':contents}
@@ -141,7 +133,7 @@ def courseEachEdit(request, pk):
 
 def topic(request, pk):
   topic = Topic.objects.get(id=pk)
-  courses = Course.objects.filter(topic=topic)
+  courses = Course.objects.select_related('topic').filter(topic=topic)
 
   context = {'courses':courses }
 

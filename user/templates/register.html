@@ -14,7 +14,9 @@
     {% csrf_token %}
     <div class="m-3">
       <label class="form-label">Enter username</label>
-      <input type="text" name="username" class="form-control" placeholder="Username" required>
+      <input type="text" name="username" class="form-control" placeholder="Username" required
+      hx-post="check_username" hx-trigger="keyup" hx-target="#username-error">
+      <div id="username-error"></div>
     </div>
 
     <div class="m-3">

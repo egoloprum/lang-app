@@ -1,0 +1,56 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+  <section class="">
+    <div class="row p-3">
+      <div class="mb-3">
+        <label class="form-label">Search User</label>
+        <form method="POST" action="">
+          {% csrf_token %}
+          <input class="form-control" type="search" name="q">
+        </form>
+        {% if messages %}
+          <ul class="messages" style="color:#e80d0d;">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      {% for user in users %}
+        <div class="col-3 for-loop">
+            <div>
+              <a class="btn btn-outline-primary" href="{% url 'profile' user.id %}">Go to Profile</a>
+              <a class="btn btn-outline-info" href="">Follow +</a>
+            </div>
+            <div>
+              <img src="images/avatar.png" >
+            </div>
+            <div class="m-2">
+              <label class="form-label">Username</label>
+              <p class="form-control">{{ user.username }}</p>
+            </div>
+  
+            <div class="m-2">
+              <label class="form-label">Level</label>
+              <p class="form-control">{{ user.profile.level }}</p>
+            </div>
+  
+            <div class="m-2">
+              <label class="form-label">Badges</label>
+              {% for badge in badges %}
+  
+                {% empty %}
+                <p class="form-control">This user does not have a badge.</p>
+              {% endfor %}
+            </div> 
+        </div>
+
+
+      {% endfor %}
+    </div>
+  </section>
+
+{% endblock %}

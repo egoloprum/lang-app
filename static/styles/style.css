@@ -48,10 +48,6 @@ body li {
 
 /* main.html */
 
-.main-container {
-  padding-top: 60px;
-}
-
 .profile-update-form {
   margin: var(--form-margin);
   padding: var(--form-padding);
@@ -125,7 +121,6 @@ body li {
 /* navbar.html */
 
 .navbar-page-section-header {
-  position: fixed;
   width: 100%;
   background: #7b9cea;
 }
@@ -271,3 +266,20 @@ body li {
 
 .quiz-create-list-answer{
 } */
+
+.loader {
+  height: 30px;
+  width: 30px;
+  border: 2px solid #e3e3e3;
+  border-radius: 50%;
+  border-right-color: #7b9cea;
+  animation: spin 1s ease infinite;
+  display:none;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+

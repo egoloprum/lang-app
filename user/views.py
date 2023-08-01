@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
+from django.http import HttpResponse
 
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
@@ -62,6 +63,14 @@ def registerUser(request):
 
     return render(request, 'register.html', context)
 
+def checkUsername(request):
+    username = request.POST.get('username').lower()
+
+    if User.objects.filter(username=username).exists():
+        return HttpResponse("This username already exists")
+    else:
+        return HttpResponse("This username is available")
+
 @login_required(login_url='login')
 def logoutUser(request):
     logout(request)
@@ -72,18 +81,22 @@ def forgotPass(request):
 
 @login_required(login_url='login')
 def profilePath(request, pk):
-    user = User.objects.get(id=pk)
+    user = User.objects.select_related('profile').get(id=pk)
     profile = Profile.objects.get(user=pk)
     courses = Course.objects.filter(host=pk)
     quizs = Quiz.objects.filter(host=user)
 
-    quiz_result = Quiz.objects.all()
+    quiz_result = Quiz.objects.prefetch_related('average_score_quiz')
     results = Result.objects.filter(user=user)
 
-    average_score = Average_score.objects.filter(user=user)
+    data = [{
+        'id': 1,
+    }]
 
-    context = {'user': user, 'profile': profile, 'courses': courses, 'average_score': average_score,
-                'quizs': quizs, 'results': results, 'quiz_result': quiz_result}
+    count = Quiz.objects.annotate(child_count = models.Count('question_quiz'))
+
+    context = {'user': request.user, 'profile': profile, 'courses': courses,
+                'quizs': count, 'results': results, 'quiz_result': quiz_result}
 
     return render(request, 'profile.html', context)
 
@@ -151,3 +164,23 @@ def profileUpdate(request):
             return redirect('profile-update')
 
     return render(request, 'profileUpdate.html', context)
+
+@login_required(login_url='login')
+def userPath(request):
+    users = User.objects.select_related('profile')
+
+    if request.method == 'POST':
+        username = request.POST.get('q').lower()
+
+        if User.objects.filter(username__startswith=username).exists():
+            users = User.objects.filter(username__startswith=username)
+
+        elif username == None:
+            users = User.objects.select_related('profile')
+        else:
+            messages.error(request, 'This user does not exist')
+            return redirect('user-path')
+
+    context = {'users': users}
+
+    return render(request, 'user-path.html', context)

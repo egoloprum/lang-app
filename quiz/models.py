@@ -4,7 +4,7 @@ import random
 # Create your models here.
 
 class Quiz(models.Model):
-    host = models.ForeignKey(User, on_delete=models.CASCADE)
+    host = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quiz_host')
     name = models.CharField(max_length=200, null=False)
     duration = models.TimeField(help_text="duration of the quiz in minutes", null=True)
     required_score = models.IntegerField(help_text="required score in %", null=True)
@@ -20,7 +20,7 @@ class Quiz(models.Model):
 
 class Question(models.Model):
     body = models.CharField(max_length=200, null=False)
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False, related_name='question_quiz')
 
     def __str__(self):
         return self.body
@@ -52,7 +52,7 @@ class Result(models.Model):
         return str(self.pk)
 
 class Average_score(models.Model):
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, related_name='average_score_quiz')
     question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     score = models.FloatField()

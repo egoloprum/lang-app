@@ -24,45 +24,17 @@
       </div>
     </article>
   
-    <!-- create content -->
-
-    <button class="btn btn-outline-primary m-3" id="add-content-btn" onclick="myFunction()">Add Content</button>
-    <article id="course-each-content-add" style="display:none;"">  
-      <form method="POST" action="" class="m-3" name="add" id="course-each-content-form" >
-        {% csrf_token %}
-        <input type="hidden" name="add" value="post">
-        <div class="mb-3">
-          <label class="form-label">Name of Content</label>
-          <input type="text" class="form-control" id="content-name" name="name" required>
-        </div>
-  
-        <div class="mb-3">
-          <label class="form-label">Body of Content</label>
-          <textarea class="form-control" id="content-body" name="body" required></textarea>
-        </div>
-  
-        <div class="mb-3" id="course-each-content-add-file-div">
-          <label class="form-label">File of Content</label>
-          <input type="file" class="form-control" id="content-file" name="file" required>
-        </div>
-
-        <button class="btn btn-primary" id="course-each-content-add-button" onclick="course_each_content_add_button()">
-          Add More Files ?</button><hr>
-        <button type="submit" class="btn btn-primary" >Save</button><hr>
-      </form>
-    </article>
-  
     <!-- content of course -->
 
     <article class="m-3">
       <h3>Contents of Course</h3><hr>
       {% for content in contents %}
-        {% if content.course.id is course.id %}
+
           <div class="for-loop mb-3">
             <label class="form-label" id="list-item-{{ content.id }}">{{ content.name }}</label>
             <p class="form-control">{{ content.body }}</p>
           </div>
-        {% endif %}
+
       {% endfor %}
       <div class="mb-3" id="course-each-content-div">
 
@@ -106,76 +78,5 @@
   </div>
 
 </section>
-
-<script type="text/javascript">
-
-    $(document).on('submit', '#course-each-content-form', function(e) {
-      e.preventDefault();
-      $.ajax({
-        type: 'POST',
-        url: "{% url 'course-each' course.id %}",
-        data: {
-          name: $('#content-name').val(),
-          body: $('#content-body').val(),
-          csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-        },
-        success: function(data){
-          var content_result_label = document.createElement('label');
-          content_result_label.innerHTML = data.name;
-          content_result_label.className = 'form-label';
-
-          var content_result_p = document.createElement('p');
-          content_result_p.innerHTML = data.body;
-          content_result_p.className = 'form-control';
-
-          content_result_div = document.getElementById('course-each-content-div');
-          content_result_div.append(content_result_label, content_result_p);
-          alert('Content has been created !');
-        } 
-      });
-    });
-
-    function myFunction() {
-      var course_each_add_btn = document.getElementById("course-each-content-add");
-      let add_content_btn = document.getElementById('add-content-btn');
-      if (course_each_add_btn.style.display === "none") {
-        course_each_add_btn.style.display = "block";
-        add_content_btn.innerHTML = "Remove content";
-        add_content_btn.className = "btn btn-outline-danger m-3";
-      } else {
-        course_each_add_btn.style.display = "none";
-        add_content_btn.innerHTML = "Add Content";
-        add_content_btn.className = "btn btn-outline-primary m-3";
-      }
-    }
-
-    function course_each_content_add_button() {
-      content_files_div = document.getElementById("course-each-content-add-file-div");
-      content_files_space = document.createElement('br');
-      content_files_delete = document.createElement('button');
-      content_files_delete.innerHTML = 'remove';
-      content_files_delete.className = 'btn btn-danger';
-
-      var content_files = document.createElement('input');
-      content_files.className = 'form-control';
-      content_files.type = 'file';
-      content_files_div.append(content_files_space, content_files, content_files_delete);
-    }
-
-    const tx = document.getElementsByTagName("textarea");
-    for (let i = 0; i < tx.length; i++) {
-      tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
-      tx[i].addEventListener("input", OnInput, false);
-    }
-  
-    function OnInput() {
-      this.style.height = 0;
-      this.style.height = (this.scrollHeight) + "px";
-    }
-
-
-</script>
-
-
 
 {% endblock %}

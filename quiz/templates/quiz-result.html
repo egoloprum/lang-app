@@ -21,12 +21,7 @@
         {% for question in questions %}
           <label class="form-label">Question {{ forloop.counter }}</label>
           <p class="form-control">{{ question.body }}</p>
-          <ul>
-<<<<<<< HEAD
-
-=======
-            
->>>>>>> caa0b52649785fab49779a81dc05ef3b88dac8df
+          <ul>  
             {% for answer, sel_answer in answers.items %}
               {% if answer.question == question %}
                 {% if sel_answer.correct %}
@@ -37,10 +32,11 @@
               {% endif %}
             {% endfor %}
 
+            <label class="form-label">Correct Answer</label>
+
             {% for answer, sel_answer in answers.items %}
               {% if answer.question == question %}
                 {% if answer.correct %}
-                  <label class="form-label">Correct Answer</label>
                   <p class="form-control btn btn-success">{{ answer.body }} {{ answer.correct }} / {{ sel_answer.correct }} </p>
                   {{ break }}
                 {% endif %}
@@ -87,16 +83,8 @@
 
       {% endfor %}
     </div>
-    <div id="1">
 
     </div>
   </section>
-
-  <script>
-
-    // div = document.getElementById('1');
-    // div.innerHTML = sessionStorage.getItem('quiz-each-form');
-
-  </script>
 
 {% endblock %}
