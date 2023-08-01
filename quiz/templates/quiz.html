@@ -3,24 +3,34 @@
 {% block content %}
 
   <section class="p-3">
-    <a class="btn btn-primary" href="{% url 'quiz-create' %}">Add Quiz ?</a>
+    <a class="btn btn-outline-primary" href="{% url 'quiz-create' %}">Add Quiz ?</a>
     <a class="btn btn-secondary" href="{% url 'home' %}">Back</a>
 
     <div class="p-3 row">
       <h3 class="form-label">Quizes</h3>
+      <div class="col-2">
+        <a hx-boost="true" class="form-control" href="{% url 'quiz' %}">All</a>
+        {% for diff in difficulties %}
+            <a hx-boost="true" class="form-control" href="{% url 'quiz' %}?q={{diff}}">{{ diff|title }}</a>
+            {% empty %}
+              <p>Empty</p>
+        {% endfor %}
+      </div>
+
       {% for quiz in quizs %}
           <div class="for-loop col-3">
             <img class="quiz-page-img" src="{% static 'images/pic.jpg' %}">
 
             <h4 class="form-label">{{ quiz.name }}</h4>
-            <a type="button" class="btn btn-primary modal-btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
+            <a type="button" class="btn btn-outline-primary modal-btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
               data-id="{{ quiz.id }}" data-host="{{ quiz.host }}" data-num-quest="{{ quiz.child_count }}"
               data-durat="{{ quiz.duration }}" data-require="{{ quiz.required_score }}"
               data-diff="{{ quiz.difficulty }}">Start
             </a>
+            <a class="btn btn-outline-success" href="{% url 'quiz-result' quiz.id %}">Result</a>
             {% if request.user == quiz.host %}
-              <a href="{% url 'quiz-edit' quiz.id %}" class="btn btn-warning">Edit</a>
-              <a data-bs-toggle="modal" data-bs-target="#delete-modal" class="btn btn-danger">Delete</a>
+              <a href="{% url 'quiz-edit' quiz.id %}" class="btn btn-outline-warning">Edit</a>
+              <a data-bs-toggle="modal" data-bs-target="#delete-modal" class="btn btn-outline-danger">Delete</a>
             {% endif %}
           </div>
 
@@ -65,6 +75,8 @@
               </div>
             </div>
           </div>
+        {% empty %}
+          <p>Empty</p>
 
       {% endfor %}
     </div>

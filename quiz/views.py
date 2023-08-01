@@ -3,24 +3,36 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from django.http import HttpResponse, JsonResponse
 from django.core.exceptions import ObjectDoesNotExist 
+from django.contrib import messages
 # Create your views here.
 
+@login_required(login_url='login')
 def quiz(request):
-    quizs = Quiz.objects.all()
-    num_of_question = Question.objects.filter(quiz=request.GET.get('quiz')).count
 
     data = [{
         'id': 1,
     }]
     # return JsonResponse(data, safe=False)
 
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+
+    difficulties = []
+
+    for quiz in Quiz.objects.all():
+        difficulties.append(quiz.difficulty.lower())
+
+    difficulties = list(dict.fromkeys(difficulties))
+    sort_diff = ['a', 'e', 'i',]
+
+    difficulties.sort(key = lambda i: sort_diff.index(i[0]))     
+
     if request.method == 'POST':
         quiz_id = Quiz.objects.get(pk=request.POST.get('quiz-id'))
         quiz_id.delete()
     
-    count = Quiz.objects.annotate(child_count = models.Count('question_quiz')).order_by('-id')
+    count = Quiz.objects.annotate(child_count = models.Count('question_quiz')).filter(difficulty__icontains=q)
 
-    context = {'quizs': count}
+    context = {'quizs': count, 'difficulties': difficulties}
     return render(request, 'quiz.html', context)
 
 @login_required(login_url='login')
@@ -62,6 +74,17 @@ def quizCreate(request):
 
     context = {}
     return render(request, 'quiz-create.html', context)
+
+@login_required(login_url='login')
+def checkQuizName(request):
+    name = request.POST.get('quiz-name')
+
+    if Quiz.objects.filter(name=name).exists():
+        return HttpResponse('<div style="color:red;">This name is already in use</div>')
+    elif name == '':
+        return HttpResponse('')
+    else:
+        return HttpResponse('<div style="color:green;">This name is available</div>')
 
 @login_required(login_url='login')
 def quizEach(request, pk):
@@ -111,7 +134,7 @@ def quizEach(request, pk):
             try:
                 result += count / answers_correct_num[0]
             except ZeroDivisionError:
-                return redirect('quiz-each', quiz.id)
+                result = result
 
             answers_correct_num.pop(0)
         

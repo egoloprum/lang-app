@@ -84,7 +84,6 @@ def profilePath(request, pk):
     user = User.objects.select_related('profile').get(id=pk)
     profile = Profile.objects.get(user=pk)
     courses = Course.objects.filter(host=pk)
-    quizs = Quiz.objects.filter(host=user)
 
     quiz_result = Quiz.objects.prefetch_related('average_score_quiz')
     results = Result.objects.filter(user=user)
@@ -93,7 +92,7 @@ def profilePath(request, pk):
         'id': 1,
     }]
 
-    count = Quiz.objects.annotate(child_count = models.Count('question_quiz'))
+    count = Quiz.objects.annotate(child_count = models.Count('question_quiz')).filter(host=user)
 
     context = {'user': request.user, 'profile': profile, 'courses': courses,
                 'quizs': count, 'results': results, 'quiz_result': quiz_result}
@@ -175,7 +174,7 @@ def userPath(request):
         if User.objects.filter(username__startswith=username).exists():
             users = User.objects.filter(username__startswith=username)
 
-        elif username == None:
+        elif username == '':
             users = User.objects.select_related('profile')
         else:
             messages.error(request, 'This user does not exist')
