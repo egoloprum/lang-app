@@ -8,7 +8,7 @@
 
       <section class="for-loop col-4 m-3">
         <div class="m-3">
-          {% if request.user == user %}
+          {% if request.user == curr_user %}
             <a type="button" class="btn btn-outline-primary" href="{% url 'profile-update' %}">Update</a>
             <a type="button" class="btn btn-outline-danger" href="{% url 'delete' %}">Delete</a>
 
@@ -24,20 +24,20 @@
               <!-- you sent them request -->
               {% if request_sent == 1 %}
                   <a class="btn btn-outline-danger" hx-boost="true" hx-trigger="load" hx-target="#request-result"
-                  href="{% url 'cancel-follow-request' user.id %}">Cancel Friend Request</a>
+                  href="{% url 'cancel-follow-request' curr_user.id %}">Cancel Friend Request</a>
               {% endif %}
         
               <!-- no request sent -->
               {% if request_sent == -1 %}
                   <a class="btn btn-outline-primary" hx-boost="true" hx-trigger="load" hx-target="#request-result"
-                    href="{% url 'send-follow-request' user.id %}">Send Friend Request</a>
+                    href="{% url 'send-follow-request' curr_user.id %}">Send Friend Request</a>
               {% endif %}
       
             {% endif %}
 
             {% if is_follower %}
               <a class="btn btn-outline-info" href="">Message</a>
-              <a class="btn btn-outline-dark" href="">Unfollow</a>
+              <a class="btn btn-outline-dark" href="{% url 'decline-follow' curr_user.id  %}">Unfollow</a>
             {% endif %}
 
           {% endif %}
@@ -48,25 +48,25 @@
         <div class="m-3">
           <div class="mb-2">
             <label class="form-label">Username</label>
-            <p class="form-control">{{ user.username }}</p>
+            <p class="form-control">{{ curr_user.username }}</p>
           </div>
 
           <div class="mb-2">
-            <label class="form-label row"><a class="col-8" href="{% url 'followers' user.id %}">Followers</a>
-              <a class="col" href="{% url 'followers' user.id %}">Request {{ follow_requests|length }}</a>
+            <label class="form-label row"><a class="col-8" href="{% url 'followers' curr_user.id %}">Followers</a>
+              <a class="col" href="{% url 'followers' curr_user.id %}">Request {{ follow_requests|length }}</a>
             </label>
-            <p class="form-control">{{ user.followers.count }}</p>
+            <p class="form-control">{{ curr_user.followers.count }}</p>
           </div>
 
 
 
           <!-- <div class="mb-2">
             <label class="col-form-label">First name</label>
-            <p class="form-control">{{ user.first_name }}</p>
+            <p class="form-control">{{ curr_user.first_name }}</p>
           </div>
           <div class="mb-2">
             <label class="col-form-label">Last name</label>
-            <p class="form-control">{{ user.last_name }}</p>
+            <p class="form-control">{{ curr_user.last_name }}</p>
           </div>
           <div class="mb-2">
             <label class="col-form-label">Birthday</label>
@@ -74,7 +74,7 @@
           </div>
           <div class="mb-2">
             <label class="col-form-label">Email</label>
-            <p class="form-control">{{ user.email }}</p>
+            <p class="form-control">{{ curr_user.email }}</p>
           </div> -->
         </div>
       </section>
@@ -83,7 +83,7 @@
 
       <section class="for-loop col m-3">
         <div class="m-3">
-          {% if user.is_authenticated and user == request.user %}
+          {% if curr_user.is_authenticated and curr_user == request.user %}
             <div hx-boost="true">
               <a class="btn btn-outline-primary mb-3" href="{% url 'quiz-create' %}">Add Quiz</a>
             </div> 
@@ -133,7 +133,7 @@
 
       <section class="for-loop col m-3">
         <div class="m-3">
-          {% if user.is_authenticated and user == request.user %}
+          {% if curr_user.is_authenticated and curr_user == request.user %}
             <div hx-boost="true">
               <a class="btn btn-outline-primary mb-3" href="{% url 'create-course' %}">Create Course</a><br>
             </div>
@@ -156,36 +156,33 @@
 
       <!-- bottom side -->
 
-      <section class="row m-3">
-        <div class="for-loop col-6">
-          <h3 class="m-3">Progress</h3>
-          <div class="m-3">
-            {% for quiz in quiz_result %}
+      <section class="for-loop col-6 m-3">
+        <div class="m-3">
+          <h3 class="form-label">Progress</h3>
+          {% for quiz in quiz_result %}
 
-              {% for score in quiz.average_score_quiz.all %}
-                {% if score.quiz == quiz %}
-                  <h4>{{ quiz.name }}</h4>
-                  <label class="form-label">Average score</label>
-                  <p class="form-control">{{ score.score|floatformat:2 }} %</p>
-                {% else %}
-                  {{ break }}
+            {% for score in quiz.average_score_quiz.all %}
+              {% if score.quiz == quiz %}
+                <h4>{{ quiz.name }}</h4>
+                <label class="form-label">Average score</label>
+                <p class="form-control">{{ score.score|floatformat:2 }} %</p>
+              {% else %}
+                {{ break }}
+              {% endif %}
+            {% endfor %}
+
+          
+            {% comment %} <!-- <div class="">
+              {% for result in results reversed %}
+                {% if quiz.name == result.quiz.name %}
+                  <label>Attempt: {{ forloop.counter }}</label>
+                  <p class="form-control">{{ result.created_at }}</p>
+                  <p class="form-control">{{ result.score }} %</p>
                 {% endif %}
               {% endfor %}
+            </div> --> {% endcomment %}
 
-            
-              {% comment %} <!-- <div class="">
-                {% for result in results reversed %}
-                  {% if quiz.name == result.quiz.name %}
-                    <label>Attempt: {{ forloop.counter }}</label>
-                    <p class="form-control">{{ result.created_at }}</p>
-                    <p class="form-control">{{ result.score }} %</p>
-                  {% endif %}
-                {% endfor %}
-              </div> --> {% endcomment %}
-
-            {% endfor %}
-          </div>
-
+          {% endfor %}
         </div>
       </section>
 

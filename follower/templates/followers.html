@@ -2,8 +2,39 @@
 
 {% block content %}
 
-  <section>
-    
+  <section class="row p-3">
+    <div class="col for-loop">
+      <h3 class="form-label">Followers</h3>
+      {% if follow_list.exists %}
+        {% for follower in follow_list %}
+          <div class="col-5 m-3 for-loop">
+            <label class="form-label">Username</label>
+            <a href="{% url 'profile' follower.id %}">
+              <p class="form-control">{{ follower.username }}</p>
+            </a>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+    <div class="col for-loop">
+      <h3 class="form-label">Follow Requests</h3>
+      {% if follow_requests.exists and curr_user == request.user %}
+        {% for request in follow_requests %}
+          
+          <div class="m-3 for-loop">
+            <a href="{% url 'profile' request.sender.id %}">
+              <label class="form-label">Username</label>
+              <p class="form-control">{{ request.sender.username }}</p>
+              <label class="form-label">Time</label>
+              <p class="form-control">{{ request.timestamp }}</p>
+            </a>
+            <a href="{% url 'accept-follow-request' request.id %}" class="btn btn-outline-primary">Accept</a>
+            <a hx-boost="true" href="{% url 'cancel-request' request.id %}" class="btn btn-outline-danger">Cancel</a>
+          </div>
+          
+        {% endfor %}
+      {% endif %}
+    </div>
   </section>
 
   {% endblock %}

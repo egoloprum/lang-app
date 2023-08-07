@@ -93,21 +93,21 @@ def get_follow_request_or_false(sender, reciever):
 
 @login_required(login_url='login')
 def profilePath(request, pk):
-    user = User.objects.select_related('profile').get(id=pk)
+    curr_user = User.objects.select_related('profile').get(id=pk)
     profile = Profile.objects.get(user=pk)
     courses = Course.objects.filter(host=pk)
 
     quiz_result = Quiz.objects.prefetch_related('average_score_quiz')
-    results = Result.objects.filter(user=user)
+    results = Result.objects.filter(user=curr_user)
 
     data = [{
         'id': 1,
     }]
 
     try:
-        follow_list = FollowList.objects.get(user=user)
+        follow_list = FollowList.objects.get(user=curr_user)
     except FollowList.DoesNotExist:
-        follow_list = FollowList.objects.create(user=user)
+        follow_list = FollowList.objects.create(user=curr_user)
 
     followers = follow_list.followers.all()
 
@@ -122,7 +122,7 @@ def profilePath(request, pk):
     follow_requests = None
     pending_follow_request_id = 0
 
-    if request.user != user:
+    if request.user != curr_user:
         is_self = False
         if followers.filter(id=request.user.id):
             is_follower = True
@@ -130,27 +130,23 @@ def profilePath(request, pk):
             is_follower = False
 
             # them sent to you
-            if get_follow_request_or_false(sender=user, reciever=request.user) != False:
+            if get_follow_request_or_false(sender=curr_user, reciever=request.user) != False:
                 request_sent = 0
-                pending_follow_request_id = get_follow_request_or_false(sender=user, reciever=request.user).id
+                pending_follow_request_id = get_follow_request_or_false(sender=curr_user, reciever=request.user).id
 
             # you sent to them
-            elif get_follow_request_or_false(sender=request.user, reciever=user) != False:
+            elif get_follow_request_or_false(sender=request.user, reciever=curr_user) != False:
                 request_sent = 1
 
             # no request
             else:
                 request_sent = -1
 
-    else:
-        try:
-            follow_requests = FollowRequest.objects.filter(reciever=request.user, is_active=True)
-        except:
-            ...
+    follow_requests = FollowRequest.objects.filter(reciever=curr_user, is_active=True)
 
-    count = Quiz.objects.annotate(child_count = models.Count('question_quiz')).filter(host=user)
+    count = Quiz.objects.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user)
 
-    context = {'user': user, 'profile': profile, 'courses': courses,
+    context = {'curr_user': curr_user, 'profile': profile, 'courses': courses,
                 'quizs': count, 'results': results, 'quiz_result': quiz_result,
                 'followers': followers, 'is_self':is_self, 'is_follower': is_follower,
                 'request_sent': request_sent, 'follow_requests': follow_requests,
