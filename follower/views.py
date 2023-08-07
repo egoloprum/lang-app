@@ -24,7 +24,9 @@ def followerList(request, pk):
     
     if curr_user == request.user:
         follow_requests = FollowRequest.objects.filter(reciever=curr_user, is_active=True)
+        follow_requests_sent = FollowRequest.objects.filter(sender=curr_user, is_active=True)
         context['follow_requests'] = follow_requests
+        context['follow_requests_sent'] = follow_requests_sent
         
     context['curr_user'] = curr_user
 

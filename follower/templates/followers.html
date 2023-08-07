@@ -3,7 +3,10 @@
 {% block content %}
 
   <section class="row p-3">
-    <div class="col for-loop">
+
+    <!-- left side -->
+
+    <div class="col for-loop m-3">
       <h3 class="form-label">Followers</h3>
       {% if follow_list.exists %}
         {% for follower in follow_list %}
@@ -16,24 +19,54 @@
         {% endfor %}
       {% endif %}
     </div>
-    <div class="col for-loop">
+
+    <!-- right side -->
+
+    <div class="col for-loop row m-3">
       <h3 class="form-label">Follow Requests</h3>
-      {% if follow_requests.exists and curr_user == request.user %}
-        {% for request in follow_requests %}
-          
-          <div class="m-3 for-loop">
-            <a href="{% url 'profile' request.sender.id %}">
-              <label class="form-label">Username</label>
-              <p class="form-control">{{ request.sender.username }}</p>
-              <label class="form-label">Time</label>
-              <p class="form-control">{{ request.timestamp }}</p>
-            </a>
-            <a href="{% url 'accept-follow-request' request.id %}" class="btn btn-outline-primary">Accept</a>
-            <a hx-boost="true" href="{% url 'cancel-request' request.id %}" class="btn btn-outline-danger">Cancel</a>
-          </div>
-          
-        {% endfor %}
-      {% endif %}
+
+      <!-- recieved requests -->
+
+      <div class="col">
+        <h3 class="form-label">Requests recieved</h3>
+        {% if follow_requests.exists and curr_user == request.user %}
+          {% for request in follow_requests %}
+            
+            <div class="for-loop">
+              <a href="{% url 'profile' request.sender.id %}">
+                <label class="form-label">Username</label>
+                <p class="form-control">{{ request.sender.username }}</p>
+                <label class="form-label">Time</label>
+                <p class="form-control">{{ request.timestamp }}</p>
+              </a>
+              <a href="{% url 'accept-follow-request' request.id %}" class="btn btn-outline-primary">Accept</a>
+              <a hx-boost="true" href="{% url 'cancel-request' request.id %}" class="btn btn-outline-danger">Cancel</a>
+            </div>
+            
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      <!-- sent requests -->
+
+      <div class="col">
+        <h3 class="form-label">Requests sent</h3>
+        {% if follow_requests_sent.exists and curr_user == request.user %}
+          {% for request in follow_requests_sent %}
+            
+            <div class="for-loop">
+              <a href="{% url 'profile' request.sender.id %}">
+                <label class="form-label">Username</label>
+                <p class="form-control">{{ request.reciever.username }}</p>
+                <label class="form-label">Time</label>
+                <p class="form-control">{{ request.timestamp }}</p>
+              </a>
+              <a hx-boost="true" href="{% url 'cancel-request' request.id %}" class="btn btn-outline-danger">Cancel</a>
+            </div>
+            
+          {% endfor %}
+        {% endif %}
+      </div>
     </div>
   </section>
 
