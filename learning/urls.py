@@ -7,6 +7,7 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('course/', include('course.urls')),
     path('quiz/', include('quiz.urls')),
+    path('follower/', include('follower.urls')),
 
     path("__debug__/", include("debug_toolbar.urls")),
 ]

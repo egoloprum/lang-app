@@ -6,7 +6,6 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 
 from django.db import IntegrityError
-
 from .models import *
 
 def createCourse(request):

@@ -12,6 +12,7 @@ from django.contrib.auth.password_validation import validate_password
 from .models import *
 from course.models import Course
 from quiz.models import Quiz, Result, Average_score
+from follower.models import FollowList, FollowRequest
 
 def loginUser(request):
     context = {}
@@ -55,10 +56,14 @@ def registerUser(request):
             messages.error(request, 'Username already exists')
             return redirect('register')
         
-        
         user.save()
         login(request, user)
-        Profile.objects.create(user=user)
+
+        try:
+            Profile.objects.get(user=user)
+        except Profile.DoesNotExist:
+            Profile.objects.create(user=user)
+
         return redirect('home')
 
     return render(request, 'register.html', context)
@@ -79,6 +84,13 @@ def logoutUser(request):
 def forgotPass(request):
     pass
 
+def get_follow_request_or_false(sender, reciever):
+    try:
+        return FollowRequest.objects.get(sender=sender, reciever=reciever, is_active=True)
+    except FollowRequest.DoesNotExist:
+        return False
+
+
 @login_required(login_url='login')
 def profilePath(request, pk):
     user = User.objects.select_related('profile').get(id=pk)
@@ -92,10 +104,57 @@ def profilePath(request, pk):
         'id': 1,
     }]
 
+    try:
+        follow_list = FollowList.objects.get(user=user)
+    except FollowList.DoesNotExist:
+        follow_list = FollowList.objects.create(user=user)
+
+    followers = follow_list.followers.all()
+
+    is_self = True
+    is_follower = False
+
+    # FollowRequestStatus(Enum):
+    # no_requet_sent = -1
+    # them_sent_to_you = 0
+    # you_sent_to_them = 1
+    request_sent = -1
+    follow_requests = None
+    pending_follow_request_id = 0
+
+    if request.user != user:
+        is_self = False
+        if followers.filter(id=request.user.id):
+            is_follower = True
+        else:
+            is_follower = False
+
+            # them sent to you
+            if get_follow_request_or_false(sender=user, reciever=request.user) != False:
+                request_sent = 0
+                pending_follow_request_id = get_follow_request_or_false(sender=user, reciever=request.user).id
+
+            # you sent to them
+            elif get_follow_request_or_false(sender=request.user, reciever=user) != False:
+                request_sent = 1
+
+            # no request
+            else:
+                request_sent = -1
+
+    else:
+        try:
+            follow_requests = FollowRequest.objects.filter(reciever=request.user, is_active=True)
+        except:
+            ...
+
     count = Quiz.objects.annotate(child_count = models.Count('question_quiz')).filter(host=user)
 
-    context = {'user': request.user, 'profile': profile, 'courses': courses,
-                'quizs': count, 'results': results, 'quiz_result': quiz_result}
+    context = {'user': user, 'profile': profile, 'courses': courses,
+                'quizs': count, 'results': results, 'quiz_result': quiz_result,
+                'followers': followers, 'is_self':is_self, 'is_follower': is_follower,
+                'request_sent': request_sent, 'follow_requests': follow_requests,
+                'pending_follow_request_id': pending_follow_request_id}
 
     return render(request, 'profile.html', context)
 
@@ -183,3 +242,4 @@ def userPath(request):
     context = {'users': users}
 
     return render(request, 'user-path.html', context)
+

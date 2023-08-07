@@ -7,12 +7,42 @@
       <!-- profile info side -->
 
       <section class="for-loop col-4 m-3">
-        <div class="m-3" hx-boost="true">
+        <div class="m-3">
           {% if request.user == user %}
             <a type="button" class="btn btn-outline-primary" href="{% url 'profile-update' %}">Update</a>
             <a type="button" class="btn btn-outline-danger" href="{% url 'delete' %}">Delete</a>
+
+            {% if request_sent == 0 %}
+              <a class="btn btn-success" href="">Accept</a>
+              <a class="btn btn-danger" href="">Cancel</a>
+            {% endif %}
+
+          {% else %}
+
+            {% if is_follower == False and is_self == False %}
+
+              <!-- you sent them request -->
+              {% if request_sent == 1 %}
+                  <a class="btn btn-outline-danger" hx-boost="true" hx-trigger="load" hx-target="#request-result"
+                  href="{% url 'cancel-follow-request' user.id %}">Cancel Friend Request</a>
+              {% endif %}
+        
+              <!-- no request sent -->
+              {% if request_sent == -1 %}
+                  <a class="btn btn-outline-primary" hx-boost="true" hx-trigger="load" hx-target="#request-result"
+                    href="{% url 'send-follow-request' user.id %}">Send Friend Request</a>
+              {% endif %}
+      
+            {% endif %}
+
+            {% if is_follower %}
+              <a class="btn btn-outline-info" href="">Message</a>
+              <a class="btn btn-outline-dark" href="">Unfollow</a>
+            {% endif %}
+
           {% endif %}
           <a type="button" class="btn btn-outline-secondary" href="{% url 'home' %}">Return</a>
+          <div id="request-result"></div>
         </div>
         
         <div class="m-3">
@@ -20,7 +50,17 @@
             <label class="form-label">Username</label>
             <p class="form-control">{{ user.username }}</p>
           </div>
+
           <div class="mb-2">
+            <label class="form-label row"><a class="col-8" href="{% url 'followers' user.id %}">Followers</a>
+              <a class="col" href="{% url 'followers' user.id %}">Request {{ follow_requests|length }}</a>
+            </label>
+            <p class="form-control">{{ user.followers.count }}</p>
+          </div>
+
+
+
+          <!-- <div class="mb-2">
             <label class="col-form-label">First name</label>
             <p class="form-control">{{ user.first_name }}</p>
           </div>
@@ -35,7 +75,7 @@
           <div class="mb-2">
             <label class="col-form-label">Email</label>
             <p class="form-control">{{ user.email }}</p>
-          </div>
+          </div> -->
         </div>
       </section>
 
@@ -43,10 +83,10 @@
 
       <section class="for-loop col m-3">
         <div class="m-3">
-          {% if user.is_authenticated %}
-          <div hx-boost="true">
-            <a class="btn btn-outline-primary mb-3" href="{% url 'quiz-create' %}">Add Quiz</a>
-          </div> 
+          {% if user.is_authenticated and user == request.user %}
+            <div hx-boost="true">
+              <a class="btn btn-outline-primary mb-3" href="{% url 'quiz-create' %}">Add Quiz</a>
+            </div> 
           {% endif %}
           <h3>Quizes</h3>
           {% for quiz in quizs reversed %}
@@ -93,7 +133,7 @@
 
       <section class="for-loop col m-3">
         <div class="m-3">
-          {% if user.is_authenticated %}
+          {% if user.is_authenticated and user == request.user %}
             <div hx-boost="true">
               <a class="btn btn-outline-primary mb-3" href="{% url 'create-course' %}">Create Course</a><br>
             </div>
