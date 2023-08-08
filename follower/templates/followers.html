@@ -3,6 +3,7 @@
 {% block content %}
 
   <section class="row p-3">
+    <h1>{{ curr_user.id }}</h1>
 
     <!-- left side -->
 
@@ -15,6 +16,9 @@
             <a href="{% url 'profile' follower.id %}">
               <p class="form-control">{{ follower.username }}</p>
             </a>
+            {% if request.user == curr_user %}
+              <a href="{% url 'decline-follow' follower.id %}" class="btn btn-outline-danger">Unfollow</a>
+            {% endif %}
           </div>
         {% endfor %}
       {% endif %}
@@ -29,7 +33,7 @@
 
       <div class="col">
         <h3 class="form-label">Requests recieved</h3>
-        {% if follow_requests.exists and curr_user == request.user %}
+        {% if follow_requests.exists and request.user == curr_user %}
           {% for request in follow_requests %}
             
             <div class="for-loop">
@@ -51,7 +55,7 @@
 
       <div class="col">
         <h3 class="form-label">Requests sent</h3>
-        {% if follow_requests_sent.exists and curr_user == request.user %}
+        {% if follow_requests_sent.exists and request.user == curr_user %}
           {% for request in follow_requests_sent %}
             
             <div class="for-loop">

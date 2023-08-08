@@ -10,11 +10,11 @@ from .models import *
 
 @login_required(login_url='login')
 def followerList(request, pk):
-    curr_user = User.objects.get(user=pk)
+    curr_user = User.objects.get(id=pk)
     context = {}
 
     try:
-        follow_list = FollowList.objects.get(user=pk)
+        follow_list = FollowList.objects.get(user=curr_user)
         follow_list = follow_list.followers.all()
         context['follow_list'] = follow_list
 
@@ -22,11 +22,17 @@ def followerList(request, pk):
         context['follow_list'] = None
         return HttpResponse(f"Could not find a friends list for {curr_user.username}")
     
-    if curr_user == request.user:
+    try:
         follow_requests = FollowRequest.objects.filter(reciever=curr_user, is_active=True)
-        follow_requests_sent = FollowRequest.objects.filter(sender=curr_user, is_active=True)
         context['follow_requests'] = follow_requests
+    except FollowRequest.DoesNotExist:
+        HttpResponse('Something is wrong')
+        
+    try:
+        follow_requests_sent = FollowRequest.objects.filter(sender=curr_user, is_active=True)
         context['follow_requests_sent'] = follow_requests_sent
+    except FollowRequest.DoesNotExist:
+        HttpResponse('Something is wrong')
         
     context['curr_user'] = curr_user
 
@@ -61,7 +67,8 @@ def cancel_follow_request(request, pk):
     else:
         payload = "There is no follow request"
 
-    return redirect('/user/profile/%d/'%reciever.id)
+    return redirect(request.META.get('HTTP_REFERER'))
+    # return redirect('/user/profile/%d/'%reciever.id)
 
 # from reciever side
 @login_required(login_url='login')
@@ -77,7 +84,8 @@ def cancel_request(request, pk):
     else:
         payload = "There is no follow request"
 
-    return redirect('/follower/%d/'%request.user.id)
+    return redirect(request.META.get('HTTP_REFERER'))
+    # return redirect('/follower/%d/'%request.user.id)
 
 @login_required(login_url='login')
 def accept_follow_request(request, pk):
@@ -94,7 +102,8 @@ def accept_follow_request(request, pk):
     else:
         payload = "There is no follow request"
 
-    return redirect('/follower/%d/'%request.user.id)
+    return redirect(request.META.get('HTTP_REFERER'))
+    # return redirect('/follower/%d/'%request.user.id)
 
 @login_required(login_url='login')
 def decline_follow(request, pk):
@@ -103,4 +112,5 @@ def decline_follow(request, pk):
     follow_list = FollowList.objects.get(user=request.user)
     follow_list.unfollow(removee)
 
-    return redirect('/profile/%d/'%removee.id)
+    return redirect(request.META.get('HTTP_REFERER'))
+    # return redirect('/user/profile/%d/'%removee.id)

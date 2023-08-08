@@ -219,7 +219,10 @@ def quizResult(request, pk):
     for res in results:
         average_score += res.score
 
-    average_score = average_score / len(results)
+    try:
+        average_score = average_score / len(results)
+    except ZeroDivisionError:
+        average_score = 0
 
     if Average_score.objects.filter(quiz=quiz, user=request.user).exists:
         Average_score.objects.filter(quiz=quiz, user=request.user).delete()

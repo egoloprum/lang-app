@@ -12,25 +12,26 @@
             <a type="button" class="btn btn-outline-primary" href="{% url 'profile-update' %}">Update</a>
             <a type="button" class="btn btn-outline-danger" href="{% url 'delete' %}">Delete</a>
 
-            {% if request_sent == 0 %}
-              <a class="btn btn-success" href="">Accept</a>
-              <a class="btn btn-danger" href="">Cancel</a>
-            {% endif %}
-
           {% else %}
 
             {% if is_follower == False and is_self == False %}
 
+              <!-- they sent you -->
+              {% if request_sent == 0 %}
+                <a class="btn btn-outline-success" href="{% url 'accept-follow-request' pending_follow_request_id %}">Accept Follow Request</a>
+                <a class="btn btn-outline-danger" href="{% url 'cancel-follow-request' curr_user.id %}">Cancel</a>
+              {% endif %}
+
               <!-- you sent them request -->
               {% if request_sent == 1 %}
                   <a class="btn btn-outline-danger" hx-boost="true" hx-trigger="load" hx-target="#request-result"
-                  href="{% url 'cancel-follow-request' curr_user.id %}">Cancel Friend Request</a>
+                  href="{% url 'cancel-follow-request' curr_user.id %}">Cancel Follow Request</a>
               {% endif %}
         
               <!-- no request sent -->
               {% if request_sent == -1 %}
                   <a class="btn btn-outline-primary" hx-boost="true" hx-trigger="load" hx-target="#request-result"
-                    href="{% url 'send-follow-request' curr_user.id %}">Send Friend Request</a>
+                    href="{% url 'send-follow-request' curr_user.id %}">Send Follow Request</a>
               {% endif %}
       
             {% endif %}
@@ -41,7 +42,6 @@
             {% endif %}
 
           {% endif %}
-          <a type="button" class="btn btn-outline-secondary" href="{% url 'home' %}">Return</a>
           <div id="request-result"></div>
         </div>
         
@@ -52,7 +52,8 @@
           </div>
 
           <div class="mb-2">
-            <label class="form-label row"><a class="col-8" href="{% url 'followers' curr_user.id %}">Followers</a>
+            <label class="form-label row">
+              <a class="col-8" href="{% url 'followers' curr_user.id %}">Followers</a>
               <a class="col" href="{% url 'followers' curr_user.id %}">Request {{ follow_requests|length }}</a>
             </label>
             <p class="form-control">{{ curr_user.followers.count }}</p>
@@ -159,18 +160,15 @@
       <section class="for-loop col-6 m-3">
         <div class="m-3">
           <h3 class="form-label">Progress</h3>
-          {% for quiz in quiz_result %}
+          {% for average_result in quiz_result %}
 
-            {% for score in quiz.average_score_quiz.all %}
-              {% if score.quiz == quiz %}
-                <h4>{{ quiz.name }}</h4>
-                <label class="form-label">Average score</label>
-                <p class="form-control">{{ score.score|floatformat:2 }} %</p>
-              {% else %}
-                {{ break }}
-              {% endif %}
-            {% endfor %}
+            <div class="form-control">
+              <label class="form-label">{{ average_result.quiz.name }}</label>
+              <p class="">{{ average_result.score|floatformat:2 }}</p>
+            </div>
 
+            {% empty %}
+              <p class="form-control">This user has not attempted any quiz</p>
           
             {% comment %} <!-- <div class="">
               {% for result in results reversed %}

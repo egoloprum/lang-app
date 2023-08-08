@@ -94,10 +94,13 @@ def get_follow_request_or_false(sender, reciever):
 @login_required(login_url='login')
 def profilePath(request, pk):
     curr_user = User.objects.select_related('profile').get(id=pk)
-    profile = Profile.objects.get(user=pk)
+    try:
+        profile = Profile.objects.get(user=curr_user)
+    except Profile.DoesNotExist:
+        profile = Profile.objects.create(user=curr_user)
     courses = Course.objects.filter(host=pk)
 
-    quiz_result = Quiz.objects.prefetch_related('average_score_quiz')
+    quiz_result = Average_score.objects.filter(user=curr_user)
     results = Result.objects.filter(user=curr_user)
 
     data = [{
@@ -221,7 +224,7 @@ def profileUpdate(request):
 
 @login_required(login_url='login')
 def userPath(request):
-    users = User.objects.select_related('profile')
+    users = User.objects.select_related('profile').exclude(id=request.user.id)
 
     if request.method == 'POST':
         username = request.POST.get('q').lower()
