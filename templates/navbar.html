@@ -1,45 +1,39 @@
 <section class="navbar-page-section-header">
   <header class="navbar navbar-default navbar-fixed-top navbar-expand-lg navbar-page-header">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'home' %}">MOANA</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+
+      <div>
+        <a class="navbar-brand" href="{% url 'home' %}">MOANA</a>
+        <a class="navbar-link me-3" href="">EXPLORE</a>
+        <a class="navbar-link me-3" href="{% url 'quiz' %}">PROBLEMS</a>
+        <a class="navbar-link me-3" href="">DISCUSS</a>
+      </div>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <a class="navbar-link me-3" href="{% url 'course' %}">COURSE</a>
+        <a class="navbar-link me-3" href="{% url 'user-path' %}">USERS</a>
+        <a class="navbar-link me-3" href="">NOTIFICATION</a>
+        <a class="navbar-link me-3" href="">DAILY CHALLENGE</a>
+
         {% if user.is_authenticated %}
-        <ul class="navbar-page-header-ul">
-          <li><a hx-boost="true" class="nav-item" href="{% url 'profile' request.user.id %}">PROFILE <span disabled>({{ request.user.username }})</span> </a></li>
-          <li><a class="nav-item" href="{% url 'logout' %}">LOGOUT</a></li>
-        </ul>
-  
+          <a hx-boost="true" class="navbar-link me-3" href="{% url 'profile' request.user.id %}">
+            PROFILE <span disabled>({{ request.user.username }})</span> 
+          </a>
+          <a class="navbar-link me-3" href="{% url 'logout' %}">
+            LOGOUT
+          </a>
         {% else %}
           {% if request.path != "/user/login" %}
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a hx-boost="true" class="nav-link" href="{% url 'login' %}">Login</a>
-            </li>
-          </ul>
+            <a class="navbar-link me-3" href="{% url 'login' %}">LOGIN</a>
           {% endif %}
         {% endif %}
-        
-        <ul hx-boost="true" class="navbar-page-header-ul">
-          <li>
-            <a href="{% url 'course' %}">COURSE</a>
-          </li>
-          <li>
-            <a href="{% url 'quiz' %}">QUIZ</a>
-          </li>
-          <li>
-            <a href="{% url 'user-path' %}">USERS</a>
-          </li>
-          <li>
-            <a href="">LOREM</a>
-          </li>
-        </ul>
   
       </div>
+
     </div>
   </header>
-  
 </section>

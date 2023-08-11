@@ -1,10 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 import random
+from course.models import Course
 # Create your models here.
 
 class Quiz(models.Model):
     host = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quiz_host')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='quiz_course', null=True)
+
+    # when entering url function which rendered from views makes this variable false 
+    completed = models.BooleanField(default=True, null=False)
     name = models.CharField(max_length=200, null=False)
     duration = models.TimeField(help_text="duration of the quiz in minutes", null=True)
     required_score = models.IntegerField(help_text="required score in %", null=True)

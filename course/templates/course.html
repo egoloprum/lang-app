@@ -3,15 +3,48 @@
 {% block content %}
 
 <section class="p-3 m-3">
-  <a class="btn btn-primary" href="{% url 'create-course' %}" >Create ?</a><hr>
-  <div class="row">
-    <!-- topic side column -->
 
-    <div class="col mt-3">
-      {% for topic in topics %}
-        <p><a href="{% url 'topic' topic.id %}"> {{ topic.name }}</a></p><hr>
-      {% endfor %}
+  <div class="row">
+
+    <div class="col">
+      <a class="btn btn-outline-primary" href="{% url 'create-course' %}" >Create Course</a>
     </div>
+
+    <div class="col d-flex">
+      <input type="search" class="form-control me-2" placeholder="Search...">
+      <button class="btn btn-outline-success" type="submit">Search</button>
+    </div>
+
+    <div class="col">
+      <select class="form-select">
+          <option selected>All</option>
+        {% for topic in topics %}
+          <option><a href="{% url 'topic' topic.id %}"> {{ topic.name }}</a></option>
+        {% endfor %}
+      </select>
+    </div>
+
+  </div>
+
+  <div class="row m-3">
+
+    <div class="col-4">
+      <label class="form-control">New Course</label>
+    </div>
+
+    <div class="col-4">
+      <label class="form-control">In Progress</label>
+    </div>
+
+    <div class="col-4">
+      <label class="form-control">Already Finished</label>
+    </div>
+
+  </div>
+
+
+
+  <div class="row">
 
     <!-- main side column -->
 

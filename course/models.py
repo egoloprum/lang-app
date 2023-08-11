@@ -20,6 +20,8 @@ class Course(models.Model):
   user = models.ManyToManyField(User, related_name='course_user', blank=True)
   topic = models.ForeignKey(Topic, on_delete=models.CASCADE, null=False, related_name='course_topic')
   
+  # if all quizs of it is completed 
+  completed = models.BooleanField(default=False, null=False)
   max_user_num = models.IntegerField(null=True)
   name = models.CharField(unique=True, max_length=200, null=False)
   body = models.TextField(null=False)
@@ -28,6 +30,12 @@ class Course(models.Model):
 
   def __str__(self):
     return self.name
+
+  def get_quiz_count(self):
+    try:
+     return self.quiz_set.all().count
+    except models.FieldDoesNotExist:
+      return 0
 
 class Content(models.Model):
   name = models.CharField(max_length=200, null=False)
