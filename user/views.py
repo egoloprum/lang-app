@@ -220,7 +220,7 @@ def profileUpdate(request):
             messages.error(request, "Please enter correct password")
             return redirect('profile-update')
 
-    return render(request, 'profileUpdate.html', context)
+    return render(request, 'profile-update.html', context)
 
 @login_required(login_url='login')
 def userPath(request):
@@ -242,3 +242,7 @@ def userPath(request):
 
     return render(request, 'user-path.html', context)
 
+@login_required(login_url='login')
+def profileResult(request, pk):
+    context = {}
+    return render(request, 'profile-result.html', context)

@@ -1,18 +1,80 @@
 {% extends 'main.html' %}
-
+{% load static %}
 {% block content %}
 
-  <div class="row m-3">
+  <div class="row row-cols-3 m-3">
 
       <!-- profile info side -->
 
-      <section class="for-loop col-4 m-3">
-        <div class="m-3">
-          {% if request.user == curr_user %}
-            <a type="button" class="btn btn-outline-primary" href="{% url 'profile-update' %}">Update</a>
-            <a type="button" class="btn btn-outline-danger" href="{% url 'delete' %}">Delete</a>
+      <section class="for-loop col-3 m-3">
+        <div class="m-2">
 
-          {% else %}
+          <div class="row mb-2">
+            <img class="col" src="{% static '/images/pic.jpg' %}" style="width: 100px;">
+            <div class="col">
+              <p><b>{{ curr_user.username|title }}</b></p>
+              <p>Rank : 00000</p>
+            </div>
+          </div>
+
+          <div class="row m-1 mb-2">
+            {% if request.user == curr_user %}
+              <a type="button" class="btn btn-outline-success" href="{% url 'profile-update' %}">Edit Profile</a>
+            {% endif %}
+          </div>
+
+          <div class="mb-2 small-font-size">
+              <a class="col" href="{% url 'followers' curr_user.id %}">Followers: {{ curr_user.followers.count }}</a> /
+              <a class="col" href="{% url 'followers' curr_user.id %}">Request {{ follow_requests|length }}</a>
+          </div>
+
+          <div class="mb-2 small-font-size">
+            <a href="#">Facebook</a><br>
+            <a href="#">Instagram</a><br>
+            <a href="#">LinkedIn</a><br>
+            <a href="#">Medium</a>
+          </div><hr>
+
+          <div class="mb-2">
+            <label class="form-label"><b>Languages</b></label>
+            <p class="small-font-size">
+              <a href="">English 10 quizes solved</a>
+            </p>
+          </div><hr>
+
+          <div class="mb-2">
+            <label class="form-label"><b>Skills</b></label>
+            <div class="small-font-size">
+              <li class="profile-skills-list-1"><b>Advanced</b></li>
+              <p class="ms-3">
+                <a class="me-2" href="">Gerund x1</a>
+                <a class="me-2" href="">Gerund x1</a>
+                <a class="me-2" href="">Gerund x1</a>
+              </p>
+            </div>
+            
+            <div class="small-font-size">
+              <li class="profile-skills-list-2"><b>Intermediate</b></li>
+              <p class="ms-3">
+                <a class="me-2" href="">Gerund x1</a>
+                <a class="me-2" href="">Gerund x1</a>
+                <a class="me-2" href="">Gerund x1</a>
+              </p>
+            </div>
+
+            <div class="small-font-size">
+              <li class="profile-skills-list-3"><b>Beginner</b></li>
+              <p class="ms-3">
+                <a class="me-2" href="">Gerund x1</a>
+                <a class="me-2" href="">Gerund x1</a>
+                <a class="me-2" href="">Gerund x1</a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="m-2">
+          {% if request.user != curr_user %}
 
             {% if is_follower == False and is_self == False %}
 
@@ -44,110 +106,127 @@
           {% endif %}
           <div id="request-result"></div>
         </div>
-        
-        <div class="m-3">
-          <div class="mb-2">
-            <label class="form-label">Username</label>
-            <p class="form-control">{{ curr_user.username }}</p>
-          </div>
+      </section>
 
-          <div class="mb-2">
-            <label class="form-label row">
-              <a class="col-8" href="{% url 'followers' curr_user.id %}">Followers</a>
-              <a class="col" href="{% url 'followers' curr_user.id %}">Request {{ follow_requests|length }}</a>
-            </label>
-            <p class="form-control">{{ curr_user.followers.count }}</p>
-          </div>
+      <!-- Solved Quizes -->
 
+      <section class="for-loop col-4 m-3" style="max-height: 220px;">
+        <div class="m-2 small-font-size">
+          <label class="form-label">Solved Quizes</label>
+          <div class="row">
+            <div class="col-4 ms-2 mb-2">
+              <p></p>
+            </div>
 
+            <div class="col">
+              <p class="row">
+                <span class="col">Easy</span> 
+                <span class="col">1 /100</span>
+                <span class="col">Beats 15.3%</span>
+              </p>
+              <p class="row">
+                <span class="col">Medium</span> 
+                <span class="col">2 /200</span>
+                <span class="col">Beats 25.3%</span>
+              </p>
+              <p class="row">
+                <span class="col">Hard</span> 
+                <span class="col">3 /300</span>
+                <span class="col">Beats 35.3%</span>
+              </p>
+            </div>
 
-          <!-- <div class="mb-2">
-            <label class="col-form-label">First name</label>
-            <p class="form-control">{{ curr_user.first_name }}</p>
           </div>
+        </div>
+      </section>
+  
+      <!-- Badges -->
+
+      <section class="for-loop col m-3" style="max-height: 220px;">
+        <div class="m-2">
+          <label class="small-font-size">Badges</label>
           <div class="mb-2">
-            <label class="col-form-label">Last name</label>
-            <p class="form-control">{{ curr_user.last_name }}</p>
+            <p>{{ profile.badges.count }}</p>
           </div>
-          <div class="mb-2">
-            <label class="col-form-label">Birthday</label>
-            <p class="form-control">{{ profile.birthday|date:"d / M / Y" }}</p>
+          <div class="row">
+            <div class="col m-2" style="background: black; height: 100px;">
+              <p></p>
+            </div>
+            <div class="col m-2" style="background: black;">
+              <p></p>
+            </div>
+            <div class="col m-2" style="background: black;">
+              <p></p>
+            </div>
           </div>
-          <div class="mb-2">
-            <label class="col-form-label">Email</label>
-            <p class="form-control">{{ curr_user.email }}</p>
-          </div> -->
         </div>
       </section>
 
-      <!-- quiz side -->
-
-      <section class="for-loop col m-3">
-        <div class="m-3">
-          {% if curr_user.is_authenticated and curr_user == request.user %}
-            <div hx-boost="true">
-              <a class="btn btn-outline-primary mb-3" href="{% url 'quiz-create' %}">Add Quiz</a>
+      <!-- Quiz side -->
+  
+      <section class="for-loop m-3" style="width: 1225px;">
+        <div class="m-2">
+          {% if curr_user == request.user %}
+            <div class="row me-1 ms-1">
+              <a class="btn btn-outline-primary mb-2" href="{% url 'quiz-create' %}">Add Quiz</a>
             </div> 
           {% endif %}
-          <h3>Quizes</h3>
-          {% for quiz in quizs reversed %}
-            <div>
-              <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="">
-                <div class="border">
-                  <label class="form-label">{{quiz.name}}</label>
-                  <p class="text-muted">
-                    <span>{{ quiz.child_count }} questions</span> / 
-                    <span>{{ quiz.duration }}</span> / 
-                    <span>{{ quiz.required_score }} %</span> / 
-                    <span>{{ quiz.difficulty }}</span>
-                  </p>
-                </div>
-              </a>
-            </div>
-           
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    Are you sure that you want to take this quiz ?
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a class="btn btn-outline-primary" href="{% url 'quiz-each' quiz.id %}">Start</a>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            {% empty %}
-              <p>Currently, no quiz has been created by this user.</p>
+          <div class="small-font-size">
+            <p>{{ quizs.count }} Quizes have been created</p>
+          </div>
+          
+          <div class="small-font-size">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Status</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Questions</th>
+                  <th scope="col">Difficulty</th>
+                  <th scope="col">Acceptance</th>
+                  <th scope="col">Duration</th>
+                </tr>
+              </thead>
 
-          {% endfor %}
+              <tbody>
+                {% for quiz in quizs %}
+                  <tr>
+                    <th scope="row"></th>
+                    <td>
+                      {{ forloop.counter }}. <a href="{% url 'profile-result' quiz.id %}">{{ quiz.name }}</a>
+                    </td>
+                    <td>{{ quiz.child_count }}</td>
+                    <td class="difficulty-color" value="{{ quiz.difficulty }}">{{ quiz.difficulty }}</td>
+                    <td>{{ quiz.required_score }} %</td>
+                    <td>{{ quiz.duration|date:"c" }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
       <!-- course side -->
 
-      <section class="for-loop col m-3">
-        <div class="m-3">
-          {% if curr_user.is_authenticated and curr_user == request.user %}
-            <div hx-boost="true">
-              <a class="btn btn-outline-primary mb-3" href="{% url 'create-course' %}">Create Course</a><br>
+      <section class="for-loop m-3" style="width: 1225px;">
+        <div class="m-2">
+          {% if curr_user == request.user %}
+            <div class="row me-2 ms-2">
+              <a class="btn btn-outline-primary mb-2" href="{% url 'create-course' %}">Create Course</a>
             </div>
           {% endif %}
-          <h3 class="form-label">Courses</h3>
-          <div class="row">
+          <div class="small-font-size">
+            <p>{{ courses.count }} Courses have been created</h3>
+          </div>
+          
+          <div class="row small-font-size">
             {% for course in courses %}
-              <a href="{% url 'course-each' course.id %}">
-                <div class="col border">
-                  <label>{{ course.name }}</label><hr>
-                  <p>{{ course.body|truncatewords:10 }}</p>
-                </div>
-              </a>
+              <div class="col-4 border m-2">
+                <label><b>{{ course.name }}</b></label><hr>
+                <p>{{ course.body|truncatewords:80 }}</p>
+              </div>
               {% empty %}
                 <p>Currently, no course has been created by this user.</p>
             {% endfor %}
@@ -157,33 +236,29 @@
 
       <!-- bottom side -->
 
-      <section class="for-loop col-6 m-3">
+      <section class="for-loop m-3" style="width: 1225px;">
         <div class="m-3">
-          <h3 class="form-label">Progress</h3>
-          {% for average_result in quiz_result %}
+          <div class="small-font-size">
+            <p>Recent AC</p>
+          </div>
 
-            <div class="form-control">
-              <label class="form-label">{{ average_result.quiz.name }}</label>
-              <p class="">{{ average_result.score|floatformat:2 }}</p>
-            </div>
-
-            {% empty %}
-              <p class="form-control">This user has not attempted any quiz</p>
-          
-            {% comment %} <!-- <div class="">
-              {% for result in results reversed %}
-                {% if quiz.name == result.quiz.name %}
-                  <label>Attempt: {{ forloop.counter }}</label>
-                  <p class="form-control">{{ result.created_at }}</p>
-                  <p class="form-control">{{ result.score }} %</p>
-                {% endif %}
-              {% endfor %}
-            </div> --> {% endcomment %}
-
-          {% endfor %}
+          <div class="small-font-size">
+            <table class="table table-striped">
+              <tbody>
+                {% for average_result in results reversed %}
+                <tr style="display: flex; justify-content: space-between;">
+                  <td style="width: 100%;">{{ average_result.quiz.name }}</td>
+                  <td style="width: 100%;">{{ average_result.score|floatformat:2 }}%</td>
+                  <td style="width: 100%;">{{ average_result.created_at }}</td>
+                </tr>
+                {% empty %}
+                  <p class="form-control">This user has not attempted any quiz</p>  
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
-
   </div>
 
   

@@ -20,6 +20,7 @@ class Badge(models.Model):
 class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
   gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True)
+  badges = models.ManyToManyField(Badge, blank=True)
 
   birthday = models.DateTimeField(null=True)
   level = models.SmallIntegerField(null=False, default=1)
