@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 import random
-from course.models import Course
+from course.models import Course, Content
 # Create your models here.
 
 class Quiz(models.Model):
     host = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quiz_host')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='quiz_course', null=True)
+    content = models.ForeignKey(Content, on_delete=models.CASCADE, related_name='quiz_content', null=True)
 
     # when entering url function which rendered from views makes this variable false 
     completed = models.BooleanField(default=True, null=False)

@@ -2,80 +2,76 @@
 
 {% block content %}
 
-<section class="p-3 row">
-  <div class="for-loop m-3 col-10">
-    <article>
-
-      <div class="m-3">
-        {% if request.user == course.host %}
-        <a class="btn btn-warning" href="{% url 'course-each-edit' course.id %}">Edit</a>
-        <a type="button" class="btn btn-danger" id="course-id-{{ course.id }}"
-          data-bs-toggle="modal" data-bs-target="#exampleModal">Delete</a>
-        {% endif %}
-        <a class="btn btn-secondary" href="{% url 'course' %}">Back</a><hr>
-      </div>
-  
-      <div class="m-3">
-        <h3>{{ course.name }} </h3>
-        <a href="{% url 'topic' course.topic.id %}"><span>{{ course.topic.name }}</span></a> | 
-        <a href="{% url 'profile' course.host.id %}"><span>{{ course.host.username }}</span></a> |
-        <span class="text-muted">{{ course.created_at }}</span><hr>
-        <p>{{ course.body }}</p>
-      </div>
-    </article>
-  
-    <!-- content of course -->
-
-    <article class="m-3">
-      <h3>Contents of Course</h3><hr>
-      {% for content in contents %}
-
-          <div class="for-loop mb-3">
-            <label class="form-label" id="list-item-{{ content.id }}">{{ content.name }}</label>
-            <p class="form-control">{{ content.body }}</p>
-          </div>
-
-      {% endfor %}
-      <div class="mb-3" id="course-each-content-div">
-
-      </div>
-    </article>
-
+<section class="m-3">
+  <div style="background: cyan; width: 100%; height: 300px;">
   </div>
-  
-  <div class="index-page-list col">
-    <div id="list-example">
-      {% for content in contents %}
-      <a class="" href="#list-item-{{ content.id }}">{{ content.name }}</a>
-      {% endfor %}
+
+  <div class="row">
+
+    <div class="col-3 m-3 for-loop" style="height: 300px;">
+      <div class="m-3">
+        <h4>Overview</h4>
+        <p>{{ course.body|truncatechars:50 }}</p>
+      </div>
+      <div class="m-3">
+        <h4>Resources</h4>
+      </div>
+      
+      <div class="m-3">
+        <h4>Discuss</h4>
+      </div>
     </div>
-  </div>
 
-  <!-- delete modal -->
+    <div class="col m-3 for-loop">
+      <div class="m-3">
+        <h3>Introduction</h3>
+      </div>
 
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="m-3 mb-5">
+        <p class="text-muted">{{ course.body }}</p>
+      </div>
+
+      <div class="m-3 border">
+        <div style="border-bottom: 1px solid rgba(0,0,0,0.2)">
+          <h4 class="m-2 p-2">Resources</h4>
         </div>
-        <div class="modal-body" id="modal-body">
-          <div class="text-muted">
-            <p>Are you sure ?</p>
+        
+        <div class="" style="display: grid; grid-template-columns: auto auto;">
+          {% for content in contents %}
+            <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
+              <p class="m-2 p-2">{{ content.name }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="m-3 border">
+        <div style="border-bottom: 1px solid rgba(0,0,0,0.2)">
+          <h4 class="m-2 p-2">Files</h4>
+        </div>
+        
+        <div class="" style="display: grid; grid-template-columns: auto auto;">
+          <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
+            <p class="m-2 p-2">TOEFL final edition book</p>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <form method="POST" action="">
-              {% csrf_token %}
-              <input type="hidden" name="delete" value="post">
-              <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
+          <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
+            <p class="m-2 p-2">IELTS limited edition</p>
+          </div>
+          <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
+            <p class="m-2 p-2">C2 level 2013 edition book</p>
+          </div>
+          <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
+            <p class="m-2 p-2">Collection of Essays</p>
           </div>
         </div>
       </div>
+
     </div>
+
   </div>
+
+
+
 
 </section>
 

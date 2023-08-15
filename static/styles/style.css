@@ -223,8 +223,6 @@ body li {
 }
 
 .border {
-  margin: var(--form-padding);
-  padding: var(--form-padding);
   border: var(--form-border);
   border-radius: var(--form-border-radius);  
 }

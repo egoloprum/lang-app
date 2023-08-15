@@ -23,53 +23,242 @@
         {% endfor %}
       </select>
     </div>
-
   </div>
 
-  <div class="row m-3">
-
-    <div class="col-4">
-      <label class="form-control">New Course</label>
+  <div class="mt-3">
+    <div>
+      <h3>New Course</h3>
     </div>
-
-    <div class="col-4">
-      <label class="form-control">In Progress</label>
+    <div>
+      <h3>In Progress</h3>
     </div>
-
-    <div class="col-4">
-      <label class="form-control">Already Finished</label>
+    <div>
+      <h3>Already Finished</h3>
     </div>
-
   </div>
 
-
-
-  <div class="row">
-
-    <!-- main side column -->
-
-    <article class="col-8">
-      {% for course in courses %}
-        <div class="p-3 col for-loop">
-          <label class="form-label" id="list-item-{{ course.id }}"><a href="{% url 'course-each' course.id %}">{{ course.name }}</a> /
-            <span class="text-muted">{{ course.topic.name }}</span> 
-          </label>
-          <p class="form-control p-3">{{ course.body }}</p>
-        </div>
-      {% endfor %}
-    </article>
-
-    <!-- map side column -->
-  
-    <div class="course-page-list col">
-      <div id="list-example">
-        {% for course in courses %}
-        <a class="" href="#list-item-{{ course.id }}">{{ course.name }}</a>
-        {% endfor %}
+  <div class="mt-3">
+    <div>
+      <div>
+        <h3>Featured</h3>
       </div>
+
+      {% if courses.exists %}
+        <div class="wrapper" style="background: #4786eb;">
+          <i id="left" class="fa-solid fa-angle-left"></i>
+          <div class="carousel">
+            {% for course in courses %}
+              <div class="m-3 p-0 for-loop carousel-div" draggable="false">
+                <div class="p-3" style="height: 180px; background: cyan; border-radius: 10px;">
+                  <p>{{ course.topic.name }}</p>
+                  <h3 class="mb-5">
+                    <a href="{% url 'course-each' course.id %}">{{ course.name }}</a>
+                  </h3>
+    
+                  <div class="small-font-size row">
+                    <p class="col">Start: 17 Nov 2022</p>
+                    <p class="col">End: 17 Nov 2023</p>
+                  </div>
+                </div>
+    
+                <div class="ms-3 mt-3 me-3">
+                  <div style="display: flex; justify-content: space-between;">
+                    <label>Progress</label>
+                    <label style="color: rgb(109, 112, 112);">0%</label>
+                  </div>
+                  <p style="background: rgb(109, 112, 112); height: 10px; border-radius: 15px;"></p>
+                </div>
+    
+                <div class="m-3" style="display: flex; justify-content: space-around;">
+                  <p>
+                    <span style="display: flex; justify-content: center;">{{ course.content_set|length }}</span>
+                    <span>chapters</span>
+                  </p>
+                  <p>
+                    <span style="display: flex; justify-content: center;">15</span>
+                    <span>quizes</span>
+                  </p>
+                  <p>
+                    <button class="btn btn-light">A1-B1</button>
+                  </p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+          <i id="right" class="fa-solid fa-angle-right"></i>
+        </div>
+      {% endif %}
     </div>
 
+    <div>
+      <h3>Interview</h3>
+      {% if courses.exists %}
+        <div class="wrapper">
+          <i id="left" class="fa-solid fa-angle-left"></i>
+          <div class="carousel">
+            {% for course in courses %}
+              <div class="m-3 p-0 for-loop carousel-div" draggable="false">
+                <div class="p-3" style="height: 180px; background: cyan;">
+                  <p>{{ course.topic.name }}</p>
+                  <h3 class="mb-5">
+                    <a href="{% url 'course-each' course.id %}">{{ course.name }}</a>
+                  </h3>
+    
+                  <div class="small-font-size row">
+                    <p class="col">Start: 17 Nov 2022</p>
+                    <p class="col">End: 17 Nov 2023</p>
+                  </div>
+                </div>
+    
+                <div class="ms-3 mt-3 me-3">
+                  <div style="display: flex; justify-content: space-between;">
+                    <label>Progress</label>
+                    <label style="color: rgb(109, 112, 112);">0%</label>
+                  </div>
+                  <p style="background: rgb(109, 112, 112); height: 10px; border-radius: 15px;"></p>
+                </div>
+    
+                <div class="m-3" style="display: flex; justify-content: space-around;">
+                  <p>
+                    <span style="display: flex; justify-content: center;">{{ course.content_set|length }}</span>
+                    <span>chapters</span>
+                  </p>
+                  <p>
+                    <span style="display: flex; justify-content: center;">15</span>
+                    <span>quizes</span>
+                  </p>
+                  <p>
+                    <button class="btn btn-light">A1-B1</button>
+                  </p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+          <i id="right" class="fa-solid fa-angle-right"></i>
+        </div>
+      {% endif %}
+    </div>
   </div>
+
 </section>
+
+<style>
+.wrapper{
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  max-width: 100%;
+  align-items: center;
+}
+.wrapper i {
+  height: 44px;
+  width: 44px;
+  color: #343F4F;
+  cursor: pointer;
+  position: absolute;
+  font-size: 1.15rem;
+  text-align: center;
+  line-height: 44px;
+  background: #fff;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.1s linear;
+  z-index: 1;
+}
+.wrapper i:active{
+  transform: translateY(-50%) scale(0.9);
+}
+.wrapper i:hover{
+  background: #f2f2f2;
+}
+.wrapper i:first-child{
+  left: -22px;
+}
+.wrapper i:last-child{
+  right: -22px;
+}
+.wrapper .carousel{
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 360px;
+}
+.carousel .carousel-div {
+  object-fit: cover;
+  user-select: none;
+  width: 330px;
+  border-radius: 10px;
+}
+
+.carousel.dragging{
+  cursor: grab;
+  scroll-behavior: auto;
+}
+</style>
+
+<script>
+  const carousel = document.querySelector(".carousel"),
+  firstImg = carousel.querySelectorAll(".carousel-div")[0],
+  arrowIcons = document.querySelectorAll(".wrapper i");
+  let isDragStart = false, isDragging = false, prevPageX, prevScrollLeft, positionDiff;
+  const showHideIcons = () => {
+      // showing and hiding prev/next icon according to carousel scroll left value
+      let scrollWidth = carousel.scrollWidth - carousel.clientWidth; // getting max scrollable width
+
+  }
+  arrowIcons.forEach(icon => {
+      icon.addEventListener("click", () => {
+          let firstImgWidth = firstImg.clientWidth + 20; // getting first img width & adding 14 margin value
+          // if clicked icon is left, reduce width value from the carousel scroll left else add to it
+          carousel.scrollLeft += icon.id == "left" ? -firstImgWidth : firstImgWidth;
+          setTimeout(() => showHideIcons(), 60); // calling showHideIcons after 60ms
+      });
+  });
+  const autoSlide = () => {
+      // if there is no image left to scroll then return from here
+      if(carousel.scrollLeft - (carousel.scrollWidth - carousel.clientWidth) > -1 || carousel.scrollLeft <= 0) return;
+      positionDiff = Math.abs(positionDiff); // making positionDiff value to positive
+      let firstImgWidth = firstImg.clientWidth + 20;
+      // getting difference value that needs to add or reduce from carousel left to take middle img center
+      let valDifference = firstImgWidth - positionDiff;
+      if(carousel.scrollLeft > prevScrollLeft) { // if user is scrolling to the right
+          return carousel.scrollLeft += positionDiff > firstImgWidth / 3 ? valDifference : -positionDiff;
+      }
+      // if user is scrolling to the left
+      carousel.scrollLeft -= positionDiff > firstImgWidth / 3 ? valDifference : -positionDiff;
+  }
+  const dragStart = (e) => {
+      // updatating global variables value on mouse down event
+      isDragStart = true;
+      prevPageX = e.pageX || e.touches[0].pageX;
+      prevScrollLeft = carousel.scrollLeft;
+  }
+  const dragging = (e) => {
+      // scrolling images/carousel to left according to mouse pointer
+      if(!isDragStart) return;
+      e.preventDefault();
+      isDragging = true;
+      carousel.classList.add("dragging");
+      positionDiff = (e.pageX || e.touches[0].pageX) - prevPageX;
+      carousel.scrollLeft = prevScrollLeft - positionDiff;
+      showHideIcons();
+  }
+  const dragStop = () => {
+      isDragStart = false;
+      carousel.classList.remove("dragging");
+      if(!isDragging) return;
+      isDragging = false;
+      autoSlide();
+  }
+  carousel.addEventListener("mousedown", dragStart);
+  carousel.addEventListener("touchstart", dragStart);
+  document.addEventListener("mousemove", dragging);
+  carousel.addEventListener("touchmove", dragging);
+  document.addEventListener("mouseup", dragStop);
+  carousel.addEventListener("touchend", dragStop);
+</script>
 
 {% endblock %}

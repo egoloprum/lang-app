@@ -18,8 +18,8 @@ class Migration(migrations.Migration):
             name='File',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(null=True, upload_to='')),
-                ('file_description', models.CharField(max_length=200, null=True)),
+                ('file', models.FileField(null=False, upload_to='')),
+                ('file_description', models.CharField(max_length=200, null=False)),
             ],
         ),
         migrations.CreateModel(
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('body', models.TextField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('host', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('host', models.ForeignKey(null=False, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
                 ('topic', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='course.topic')),
                 ('user', models.ManyToManyField(blank=True, related_name='user_course', to=settings.AUTH_USER_MODEL)),
             ],
