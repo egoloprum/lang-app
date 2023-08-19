@@ -4,6 +4,7 @@
 
 <section class="p-2 col-6">
   <div class="m-2 for-loop">
+
     {% if messages %}
       <ul class="messages" style="color:#e80d0d;">
         {% for message in messages %}
@@ -12,30 +13,40 @@
       </ul>
     {% endif %}
 
-    <form method="POST" action="" class="m-3">
-      {% csrf_token %}
-      <div class="mb-3">
-        <label class="form-label">Topic</label>
-        <input type="text" class="form-control" name="topic" placeholder="engrish" required>
-      </div>
+    <div>
+      <form method="POST" action="" class="m-3">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Topic *</label>
+          <select class="form-select" name="topic" required>
+            <option>Select...</option>
+            {% for topic in topics %}
+              <option>{{ topic.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label">Name of Course *</label>
+          <input type="text" class="form-control" name="name" placeholder="learning is so hard" required>
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label">Introduction *</label>
+          {{ form.media }}
+          {{ form.as_p }}
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label">Max Number of Users</label>
+          <input type="number" name="max-user_num" class="form-control" min="1" placeholder="200" >
+        </div>
+  
+        <button type="submit" class="btn btn-outline-primary">Create</button>
+      </form>
+    </div>
 
-      <div class="mb-3">
-        <label class="form-label">Name of Course</label>
-        <input type="text" class="form-control" name="name" placeholder="learning is so hard" required>
-      </div>
 
-      <div class="mb-3">
-        <label class="form-label">Body of Course</label>
-        <textarea class="form-control" name="body" aria-label="With textarea" required></textarea>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Max Number of Users</label>
-        <input type="number" name="max-user_num" class="form-control" min="1" placeholder="200" >
-      </div>
-
-      <button type="submit" class="btn btn-primary">Create</button>
-    </form>
   </div>
 </section>
 

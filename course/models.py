@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from ckeditor.fields import RichTextField
 
 class Topic(models.Model):
   name = models.CharField(unique=True, null=False, max_length=200)
@@ -29,7 +30,7 @@ class Course(models.Model):
   # if all quizs of it is completed 
   completed = models.BooleanField(default=False, null=False)
   name = models.CharField(unique=True, max_length=200, null=False)
-  body = models.TextField(null=False)
+  body = RichTextField(null=False)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
@@ -49,7 +50,7 @@ class Content(models.Model):
   course = models.ForeignKey(Course, on_delete=models.CASCADE, null=False, related_name='content_course')
 
   name = models.CharField(max_length=200, null=False)
-  body = models.TextField(null=False)
+  body = RichTextField(null=False, blank=True)
   files = models.ForeignKey(File, on_delete=models.CASCADE, null=True, blank=True)
   
   def __str__(self):

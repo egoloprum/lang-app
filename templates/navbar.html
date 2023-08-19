@@ -3,10 +3,10 @@
     <div class="container-fluid">
 
       <div class="small-font-size">
-        <a class="navbar-brand" href="{% url 'home' %}">MOANA</a>
-        <a class="navbar-link me-3" href="">EXPLORE</a>
-        <a class="navbar-link me-3" href="{% url 'quiz' %}">PROBLEMS</a>
-        <a class="navbar-link me-3" href="">DISCUSS</a>
+        <a class="navbar-brand" href="{% url 'home' %}"><i class="fa-solid fa-kiwi-bird"></i> MOANA</a>
+        <a class="navbar-link me-3" href="{% url 'quiz' %}">Explore</a>
+        <a class="navbar-link me-3" href="{% url 'quiz' %}">Problems</a>
+        <a class="navbar-link me-3" href="">Discuss</a>
       </div>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,17 +16,18 @@
       <!-- class="collapse navbar-collapse" id="navbarSupportedContent" -->
 
       <div class="small-font-size">
-        <a class="navbar-link me-3" href="{% url 'course' %}">COURSE</a>
-        <a class="navbar-link me-3" href="{% url 'user-path' %}">USERS</a>
-        <a class="navbar-link me-3" href="">NOTIFICATION</a>
-        <a class="navbar-link me-3" href="">DAILY CHALLENGE</a>
+        <a class="navbar-link me-3 btn btn-light" href="{% url 'subscribe' %}">Premium</a>
+        <a class="navbar-link me-3" href="{% url 'course' %}">Course</a>
+        <a class="navbar-link me-3" href="{% url 'user-path' %}">Users</a>
+        <a class="navbar-link me-3" href=""><i class="fa-regular fa-bell"></i></a>
+        <a class="navbar-link me-3" href=""><i class="fa-regular fa-star"></i></a>
 
         {% if user.is_authenticated %}
           <a hx-boost="true" class="navbar-link me-3" href="{% url 'profile' request.user.id %}">
-            PROFILE <span disabled>({{ request.user.username }})</span> 
+            <i class="fa-regular fa-user"></i>
           </a>
           <a class="navbar-link me-3" href="{% url 'logout' %}">
-            LOGOUT
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
           </a>
         {% else %}
           {% if request.path != "/user/login" %}

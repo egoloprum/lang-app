@@ -7,10 +7,12 @@ from django.shortcuts import get_object_or_404
 
 from django.db import IntegrityError
 from .models import *
+from .forms import CourseForm
 
 def createCourse(request):
     host = request.user
     all_topic = Topic.objects.all()
+    course_form = CourseForm()
 
     if request.method == "POST":
         topic_html = request.POST.get('topic')
@@ -45,7 +47,7 @@ def createCourse(request):
 
         
 
-    context = {'topics': all_topic}
+    context = {'topics': all_topic, 'form': course_form}
 
     return render(request, 'create-course.html', context)
 
