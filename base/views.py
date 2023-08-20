@@ -7,3 +7,9 @@ def home(request):
 
 def subscribe(request):
     return render(request, 'subscribe.html')
+
+def daily_challenge(request):
+    return render(request, 'daily-challenge.html')
+
+def store(request):
+    return render(request, 'store.html')

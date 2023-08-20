@@ -16,12 +16,8 @@
 
     {% include 'navbar.html' %}
     
-    <div class="main-container">
-      {% if user.is_authenticated %}
-        {% include 'breadcrumbs.html' %}
-      {% endif %}
-
-      <div class="container" style="background: var(--color-background);">
+    <div class="">
+      <div class="container" style="background: var(--color-background); padding:0;">
         {% block content %}
         {% endblock %}
       </div>
