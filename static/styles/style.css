@@ -40,6 +40,7 @@ body a:hover {
 
 body p {
   word-wrap: break-word;
+  margin: 0;
 }
 
 body li {
@@ -241,6 +242,11 @@ body li {
   box-shadow: 0 2rem 3rem var(--color-light); 
 }
 
+.white-border {
+  background: var(--color-white);
+  box-shadow: 0 2rem 3rem var(--color-light); 
+}
+
 .wrapper-margin-padding {
   margin: var(--form-padding);
   padding: var(--form-padding);
@@ -306,5 +312,7 @@ body li {
 }
 
 .small-font-size {
-  font-size: 14px;
+  font-size: 12px;
 }
+
+
