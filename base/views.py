@@ -19,3 +19,27 @@ def contest(request):
 
 def contestEach(request):
     return render(request, 'contest-each.html')
+
+def baseCourses(request):
+    return render(request, 'home.html')
+
+def baseSkills(request):
+    return render(request, 'home.html')
+
+def baseGrammar(request):
+    return render(request, 'home.html')
+
+def baseVocab(request):
+    return render(request, 'home.html')
+
+def baseBusEng(request):
+    return render(request, 'home.html')
+
+def baseGenEng(request):
+    return render(request, 'home.html')
+
+def baseEngLev(request):
+    return render(request, 'home.html')
+
+
+

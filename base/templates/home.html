@@ -1,0 +1,249 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+<section>
+  {% if request.path == '/courses' %}
+  
+    <div style="height: 500px; background: linear-gradient(45deg, rgb(190, 25, 255), rgb(58, 242, 249));
+      display: flex; align-items: end;">
+      <div class="ms-3 p-3 white-border" style="width: 500px; border-top-right-radius: 20px;">
+        <h4>
+          Learn English with an online course specially
+          created by the British Council, the world's English
+          teaching experts.
+        </h4>
+      </div>
+    </div>
+
+    <div class="pt-3 mt-3" style="display: flex; justify-content: center; align-items: center;">
+      <div style="width: 1000px;">
+        <h4>
+          Our highly qualified English teachers are by your side and provide you with the right 
+          tools to help you interact confidently in the real world and achieve the professional 
+          and personal success you are working towards.
+        </h4>
+      </div>
+    </div>
+
+    <div class="mt-3 pt-3" style="width: 100%; 
+      background: linear-gradient(45deg, rgb(102, 255, 94), rgb(198, 249, 58));">
+      <div class="mt-3 pt-3" style="display: flex; justify-content: center;">
+        <h4>Choose from our popular online courses</h4>
+      </div>
+
+      <!-- block introductions -->
+      <div class="m-3 p-3 row row-cols-5" style="justify-content: center;">
+        <div class="white-border m-3 p-3">
+          <div class="m-3" style="display: flex; justify-content: center">
+            <i class="fa-solid fa-chalkboard-user" style="font-size: 75px;"></i>
+          </div>
+
+          <div class="m-3" style="display: flex; justify-content: center">
+            <p>Live classes</p>
+          </div>
+
+          <div class="m-3" style="display: flex; justify-content: center">
+            <p>Group and one-to-one online classes with expert teachers.</p>
+          </div>
+        </div>
+
+        <div class="white-border m-3 p-3">
+          <div class="m-3" style="display: flex; justify-content: center">
+            <i class="fa-solid fa-book" style="font-size: 75px;"></i>
+          </div>
+
+          <div class="m-3" style="display: flex; justify-content: center">
+            <p>IELTS preparation</p>
+          </div>
+
+          <div class="m-3" style="display: flex; justify-content: center">
+            <p>Get the score you need with private and group online classes.</p>
+          </div>
+        </div>
+
+        <div class="white-border m-3 p-3">
+          <div class="m-3" style="display: flex; justify-content: center">
+            <i class="fa-solid fa-person-chalkboard" style="font-size: 75px;"></i>
+          </div>
+
+          <div class="m-3" style="display: flex; justify-content: center">
+            <p>Personal tutoring</p>
+          </div>
+
+          <div class="m-3" style="display: flex; justify-content: center">
+            <p>One-to-one online sessions focused on a personal plan.</p>
+          </div>
+        </div>
+
+        <div class="white-border m-3 p-3">
+          <div class="m-3" style="display: flex; justify-content: center">
+            <i class="fa-solid fa-computer" style="font-size: 75px;"></i>
+          </div>
+
+          <div class="m-3" style="display: flex; justify-content: center">
+            <p>Self-study courses</p>
+          </div>
+
+          <div class="m-3" style="display: flex; justify-content: center">
+            <p>Learn at your own pace with a self-study online course.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- courses  -->
+      <div class="m-3 p-3">
+        <!-- live classes -->
+        <div class="m-3 p-3 white-border" style="display: flex;">
+          <div>
+            <img style="width: 300px;" src="{% static 'images/live-classes.jpg' %}">
+          </div>
+
+          <div>
+            <div class="ms-3">
+              <button class="btn btn-info">Live classes</button>
+              <h4 class="m-3">
+                Learn from anywhere with live interactive group and one-to-one classes with expert teachers
+              </h4>
+            </div>
+    
+            <div class="m-3">
+              <p>
+                Choose your schedule, set study goals, track your progress 
+                and achieve British Council certificates as you learn. English Online 
+                is aligned with the CEFR framework.
+              </p>
+            </div>
+    
+            <div class="m-3">
+              <button class="btn btn-light">Learn more about our live classes</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ielts preparation -->
+        <div class="m-3 p-3 white-border" style="display: flex;">
+          <div>
+            <div class="">
+              <button class="btn btn-info">IELTS preparation</button>
+              <h4 class="m-3">
+                Take the IELTS test with total confidence and get the score you 
+                need with private and group IELTS preparation classes
+              </h4>
+            </div>
+            <div class="m-3">
+              <p>
+                Prepare for your test with co-creators of the IELTS test, where courses are adapted to 
+                your needs allowing you to focus on specific skills in private or group classes and 
+                revise your learning with interactive practice material.
+              </p>
+            </div>
+            <div class="m-3">
+              <button class="btn btn-light">Learn more about IELTS Coach</button>
+            </div>
+          </div>
+
+          <div>
+            <img style="width: 300px;" src="{% static 'images/ielts-prep.jpg' %}">
+          </div>
+        </div>
+
+        <!-- personal tutoring -->
+        <div class="m-3 p-3 white-border" style="display: flex;">
+          <div>
+            <img style="height: 300px; width: 300px;" src="{% static 'images/personal-tutoring.jpg' %}">
+          </div>
+          <div>
+            <div class="">
+              <button class="btn btn-info">Personal tutoring</button>
+              <h4 class="m-3">
+                Learn in one-to-one sessions with a tutor of your choice, focused on a personal learning plan
+              </h4>
+            </div>
+            <div class="m-3">
+              <p>
+                Book private online sessions with a tutor of your choice and focus on the areas important 
+                to you. Work together on a learning plan based on your level to help you reach your 
+                goal, be it professional, competitive or just for fun.
+              </p>
+            </div>
+            <div class="m-3">
+              <button class="btn btn-light">Learn more about our personal tutors</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- self study courses -->
+        <div class="m-3 p-3 white-border" style="display: flex;">
+          <div>
+            <div class="">
+              <button class="btn btn-info">Self-study courses</button>
+              <h4 class="m-3">
+                Learn at your own pace, in your own time with a self-study course
+              </h4>
+            </div>
+            <div class="m-3">
+              <p>
+                Learn online in your own time and at your own speed. 
+                Suitable for professionals and enthusiastic individuals, 
+                with a variety of interactive exercises and webinars.
+              </p>
+            </div>
+            <div class="m-3">
+              <button class="btn btn-light">Learn more about our self-study course</button>
+            </div>
+          </div>
+          <div>
+            <img style="height: 300px; width: 300px;" src="{% static 'images/self-study.jpg' %}">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="mt-3" style="background: #3e44ff; width: 100%; display: flex; color: #fff;">
+      <div class="m-4 p-4">
+        <img src="{% static 'images/which-course-suits.jpg' %}" style="width: 500px; height: 500px;">
+      </div>
+      <div class="m-4 p-4">
+        <h3><b>Take our learning-style quiz to find the course that suits you the best</b></h3>
+        <div class="mt-4">
+          <p>
+            Do you know the best ways for you to learn English? Use our 
+            learning-style quiz to find out which of our courses is best for you.
+          </p>
+        </div>
+        <div class="mt-4">
+          <button class="btn btn-lg btn-light">Start the quiz</button>
+        </div>
+      </div>
+    </div>
+
+  {% endif %}
+
+  {% if request.path == '/skills' %}
+  1
+  {% endif %}
+
+  {% if request.path == '/grammar' %}
+  1
+  {% endif %}
+
+  {% if request.path == '/vocabulary' %}
+  1
+  {% endif %}
+
+  {% if request.path == '/business-english' %}
+  1
+  {% endif %}
+
+  {% if request.path == '/general-english' %}
+  1
+  {% endif %}
+
+  {% if request.path == '/english-level' %}
+  1
+  {% endif %}
+</section>
+
+{% endblock %}

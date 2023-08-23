@@ -9,19 +9,24 @@
 
   <div class="row">
 
-    <div class="col-3 m-3 for-loop" style="height: 300px;">
+    <div class="col-3 m-3 for-loop" style="height: fit-content;">
       <div class="m-2">
         <h4>Overview</h4>
         <p class="text-muted small-font-size">{{ course.body|safe|truncatechars:50 }}</p>
       </div>
       <div class="m-2">
         <h4>Chapters</h4>
+        <ul>
+          {% for content in contents %}
+            <li>{{ content.name }}</li>
+          {% endfor %}
+        </ul>
       </div>
 
       <div class="m-2">
-        <h4>Resources</h4>
+        <h4>Quizes</h4>
       </div>
-      
+
       <div class="m-2">
         <h4>Discuss</h4>
       </div>
@@ -38,13 +43,13 @@
 
       <div class="m-3 border">
         <div style="border-bottom: 1px solid rgba(0,0,0,0.2)">
-          <h4 class="m-2 p-2">Resources</h4>
+          <h4 class="m-2 p-2">Chapters</h4>
         </div>
         
         <div class="" style="display: grid; grid-template-columns: auto auto;">
           {% for content in contents %}
             <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
-              <p class="m-2 p-2">{{ content.name }}</p>
+              <p class="m-2 p-2"><a href="">{{ content.name }}</a></p>
             </div>
           {% endfor %}
         </div>

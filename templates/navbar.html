@@ -1,3 +1,5 @@
+{% load static %}
+{% if user.is_authenticated %}
 <section class="navbar-page-section-header">
   <header class="navbar navbar-default navbar-fixed-top navbar-expand-lg navbar-page-header">
     <div class="container-fluid">
@@ -41,3 +43,39 @@
     </div>
   </header>
 </section>
+
+{% else %}
+
+<section class="">
+  <header class="">
+    <div class="">
+      <div class="p-3" style="height: 100px; background: #3e9ee7; display: flex; justify-content: space-around; align-items: center;">
+        <div style="display: flex; align-items: center;">
+          <a href="{% url 'home' %}" class="me-2">
+            <img src="{% static 'images/kiwi.png' %}" style="width: 50px;">
+          </a>
+          <span style="border-right: 2px solid #ffffff; height: 50px;"></span>
+          <a href="{% url 'home' %}" class="ms-2">MOANA</a>
+        </div>
+        
+        <div>
+          <a class="me-2" href="{% url 'login' %}">Log In</a>
+          <a href="{% url 'register' %}">Register</a>
+        </div>
+      </div>
+
+      </div>
+      <div class="p-2" style="display: flex; justify-content: space-around; background: linear-gradient(45deg, #48ff7f, #1bfaca);">
+        <a class="navbar-link me-3" href="{% url 'base-courses' %}">Courses</a>
+        <a class="navbar-link me-3" href="{% url 'base-skills' %}">Skills</a>
+        <a class="navbar-link me-3" href="{% url 'base-grammar' %}">Grammar</a>
+        <a class="navbar-link me-3" href="{% url 'base-vocab' %}">Vocabulary</a>
+        <a class="navbar-link me-3" href="{% url 'base-bus-eng' %}">Business English</a>
+        <a class="navbar-link me-3" href="{% url 'base-gen-eng' %}">General English</a>
+        <a class="navbar-link me-3" href="{% url 'base-eng-lev' %}">English Level</a>
+
+      </div>
+    </div>
+  </header>
+</section>
+{% endif %}

@@ -121,22 +121,6 @@ body li {
 
 /* navbar.html */
 
-.navbar-page-section-header {
-  width: 100%;
-  background: #7be8ea;
-}
-
-.navbar-page-header-ul {
-  display: flex;
-  margin-left: auto;
-  margin-bottom: auto;
-  flex-direction: row;
-}
-
-.navbar-page-header-ul li {
-  margin: 10px;
-  list-style: none;
-}
 
 /* index.html */
 
