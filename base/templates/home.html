@@ -4,13 +4,14 @@
 
 <section>
   {% if request.path == '/courses' %}
-  
+
+  <div>
     <div style="height: 500px; background: linear-gradient(45deg, rgb(190, 25, 255), rgb(58, 242, 249));
       display: flex; align-items: end;">
       <div class="ms-3 p-3 white-border" style="width: 500px; border-top-right-radius: 20px;">
-        <h4>
-          Learn English with an online course specially
-          created by the British Council, the world's English
+        <h4 class="p-3">
+          <b>Learn English with an online course</b>
+          specially created by the British Council, the world's English
           teaching experts.
         </h4>
       </div>
@@ -218,15 +219,337 @@
         </div>
       </div>
     </div>
+  </div>
 
   {% endif %}
 
   {% if request.path == '/skills' %}
-  1
+  <div>
+    <div style="height: 500px; background: linear-gradient(45deg, rgb(224, 255, 25), rgb(217, 58, 249));
+      display: flex; align-items: end;">
+      <div class="ms-3 p-3 white-border" style="width: 500px; border-top-right-radius: 20px;">
+        <h4 class="p-3">
+          <b>Skills</b><br>
+          Practise your reading, writing, listening and speaking skills at your level.
+        </h4>
+      </div>
+    </div>
+
+    <div class="row" style="margin: 0;">
+
+      <!-- left part -->
+      <div class="col-9">
+        <div class="p-3 m-3">
+          <div>
+            <h5>
+              Here you can find practice materials and activities to improve 
+              your English speaking, listening, reading and writing skills. 
+              Improving your skills will help you use English more effectively so 
+              that you can do well in your studies, get ahead at work and confidently 
+              communicate in English in your free time.
+            </h5>
+          </div>
+
+          <div class="pt-3">
+            <h4>
+              <b>How to improve your English proficiency</b>
+            </h4>
+            <h5 class="pt-3">
+              To build your vocabulary and develop your English communication skills, practice 
+              and study are essential. Working through practice activities and regularly reviewing 
+              the new language you learn can help you accelerate your knowledge and understanding of English.
+            </h5>
+          </div>
+
+          <div class="pt-3">
+            <h4>
+              <b>Take a low-cost self-study course online</b>
+            </h4>
+            <h5 class="pt-3">
+              Learn English in your own time, at your own pace with a flexible, online self-study course. 
+              Get unlimited access to helpful, high-quality learning materials and activities from 
+              beginner to advanced level. Learn on the go, earn digital certificates and improve 
+              your English speaking, listening, reading and writing skills.
+            </h5>
+            <button class="pt-3 btn btn-lg btn-dark">Find out more</button>
+          </div>
+          
+          <div class="pt-3">
+            <h4>
+              <b>Choose the skill you want to practise</b>
+            </h4>
+            <h5 class="pt-3">
+              The self-study lessons in these sections are written and organised by 
+              English level based on the Common European Framework of Reference for 
+              languages (CEFR). There are different types of texts, recordings and videos 
+              with interactive exercises and worksheets that practise the skills you need.
+            </h5>
+            <h5 class="pt-3">
+              Choose the skill you want to practise today and improve your English at your own 
+              speed, whenever it's convenient for you.
+            </h5>
+          </div>
+        </div>
+
+        <!-- listening reading writing speaking -->
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border">
+            <img src="{% static 'images/skills/listening.jpg' %}" style="width: 400px; height: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Listening</b>
+            </h4>
+            <h5>
+              Here you can find activities to practise your listening skills. 
+              Listening will help you to improve your understanding of the language and your pronunciation.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border">
+            <img src="{% static 'images/skills/reading.jpg' %}" style="width: 400px; height: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Reading</b>
+            </h4>
+            <h5>
+              Here you can find activities to practise your reading skills.
+              Reading will help you to improve your understanding of the 
+              language and build your vocabulary.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/skills/writing.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Writing</b>
+            </h4>
+            <h5>
+              Here you can find activities to practise your writing 
+              skills. You can improve your writing by understanding model texts and how they're structured.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border">
+            <img src="{% static 'images/skills/speaking.jpg' %}" style="width: 400px; height: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Speaking</b>
+            </h4>
+            <h5>
+              Here you can find activities to practise your speaking skills. 
+              You can improve your speaking by noticing the language we use in different 
+              situations and practising useful phrases.
+            </h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- right part -->
+      <div class="col" >
+        <div class="p-3 m-3 white-border">
+          <p class="m-2">Listening</p>
+          <p class="m-2">Reading</p>
+          <p class="m-2">Writing</p>
+          <p class="m-2">Speaking</p>
+        </div>
+
+        <div class="p-3 m-3 white-border">
+          <div>
+            <p class="m-2">Online English Courses</p>
+          </div>
+        </div>
+
+        <div class="p-3 m-3 white-border">
+          <p class="m-2"><b>Help</b></p>
+          <p class="m-2">Free online English test</p>
+          <p class="m-2">Frequently asked questions</p>
+          <p class="m-2">Getting started</p>
+          <p class="m-2">House rules</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
   {% endif %}
 
   {% if request.path == '/grammar' %}
-  1
+  <div>
+    <div style="height: 500px; background: linear-gradient(45deg, rgb(255, 255, 255), rgb(143, 255, 57));
+      display: flex; align-items: end;">
+      <div class="ms-3 p-3 white-border" style="width: 500px; border-top-right-radius: 20px;">
+        <h4 class="p-3">
+          <b>Grammar</b><br>
+          Revise and practise your grammar to help you increase your confidence and improve your language level.
+        </h4>
+      </div>
+    </div>
+
+    <div class="row" style="margin: 0;">
+
+      <!-- left part -->
+      <div class="col-9">
+        <div class="p-3 m-3">
+          <div class="mb-3">
+            <h5>
+              Practise your English grammar with clear grammar explanations and 
+              practice exercises to test your understanding. The learning materials are 
+              organised into two sections, organised by English level. 
+            </h5>
+          </div>
+
+          <div class="mb-3">
+            <h5>
+              All learners, whatever their level, have questions and doubts about grammar as 
+              they're learning English. There is also a grammar reference which helps to 
+              explain the verb tenses and grammar rules in a clear and simple way.
+            </h5>
+          </div>
+
+          <div class="mb-3">
+            <h5>
+              Decide which area of grammar you need help with today and choose a grammar 
+              point to work on. When you do the interactive exercises, you can see how well 
+              you've done. By revising and practising your grammar you will increase your 
+              confidence in English and improve your language level.
+            </h5>
+          </div>
+
+          <div class="mb-3">
+            <h5>
+              Practising little and often is the best way to improve your grammar, so come 
+              back tomorrow to choose another grammar point to work on. Good luck!
+            </h5>
+          </div>
+        </div>
+
+        <!-- listening reading writing speaking -->
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/grammar/a1-a2.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>A1-A2 grammar</b>
+            </h4>
+            <h5>
+              Are you a learner at A1 (elementary) or A2 (pre-intermediate) English level? 
+              In this section, you can improve your grammar with our clear and simple grammar lessons.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/grammar/b1-b2.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>B1-B2 grammar</b>
+            </h4>
+            <h5>
+              Are you a learner at B1 (intermediate) or B2 (upper intermediate) 
+              English level? In this section, you can improve your grammar with our clear and simple grammar lessons.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/grammar/c1.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>C1 grammar</b>
+            </h4>
+            <h5>
+              Are you a learner at C1 (advanced) English level? In this section, you can 
+              improve your grammar with our clear and simple grammar lessons.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/grammar/english-refer.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>English grammar reference</b>
+            </h4>
+            <h5>
+              This grammar section explains English grammar in a clear and simple way. There 
+              are example sentences to show how the language is used and there are 
+              interactive exercises so you can practise what you learn.
+            </h5>
+          </div>
+        </div>
+
+        <div>
+          <div class="mt-3">
+            <h4>
+              <b>Learn to use grammar correctly and confidently</b>
+            </h4>
+          </div>
+          <div class="mt-3">
+            <h5>
+              Our online English classes feature lots of useful learning materials and activities 
+              to help you improve your understanding of grammar in a safe and inclusive learning environment.
+            </h5>
+          </div>
+          <div class="mt-3">
+            <h5>
+              Practise using grammar with your classmates in live group classes, get grammatical 
+              support from a personal tutor in one-to-one lessons or practise grammar by yourself 
+              at your own pace with a self-study course.
+            </h5>
+          </div>
+          <div class="mt-3 mb-3">
+            <button class="btn btn-lg btn-light">Explore Courses</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- right part -->
+      <div class="col" >
+        <div class="p-3 m-3 white-border">
+          <p class="m-2">A1-A2 grammar</p>
+          <p class="m-2">B1-B2 grammar</p>
+          <p class="m-2">C1 grammar</p>
+          <p class="m-2">English grammar refrence</p>
+        </div>
+
+        <div class="p-3 m-3 white-border">
+          <div>
+            <p class="m-2">Online English Courses</p>
+          </div>
+        </div>
+
+        <div class="p-3 m-3 white-border">
+          <p class="m-2"><b>Help</b></p>
+          <p class="m-2">Free online English test</p>
+          <p class="m-2">Frequently asked questions</p>
+          <p class="m-2">Getting started</p>
+          <p class="m-2">House rules</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
   {% endif %}
 
   {% if request.path == '/vocabulary' %}
