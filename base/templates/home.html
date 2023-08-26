@@ -4,7 +4,6 @@
 
 <section>
   {% if request.path == '/courses' %}
-
   <div>
     <div style="height: 500px; background: linear-gradient(45deg, rgb(190, 25, 255), rgb(58, 242, 249));
       display: flex; align-items: end;">
@@ -498,7 +497,7 @@
           </div>
         </div>
 
-        <div>
+        <div class="m-3 p-3">
           <div class="mt-3">
             <h4>
               <b>Learn to use grammar correctly and confidently</b>
@@ -546,26 +545,553 @@
           <p class="m-2">House rules</p>
         </div>
       </div>
-
     </div>
-
   </div>
   {% endif %}
 
-  {% if request.path == '/vocabulary' %}
-  1
-  {% endif %}
-
   {% if request.path == '/business-english' %}
-  1
+  <div>
+    <div style="height: 500px; background: linear-gradient(45deg, rgb(255, 255, 255), rgb(255, 57, 57));
+      display: flex; align-items: end;">
+      <div class="ms-3 p-3 white-border" style="width: 500px; border-top-right-radius: 20px;">
+        <h4 class="p-3">
+          <b>Business English</b><br>
+          Improve your English for the workplace and learn about business topics 
+          to help you work more effectively and make the most of career opportunities.
+        </h4>
+      </div>
+    </div>
+
+    <div class="row" style="margin: 0;">
+
+      <!-- left part -->
+      <div class="col-9">
+        <div class="p-3 m-3">
+          <div class="mb-3">
+            <h5>
+              Business English communication skills are essential for getting ahead at work. 
+              Improving your professional business vocabulary and knowledge will help you work 
+              more effectively and open up new career opportunities.
+            </h5>
+          </div>
+
+          <div class="mb-3">
+            <h4>
+              <b>Using English in a business environment</b>
+            </h4>
+            <h5>
+              English is recognised as the most internationally popular language, which makes 
+              it the most dominant language in the business world. Even if you have a good level 
+              of basic English, learning business English will give you the chance to demonstrate 
+              a wider professional vocabulary which can result in new opportunities in your career.
+            </h5>
+            <h5>
+              Studying business English allows you to develop English language skills that are useful 
+              in an office or other business environments. By understanding the communication skills 
+              needed in the workplace, you can gain the confidence to build strong relationships with 
+              your colleagues and clients.
+            </h5>
+          </div>
+
+          <div class="mb-3">
+            <h4>
+              <b>Business English learning support resources</b>
+            </h4>
+            <h5>
+              Here you can find a wide variety of activities to develop your interview skills, 
+              write clear emails in English and learn about business topics and issues. Watch videos, 
+              listen to podcasts or read articles, then complete the specially designed tasks to help 
+              you understand the topic and use the language skills that you have learned.
+            </h5>
+          </div>
+
+          <div class="mb-3">
+            <h4>
+              <b>Helping organisations train for success</b>
+            </h4>
+            <h5>
+              We work with some of the world's leading organisations to create and deliver English 
+              language courses, professional communication skills programmes and assessments. Our 
+              scalable training solutions are delivered face-to-face or online by qualified experts. 
+            </h5>
+          </div>
+        </div>
+
+        <!-- sections with images -->
+
+        <div class="m-3 ps-3">
+          <h4>
+            <b>Choose a section</b>
+          </h4>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/business/corporate.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Corporate training and assessments</b>
+            </h4>
+            <h5>
+              Create a training and assessment programme that suits your organisation and meets your business goals.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/business/magazine.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Business magazine</b>
+            </h4>
+            <h5>
+              Do you want to practise your reading and find out about business topics 
+              and issues? Read magazine articles for intermediate or upper intermediate level learners.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/business/podcast.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Podcasts for professionals</b>
+            </h4>
+            <h5>
+              Do you want to practise your listening and find out about business topics and issues 
+              at the same time? Listen to audio recordings for upper intermediate level learners.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/business/email.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>English for emails</b>
+            </h4>
+            <h5>
+              Do you need to write emails in English at work? Follow our series of lessons 
+              for pre-intermediate or intermediate level learners.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/business/hiring.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>You're hired</b>
+            </h4>
+            <h5>
+              Are you looking for a new job or recruiting a new employee? Watch our video 
+              series for intermediate or upper intermediate level learners.
+            </h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- right part -->
+      <div class="col" >
+        <div class="p-3 m-3 white-border">
+          <p class="m-2">Corporate training and assessments</p>
+          <p class="m-2">Business magazine</p>
+          <p class="m-2">Podcasts for professionals</p>
+          <p class="m-2">English for emails</p>
+          <p class="m-2">You're hired</p>
+        </div>
+
+        <div class="p-3 m-3 white-border">
+          <div>
+            <p class="m-2">Online English Courses</p>
+          </div>
+        </div>
+
+        <div class="p-3 m-3 white-border">
+          <p class="m-2"><b>Help</b></p>
+          <p class="m-2">Free online English test</p>
+          <p class="m-2">Frequently asked questions</p>
+          <p class="m-2">Getting started</p>
+          <p class="m-2">House rules</p>
+        </div>
+      </div>
+    </div>
+  </div>
   {% endif %}
 
   {% if request.path == '/general-english' %}
-  1
+  <div>
+    <div style="height: 500px; background: linear-gradient(45deg, rgb(255, 255, 255), rgb(57, 255, 245));
+      display: flex; align-items: end;">
+      <div class="ms-3 p-3 white-border" style="width: 500px; border-top-right-radius: 20px;">
+        <h4 class="p-3">
+          <b>General English</b><br>
+          Find extra listening and reading practice to help you improve your level 
+          of English and practise language you can use in everyday situations.
+        </h4>
+      </div>
+    </div>
+
+    <div class="row" style="margin: 0;">
+
+      <!-- left part -->
+      <div class="col-9">
+        <div class="p-3 m-3">
+          <div class="mb-3">
+            <h5>
+              In General English you can improve your knowledge of everyday English and learn 
+              the language you need for socialising. You will also develop your comprehension 
+              skills and build your vocabulary.
+            </h5>
+          </div>
+
+          <div class="mb-3">
+            <h4>
+              <b>Zones: 5- to 10-minute activities</b>
+            </h4>
+            <h5>
+              Do you have 5 to 10 minutes to practise your English today? Try one of our Video, 
+              Audio, Magazine or Reading zone activities.
+            </h5>
+            <h5>
+              These are short activities on a range of different topics to help you improve your 
+              English level. Practising every day, even for a short time, will help you to improve. 
+              Choose a topic that interests you and get started today!
+            </h5>
+          </div>
+
+          <div class="mb-3">
+            <h4>
+              <b>Series: 15- to 30-minute activities</b>
+            </h4>
+            <h5>
+              If you have more time to work on your English, try the learning material in our series. 
+              You will find longer learning activities, which you can work through, one episode at a 
+              time, at your own pace.
+            </h5>
+          </div>
+        </div>
+
+        <!-- sections with images -->
+
+        <div class="m-3 ps-3">
+          <h4>
+            <b>Choose a section</b>
+          </h4>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/general-english/video-zone.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Video zone</b>
+            </h4>
+            <h5>
+              Do you enjoy watching YouTube videos in English? Watch our videos that are specially 
+              selected for learners at B2 English level (upper intermediate) and C1 English level (advanced).
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/general-english/audio-zone.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Audio zone</b>
+            </h4>
+            <h5>
+              Do you want to listen to engaging and interesting audio recordings on a wide 
+              range of topics? Listen to audio recordings for upper intermediate and advanced level learners.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/general-english/magazine.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Magazine zone</b>
+            </h4>
+            <h5>
+              Do you want to practise your reading and learn about global issues, special days and 
+              festivals? Read our articles that are written for intermediate and upper intermediate level learners.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/general-english/story-zone.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Story zone</b>
+            </h4>
+            <h5>
+              Do you enjoy reading stories? Our Story zone has a selection of brilliant 
+              short stories specially written for pre-intermediate to advanced level learners.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/general-english/audio-series.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Audio series</b>
+            </h4>
+            <h5>
+              Are you looking for more listening practice? In this section you will find 
+              our audio series with language practice activities.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/general-english/video-series.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Video series</b>
+            </h4>
+            <h5>
+              Are you looking for videos to help improve your level of English? In 
+              this section you will find our video series with language practice activities.
+            </h5>
+          </div>
+        </div>
+
+        <div class="m-3 p-3">
+          <div class="mt-3">
+            <h4>
+              <b>Improve your English skills in social situations</b>
+            </h4>
+          </div>
+          <div class="mt-3">
+            <p>
+              For more support in improving your English skills for social situations, 
+              explore our selection of online courses featuring lots of helpful learning resources.
+            </p>
+          </div>
+          <div class="mt-3">
+            <p>
+              Practise speaking socially with your classmates in live group classes, get 
+              support from a personal tutor in one-to-one lessons or practise by yourself at your 
+              own pace with a self-study course.
+            </p>
+          </div>
+          <div class="mt-3 mb-3">
+            <button class="btn btn-light">Explore Courses</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- right part -->
+      <div class="col" >
+        <div class="p-3 m-3 white-border">
+          <p class="m-2">Video zone</p>
+          <p class="m-2">Audio zone</p>
+          <p class="m-2">Magazine zone</p>
+          <p class="m-2">Story zone</p>
+          <p class="m-2">Audio series</p>
+          <p class="m-2">Video series</p>
+        </div>
+
+        <div class="p-3 m-3 white-border">
+          <div>
+            <p class="m-2">Online English Courses</p>
+          </div>
+        </div>
+
+        <div class="p-3 m-3 white-border">
+          <p class="m-2"><b>Help</b></p>
+          <p class="m-2">Free online English test</p>
+          <p class="m-2">Frequently asked questions</p>
+          <p class="m-2">Getting started</p>
+          <p class="m-2">House rules</p>
+        </div>
+      </div>
+    </div>
+  </div>
   {% endif %}
 
   {% if request.path == '/english-level' %}
-  1
+  <div>
+    <div style="height: 500px; background: linear-gradient(45deg, rgb(255, 255, 255), rgb(235, 255, 57));
+      display: flex; align-items: end;">
+      <div class="ms-3 p-3 white-border" style="width: 500px; border-top-right-radius: 20px;">
+        <h4 class="p-3">
+          <b>English levels</b><br>
+          Find out more about the different CEFR English levels and take a free level test.
+        </h4>
+      </div>
+    </div>
+
+    <div class="row" style="margin: 0;">
+
+      <!-- left part -->
+      <div class="col-9">
+        <div class="p-3 m-3">
+          <div class="mb-3">
+            <h5>
+              The learning materials in the different sections on LearnEnglish are organised 
+              by English level based on the Common European Framework of Reference for languages (CEFR).
+            </h5>
+          </div>
+
+          <div class="mb-3">
+            <h5>
+              Take our online level test to get an approximate indication of the English level you are 
+              working towards or completing. You can use the result to help you find online courses or 
+              learning content on our website that is appropriate for your English language ability.
+            </h5>
+            <h5>
+              Find out more about what the different CEFR levels mean and what a 
+              learner at the different levels can do.
+            </h5>
+          </div>
+
+          <div class="mb-3">
+            <h5>
+              You can also get tips and advice on how to improve your English 
+              level and find resources on the website by level, section and topic.
+            </h5>
+          </div>
+        </div>
+
+        <!-- sections with images -->
+
+        <div class="m-3 ps-3">
+          <h4>
+            <b>Choose a section</b>
+          </h4>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/english-level/test.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Online English level test</b>
+            </h4>
+            <h5>
+              This free online level test will give you an approximate indication of the 
+              English level you are working towards or completing.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/english-level/level.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Understand your English level</b>
+            </h4>
+            <h5>
+              Find out more about the different CEFR English levels.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/english-level/improve.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Improve your English level</b>
+            </h4>
+            <h5>
+              Find tips and advice on the best ways to learn and improve your level of English.
+            </h5>
+          </div>
+        </div>
+
+        <div class="p-3 m-3" style="display: flex;">
+          <div class="white-border" style="width: 400px; height: 400px; display: flex; align-items: center;">
+            <img src="{% static 'images/english-level/resources.jpg' %}" style="width: 400px;">
+          </div>
+          <div class="white-border p-3 m-3" style="position: relative; height: 200px; top: 100px; left: -100px; right: 300px;">
+            <h4>
+              <b>Find resources for your level</b>
+            </h4>
+            <h5>
+              Find learning materials at your English level.
+            </h5>
+          </div>
+        </div>
+
+        <div class="m-3 p-3">
+          <div class="mt-3">
+            <h4>
+              <b>Improve your English skills at any level</b>
+            </h4>
+          </div>
+          <div class="mt-3">
+            <p>
+              Whether your English proficiency level is elementary, intermediate or advanced,
+              why not develop your skills even further with our online courses?
+            </p>
+          </div>
+          <div class="mt-3">
+            <p>
+              Practise with classmates in live group classes, get learning support 
+              from a personal tutor in one-to-one lessons or practise by yourself at your 
+              own speed with a self-study course. 
+            </p>
+          </div>
+          <div class="mt-3 mb-3">
+            <button class="btn btn-light">Explore Courses</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- right part -->
+      <div class="col" >
+        <div class="p-3 m-3 white-border">
+          <p class="m-2">Online English level test</p>
+          <p class="m-2">Understand your English level</p>
+          <p class="m-2">Improve your English level</p>
+          <p class="m-2">Find resources for your level</p>
+        </div>
+
+        <div class="p-3 m-3 white-border">
+          <div>
+            <p class="m-2">Online English Courses</p>
+          </div>
+        </div>
+
+        <div class="p-3 m-3 white-border">
+          <p class="m-2"><b>Help</b></p>
+          <p class="m-2">Free online English test</p>
+          <p class="m-2">Frequently asked questions</p>
+          <p class="m-2">Getting started</p>
+          <p class="m-2">House rules</p>
+        </div>
+      </div>
+    </div>
+  </div>
   {% endif %}
 </section>
 

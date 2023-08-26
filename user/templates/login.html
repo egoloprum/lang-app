@@ -1,5 +1,5 @@
 {% extends 'main.html' %}
-
+{% load static %}
 {% block content %}
 
 {% if messages %}
@@ -10,28 +10,50 @@
   </ul>
 {% endif %}
 
-  <section class="m-3 for-loop col-4">
-    <form method="POST" action="" class="m-3">
-      {% csrf_token %}
-      <div class="mb-3">
-        <label class="form-label">Input username</label>
-        <input type="username" class="form-control" name="username" placeholder="Joe" required>
-      </div>
+  <section style="display: flex; align-items: center; justify-content: center; height: 700px;
+    background: linear-gradient(45deg, #5464c3, #b85cbc); ">
+    <div class="white-border m-3 p-3" style="height: 500px; width: 700px; border-radius: 10px; display: flex; 
+      flex-direction: column; justify-content: center;">
+      <div class="" style="display: flex; justify-content: space-evenly; align-items: center;">
+        <div>
+          <img src="{% static 'images/login/login.jpg' %}" style="width: 300px;">
+        </div>
+  
+        <div style=" height: 300px; width: 300px;">
+          <form method="POST" action="">
+            {% csrf_token %}
+            <div class="mb-5" style="text-align: center;">
+              <h5>
+                <b>Member login</b>
+              </h5>
+            </div>
+  
+            <div class="mb-3">
+              <input type="text" class="form-control" name="username" placeholder="Username" required
+              style="border-radius: 20px;">
+            </div>
+      
+            <div class="mb-4">
+              <input type="password" class="form-control" name="password" aria-labelledby="passwordHelpBlock"
+              placeholder="Password" style="border-radius: 20px" required>
+            </div>
 
-      <div class="mb-3">
-        <label class="form-label">Input password</label>
-        <input type="password" class="form-control" name="password" aria-labelledby="passwordHelpBlock"
-        placeholder="********" required>
+            <div class="mb-3">
+              <button type="submit" class="btn btn-primary" style="width: 100%; border-radius: 20px;">Login</button>
+            </div>
+          </form>
+          <div style="text-align: center;">
+            <p>Forgot Username/Password ?</p>
+          </div>
+        </div>
       </div>
-
-      <a type="button" class="btn btn-outline-primary" href="{% url 'register' %}">Register</a>
-      <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-    <div class="mb-3">
-      <label class="form-label">Use a google account ?</label><br>
-      <a href="#">Google</a>
+  
+      <div class="me-4" style="text-align: end;" hx-boost="true">
+        <p><a href="{% url 'register' %}">Create your Account -></a></p>
+      </div>
     </div>
-    
+
+  
   </section>
 
 {% endblock %}

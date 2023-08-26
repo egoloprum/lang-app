@@ -29,9 +29,6 @@ def baseSkills(request):
 def baseGrammar(request):
     return render(request, 'home.html')
 
-def baseVocab(request):
-    return render(request, 'home.html')
-
 def baseBusEng(request):
     return render(request, 'home.html')
 

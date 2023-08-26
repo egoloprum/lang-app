@@ -1,46 +1,61 @@
 {% extends 'main.html' %}
-
+{% load static %}
 {% block content %}
 
-<section class="p-3 col-5">
-  {% if messages %}
-    <ul class="messages" style="color:#e80d0d;">
-      {% for message in messages %}
-      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-  <form method="POST" action="" class="for-loop">
-    {% csrf_token %}
-    <div class="m-3">
-      <label class="form-label">Enter username</label>
-      <input type="text" name="username" class="form-control" placeholder="Username" required
-      hx-post="check_username" hx-trigger="keyup" hx-target="#username-error">
-      <div id="username-error"></div>
-    </div>
+<section style="display: flex; align-items: center; justify-content: center; height: 700px;
+background: linear-gradient(45deg, #d9db55, #53eaea); ">
+  <div class="white-border m-3 p-3" style="height: 500px; width: 700px; border-radius: 10px; display: flex; 
+    flex-direction: column; justify-content: center;">
+    <div class="" style="display: flex; justify-content: space-evenly; align-items: center;">
+      <div>
+        <img src="{% static 'images/login/register.jpg' %}" style="width: 300px;">
+      </div>
 
-    <div class="m-3">
-      <label class="form-label">Enter email</label>
-      <input type="email" name="email" class="form-control" placeholder="example@email.com" required>
-    </div>
+      <div style=" height: auto; width: 300px;">
+        <form method="POST" action="">
+          {% csrf_token %}
+          <div class="mb-4" style="text-align: center;">
+            <h5>
+              <b>Member register</b>
+            </h5>
+          </div>
 
-    <div class="m-3">
-      <label class="form-label">Enter password</label>
-      <input type="password" id="profile-update-password" class="form-control register-password" name="password" aria-labelledby="passwordHelpBlock">
-      <div id="passwordHelpBlock" class="form-text">
-        Your password must be <span class="profile-update-requirement-1">8-20 characters long</span>, contain <span class="profile-update-requirement-2">letters</span>,
-        <span class="profile-update-requirement-3">capital letters</span>
-         and <span class="profile-update-requirement-4">numbers</span>, and must not contain spaces, special characters, or emoji.
+          <div class="mb-3">
+            <input type="text" class="form-control" name="username" placeholder="Username" required
+            style="border-radius: 20px;" hx-post="check_username" hx-trigger="keyup" hx-target="#username-error">
+            <div class="small-font-size" id="username-error"></div>
+          </div>
+    
+          <div class="mb-3">
+            <input type="password" id="profile-update-password" class="form-control register-password" placeholder="Password"
+            name="password" aria-labelledby="passwordHelpBlock" style="border-radius: 20px" required>
+            <div id="passwordHelpBlock" class="form-text ">
+              <p class="small-font-size">
+                Your password must be 
+                <span class="profile-update-requirement-1">8-20 characters long</span>, contain 
+                <span class="profile-update-requirement-2">letters</span>,
+                <span class="profile-update-requirement-3">capital letters</span>and 
+                <span class="profile-update-requirement-4">numbers</span>, and must not contain spaces, special characters, or emoji.
+              </p>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <input type="password" name="password2" class="form-control register-password2"
+            placeholder="Repeat password" style="border-radius: 20px;" required>
+          </div>
+
+          <div class="mb-3">
+            <button type="submit" class="btn btn-primary" style="width: 100%; border-radius: 20px;">Register</button>
+          </div>
+        </form>
       </div>
     </div>
 
-    <div class="m-3">
-      <label class="form-label">Repeat password</label>
-      <input type="password" name="password2" class="form-control register-password2" placeholder="********" required>
+    <div class="me-4" style="text-align: end;" hx-boost="true">
+      <p><a href="{% url 'login' %}">Already signed in -></a></p>
     </div>
-
-    <button type="submit" class="btn btn-primary m-3 register-button" disabled>Login</button>
-  </form>
+  </div>
 </section>
 
 {% endblock %}

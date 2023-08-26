@@ -72,9 +72,9 @@ def checkUsername(request):
     username = request.POST.get('username').lower()
 
     if User.objects.filter(username=username).exists():
-        return HttpResponse("This username already exists")
+        return HttpResponse("<p>This username already exists</p>")
     else:
-        return HttpResponse("This username is available")
+        return HttpResponse("")
 
 @login_required(login_url='login')
 def logoutUser(request):
