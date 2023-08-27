@@ -1,67 +1,96 @@
 {% extends 'main.html' %}
 
 {% block content %}
-  <section>
-    <div class="m-3">
-      <h3>Quiz Create Form</h3>
+  <section class="m-3 p-3">
+
+    <div class="white-border p-4 mb-4" style="width: 600px;">
+      <div>
+        <h4>Quiz Create Form</h4>
+      </div>
+
       <form method="POST" action="">
         {% csrf_token %}
-
-        {% comment %} quiz-part {% endcomment %}
-
+        <!-- quiz part -->
         <div class="mb-3">
-          <label class="form-label">Name of Quiz</label>
-          <input class="form-control" type="text" name="quiz-name" required
+          <label class="form-label">Name</label>
+          <input class="form-control" type="text" name="quiz-name" placeholder="Name" required
           hx-post="check_quiz_name" hx-trigger="keyup" hx-target="#check-quiz-name">
           <div id="check-quiz-name"></div>
         </div>
+
         <div class="mb-3">
-          <label class="form-label">Duration of Quiz</label>
-          <input class="form-control" type="time" name="quiz-duration" required>
-          <input id="quiz-number-of-question" type="hidden" name="quiz-number-of-question" value="1">
+          <label class="form-label">Duration</label>
+          <input class="form-control" type="time" name="quiz-duration">
         </div>
+
         <div class="mb-3">
-          <label class="form-label">Required score to pass</label>
-          <input class="form-control" type="number" name="quiz-required-score" min=50 required>
+          <label class="form-label">Required score %</label>
+          <input class="form-control" type="number" name="quiz-required-score" min=50 placeholder="> 50%">
         </div>
-        <div class="mb-3">
+
+        <div class="mb-5">
           <label class="form-label">Difficulty</label>
           <select class="form-select" name="quiz-difficulty">
-            <option name="easy" value="Elementary">Elementary</option>
+            <option name="easy" value="Elementary">Beginner</option>
             <option name="medium" value="Intermediate">Intermediate</option>
             <option name="hard" value="Advanced">Advanced</option>
           </select>
         </div>
-        <hr>
+        
+        <!-- question part -->
 
-        {% comment %} question-part {% endcomment %}
-
-        <div id="quiz-create-list-question" class="row quiz-create-list-question">
-          <div class="mb-3 col-6 quiz-create-page-question">
-            <label class="form-label">Question 1</label>
-            <a class="btn btn-primary m-2" onclick="quiz_create_question_btn()">Add</a>
-            <input class="form-control" type="text" name="question-body-1" required>
-
-            {% comment %} answer-part {% endcomment %}
-
-            <div id="quiz-create-list-answer-1" class="row quiz-create-list-answer">
-              <div class="mb-3 col-6">
-                <label class="form-label" id="quiz_create_list_answer_label1">Answer</label>
-                <a class="btn btn-primary m-2" id="quiz-create-list-btn-1" onclick="quiz_create_list_answer_btn(this.id)">Add</a>
-                <input class="form-control" type="text" name="answer-body-1-1" required>
-  
-                <label class="form-label" id="quiz_create_list_answer_label2">Answer</label>
-                <input class="" type="checkbox" name="answer-correct-1-1">
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-        <button class="btn btn-primary m-2">Create</button>
+        <button class="btn btn-outline-primary">Create</button>
         <a class="btn btn-secondary" href="{% url 'quiz' %}">Cancel</a>
       </form>
     </div>
+
+    <div class="white-border p-4 row m-0">
+      <div class="col-3 p-3" style="border: 1px solid red;">
+        <div class="one-answer-btn">
+          <button class="btn btn-light" style="width: 100%;">One answer</button>
+        </div>
+        <div class="many-answer-btn">
+          <button class="btn btn-light" style="width: 100%;">Many answers</button>
+        </div>
+      </div>
+
+      <div class="col p-3 ms-3" style="border: 1px solid blue;">
+        <div>
+          <button class="btn btn-light" style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+            <div class="ms-3" style="text-align: left;">
+              <p>
+                One answer
+              </p>
+              <p>
+                <span>1.</span>
+                Can I park here?
+              </p>
+            </div>
+            <div class="me-3">
+              <i class="fa-solid fa-dumpster"></i>
+            </div>
+          </button>
+        </div>
+
+        <div>
+          <button class="btn btn-light" style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+            <div class="ms-3" style="text-align: left;">
+              <p>
+                Many answers
+              </p>
+              <p>
+                <span>2.</span>
+                What colour will you paint the children's bedroom?
+              </p>
+            </div>
+            <div class="me-3">
+              <i class="fa-solid fa-dumpster"></i>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
   </section>
 
   <script>

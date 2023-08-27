@@ -10,11 +10,15 @@ class Quiz(models.Model):
     content = models.ForeignKey(Content, on_delete=models.CASCADE, related_name='quiz_content', null=True)
 
     # when entering url function which rendered from views makes this variable false 
-    completed = models.BooleanField(default=True, null=False)
+    # completed -1, 0, 1
+    # if -1 never started and accomplished
+    # if 0 started but never accomplished
+    # if 1 accomplished
+    completed = models.SmallIntegerField(default=-1, null=False)
     name = models.CharField(max_length=200, null=False)
-    duration = models.TimeField(help_text="duration of the quiz in minutes", null=True)
-    required_score = models.IntegerField(help_text="required score in %", null=True)
-    difficulty = models.CharField(max_length=50, null=True)
+    duration = models.TimeField(help_text="duration of the quiz in minutes", null=True, blank=True)
+    required_score = models.IntegerField(help_text="required score in %", null=True, blank=True)
+    difficulty = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -27,6 +31,7 @@ class Quiz(models.Model):
 class Question(models.Model):
     body = models.CharField(max_length=200, null=False)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False, related_name='question_quiz')
+    explanation = models.CharField(max_length=250, null=True, blank=True)
 
     def __str__(self):
         return self.body

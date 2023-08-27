@@ -47,60 +47,6 @@ body li {
   list-style: none;
 }
 
-/* main.html */
-
-.profile-update-form {
-  margin: var(--form-margin);
-  padding: var(--form-padding);
-  width: var(--form-width);
-  border: var(--form-border);
-  border-radius: var(--form-border-radius);
-}
-
-.profile-page-form {
-  margin: var(--form-margin);
-  padding: var(--form-padding);
-  width: var(--form-width);
-  border: var(--form-border);
-  border-radius: var(--form-border-radius);
-}
-
-.profile-page-form div {
-  text-align: left;
-}
-
-.profile-delete-form {
-  margin: var(--form-margin);
-  padding: var(--form-padding);
-  width: var(--form-width);
-  border: var(--form-border);
-  border-radius: var(--form-border-radius);
-}
-
-.user-login-form {
-  margin: var(--form-margin);
-  padding: var(--form-padding);
-  width: var(--form-width);
-  border: var(--form-border);
-  border-radius: var(--form-border-radius);
-}
-
-.user-register-form {
-  margin: var(--form-margin);
-  padding: var(--form-padding);
-  width: var(--form-width);
-  border: var(--form-border);
-  border-radius: var(--form-border-radius);
-}
-
-.create-course-form {
-  margin: var(--form-margin);
-  padding: var(--form-padding);
-  width: var(--form-width);
-  border: var(--form-border);
-  border-radius: var(--form-border-radius);
-}
-
 /* footer.html */
 
 .footer-page-footer {
@@ -119,100 +65,7 @@ body li {
   list-style: none;
 }
 
-/* navbar.html */
-
-
-/* index.html */
-
-.index-page-section {
-  margin: auto;
-  padding: var(--form-margin);
-}
-
-.index-page-section .index-page-ul li {
-  margin-bottom: var(--form-margin);
-  padding: var(--form-padding);
-  list-style: none;
-  border-left: 1px solid #7b9cea;
-}
-
-.index-page-list div {
-  display: flex;
-  flex-direction: column;
-  max-width: 200px;
-  width: 100%;
-  position: fixed;
-  top: 170px;
-}
-
-.index-page-list div a {
-  padding: var(--form-padding);
-  margin: var(--form-padding);
-}
-
-.index-page-list div a:nth-child(odd) {
-  border-left: 2px solid #7b9cea;
-}
-
-.index-page-list div a:nth-child(even) {
-  border-left: 2px solid #eac07b;
-}
-
-/* Course */
-
-.course-page-section,
-.course-page-section .row div {
-  margin: var(--form-margin);
-  padding: var(--form-padding);
-}
-
-.course-page-list div {
-  display: flex;
-  flex-direction: column;
-  max-width: 200px;
-  width: 100%;
-  position: fixed;
-}
-
-.course-page-list div a {
-  padding: var(--form-padding);
-  margin: var(--form-padding);
-}
-
-.course-page-list div a:nth-child(odd) {
-  border-left: 2px solid #7b9cea;
-}
-
-.course-page-list div a:nth-child(even) {
-  border-left: 2px solid #eac07b;
-}
-
-.topic-page-section,
-.topic-page-section .row div {
-  margin: var(--form-margin);
-  padding: var(--form-padding);
-}
-
-.course-each-page-section {
-  margin: var(--form-margin);
-  padding: var(--form-padding);
-  border: var(--form-border);
-  border-radius: var(--form-border-radius);  
-}
-
-.course-each-edit-page-form {
-  margin: var(--form-margin);
-  padding: var(--form-padding);
-  border: var(--form-border);
-  border-radius: var(--form-border-radius);  
-}
-
 .border {
-  border: var(--form-border);
-  border-radius: var(--form-border-radius);  
-}
-
-.quiz-create-page-question {
   border: var(--form-border);
   border-radius: var(--form-border-radius);  
 }
@@ -221,8 +74,6 @@ body li {
   margin: var(--form-padding);
   padding: var(--form-padding);
   background: var(--color-white);
-  /* border: var(--form-border);
-  border-radius: var(--form-border-radius); */
   box-shadow: 0 2rem 3rem var(--color-light); 
 }
 
@@ -240,35 +91,6 @@ body li {
   height: auto;
   width: 100%;
   max-width: 300px;
-}
-
-.profile-page-quiz-column {
-  margin: var(--form-padding);
-  padding: var(--form-padding);
-  border: var(--form-border);
-  border-radius: var(--form-border-radius); 
-}
-
-/* .quiz-create-list-question {
-}
-
-.quiz-create-list-answer{
-} */
-
-.loader {
-  height: 30px;
-  width: 30px;
-  border: 2px solid #e3e3e3;
-  border-radius: 50%;
-  border-right-color: #7b9cea;
-  animation: spin 1s ease infinite;
-  display:none;
-}
-
-@keyframes spin {
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 .profile-skills-list-1::before {
