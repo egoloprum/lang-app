@@ -42,30 +42,41 @@ def quizCreate(request):
         quiz_duration = request.POST.get('quiz-duration')
         quiz_required_score = request.POST.get('quiz-required-score')
         quiz_difficulty = request.POST.get('quiz-difficulty')
+        
+        if quiz_duration == "":
+            quiz_duration = None
 
+        if quiz_required_score == "":
+            quiz_required_score = None
+
+        if quiz_difficulty == "":
+            quiz_difficulty = None
             
         quiz = Quiz.objects.create(name=quiz_name, duration=quiz_duration, difficulty=quiz_difficulty,
-                                        host=request.user, required_score=quiz_required_score)
+                host=request.user, required_score=quiz_required_score)
 
         x = 1
 
-        while(request.POST.get('question-body-' + str(x))):
-            question_body = request.POST.get('question-body-' + str(x))
-            question = Question.objects.create(body=question_body, quiz=quiz)
+        while(request.POST.get('question-' + str(x))):
+            question_body = request.POST.get('question-' + str(x))
+            question_exp = request.POST.get('explanation-' + str(x))
+            try:
+                question = Question.objects.create(body=question_body, explanation=question_exp, quiz=quiz)
+            except Exception:
+                question = Question.objects.create(body=question_body, quiz=quiz)
 
             y = 1
 
             while(request.POST.get('answer-body-' + str(x) + '-' + str(y))):
-                answer_body = request.POST.get('answer-body-' + str(x) + '-' + str(y))
+                answer_body = request.POST.get('answer-' + str(x) + '-' + str(y))
                 answer_correct = False
 
-                if request.POST.get('answer-correct-' + str(x) + '-' + str(y)) == 'on':
+                if request.POST.get('answer-cor-' + str(x) + '-' + str(y)) == 'on':
                     answer_correct = True
                 else:
                     answer_correct = False
 
-                answer = Answer.objects.create(body=answer_body, correct=answer_correct, question=question)
-
+                Answer.objects.create(body=answer_body, correct=answer_correct, question=question)
                 y += 1
 
             x += 1

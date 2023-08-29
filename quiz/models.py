@@ -4,17 +4,19 @@ import random
 from course.models import Course, Content
 # Create your models here.
 
+class Quiz_completion(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comp_user')
+    # if -1 never started and never accomplished
+    # if 0 started but never accomplished
+    # if 1 accomplished
+    completed = models.SmallIntegerField(default=-1, null=False)
+
 class Quiz(models.Model):
     host = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quiz_host')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='quiz_course', null=True)
     content = models.ForeignKey(Content, on_delete=models.CASCADE, related_name='quiz_content', null=True)
+    complete = models.ManyToManyField(Quiz_completion, related_name='quiz_comp')
 
-    # when entering url function which rendered from views makes this variable false 
-    # completed -1, 0, 1
-    # if -1 never started and accomplished
-    # if 0 started but never accomplished
-    # if 1 accomplished
-    completed = models.SmallIntegerField(default=-1, null=False)
     name = models.CharField(max_length=200, null=False)
     duration = models.TimeField(help_text="duration of the quiz in minutes", null=True, blank=True)
     required_score = models.IntegerField(help_text="required score in %", null=True, blank=True)

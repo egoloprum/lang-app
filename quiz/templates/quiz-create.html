@@ -2,15 +2,15 @@
 
 {% block content %}
   <section class="m-3 p-3">
+    <form method="POST" action="">
+      {% csrf_token %}
 
-    <div class="white-border p-4 mb-4" style="width: 600px;">
-      <div>
-        <h4>Quiz Create Form</h4>
-      </div>
+      <div class="white-border p-4 mb-4" style="width: 600px;">
+        <div>
+          <h4>Quiz Create Form</h4>
+        </div>
 
-      <form method="POST" action="">
-        {% csrf_token %}
-        <!-- quiz part -->
+          <!-- quiz part -->
         <div class="mb-3">
           <label class="form-label">Name</label>
           <input class="form-control" type="text" name="quiz-name" placeholder="Name" required
@@ -41,20 +41,18 @@
 
         <button class="btn btn-outline-primary">Create</button>
         <a class="btn btn-secondary" href="{% url 'quiz' %}">Cancel</a>
-      </form>
-    </div>
+      </div>
 
-    <div class="white-border p-4 row m-0">
-      <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
-        <div>
-          <button class="btn btn-light" style="width: 100%;" onclick="add_question()">Add question</button>
+      <div class="white-border p-4 row m-0">
+        <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
+          <div>
+            <a class="btn btn-light" style="width: 100%;" onclick="add_question()">Add question</a>
+          </div>
         </div>
-      </div>
 
-      <div class="col p-3 ms-3" id="question-side">
-
+        <div class="col p-3 ms-3" id="question-side"></div>
       </div>
-    </div>
+    </form>
 
   </section>
 
@@ -74,9 +72,8 @@
       accord_head = document.createElement("h2");
       accord_head.className = "accordion-header";
 
-      accord_btn = document.createElement("button");
+      accord_btn = document.createElement("a");
       accord_btn.className = "accordion-button collapsed";
-      accord_btn.setAttribute("type", "button");
       accord_btn.setAttribute("data-bs-toggle", "collapse");
       accord_btn.setAttribute("data-bs-target", "#flush-collapse-" + q_number);
       accord_btn.setAttribute("aria-controls", "#flush-collapse-" + q_number);
@@ -103,6 +100,7 @@
       q_input.setAttribute("type", "text");
       q_input.setAttribute("placeholder", "Question here...");
       q_input.setAttribute("name", "question-" + q_number);
+      q_input.setAttribute("required", "");
 
       e_label = document.createElement("label");
       e_label.innerHTML = "explanation";
@@ -116,7 +114,7 @@
       btns_div = document.createElement("div");
       btns_div.setAttribute("style", "display:flex; align-items: center; justify-content: space-between;");
 
-      flush_btn = document.createElement("button");
+      flush_btn = document.createElement("a");
       flush_btn.className = "btn btn-light";
       flush_btn.setAttribute("onclick", "add_answer(this.id)");
       flush_btn.setAttribute("id", "answer-btn-" + q_number);
@@ -129,7 +127,7 @@
       flush_ul = document.createElement("ul");
       flush_ul.setAttribute('id', 'answer-ul-' + q_number);
 
-      del_btn = document.createElement("button");
+      del_btn = document.createElement("a");
       del_btn.className = "btn btn-light";
       del_btn.setAttribute("onclick", "del_question(this.id)");
       del_btn.setAttribute("id", "del-question-" + q_number);
@@ -179,6 +177,7 @@
       t_input.className = "form-control";
       t_input.setAttribute("type", "text");
       t_input.setAttribute("name", "answer-" + q_number + "-" + a_number);
+      t_input.setAttribute("required", "");
 
       r_input = document.createElement("input");
       r_input.className = "ms-3";
