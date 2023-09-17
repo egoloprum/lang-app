@@ -3,18 +3,21 @@ from . import views
 
 urlpatterns = [
   path('', views.course, name='course'),
-  path('each/<str:pk>', views.courseEach, name='course-each'),
+  path('each/<str:pk>', views.eachCourse, name='course-each'),
+  path('<str:pk>/content', views.eachChapter, name='content-each'),
 
-  path('each/<str:pk>/edit', views.courseEachEdit, name='course-each-edit'),
-  path('create', views.createCourse, name='create-course'),
+  path('create', views.createCourse, name='course-create'),
+  path('<str:pk>/edit', views.editCourse, name='course-edit'),
+
+  path('<str:pk>/edit/chapter/create', views.createChapter, name='chapter-create'),
+  path('<str:pk>/edit/chapter/<str:id>/edit', views.editChapter, name='chapter-edit'),
+
+  path('<str:pk>/edit/quiz/create', views.createQuizFromCourse, name='course-quiz-create'),
+  path('<str:pk>/edit/quiz/<str:id>/edit', views.editQuizFromCourse, name='course-quiz-edit'),
+
+  path('chapter/<str:pk>/edit/quiz/create', views.createQuizFromChapter, name='chapter-quiz-create'),
+  path('chapter/<str:pk>/edit/quiz/<str:id>/edit', views.editQuizFromChapter, name='chapter-quiz-edit'),
+
   path('topic/<str:pk>/', views.topic, name='topic'),
 
-  # path('login', views.loginUser, name='login'),
-  # path('register', views.registerUser, name='register'),
-  # path('logout', views.logoutUser, name='logout'),
-  # path('forgot', views.forgotPass, name='forgot'),
-
-  # path('profile/<str:pk>/', views.profilePath, name='profile'),
-  # path('profile-update', views.profileUpdate, name='profile-update'),
-  # path('delete', views.deleteUser, name='delete'), 
 ]

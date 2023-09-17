@@ -1,0 +1,279 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+  <section class="m-3 p-3">
+    <form method="POST" action="">
+      {% csrf_token %}
+
+      <div class="white-border p-4 mb-4">
+        <div class="mb-3">
+          <h4>Chapter Create Form</h4>
+          <p onclick="load_everyting()">click here to load form !!!</p>
+        </div>
+
+          <!-- quiz part -->
+        <div class="mb-3" style="display: flex;">
+          <label class="form-label me-3">Name</label>
+          <input class="form-control" type="text" name="content-name" placeholder="Name" value="{{ content.name }}" required>
+        </div>
+
+        <div class="mb-3" style="display: flex;">
+          <label class="form-label me-3">Body</label>
+          <textarea class="mytextarea form-control" style="width: 100%;" name="content-body" required>{{ content.body }}</textarea>
+        </div>
+        
+        <div>
+          <button type="submit" class="btn btn-outline-primary me-2">Save form</button>
+          <a class="btn btn-secondary" href="" onclick="chapter_close()">Discard</a>
+        </div>
+      </div>
+
+      <div class="white-border p-4 row m-0 mb-3">
+        <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
+          <a class="btn btn-light" style="width: 100%;" href="" onclick="add_chap_quiz()">Add quiz</a>
+        </div>
+        <div class="col p-3 ms-3" id="chap-quiz-side">
+        </div>
+      </div>
+
+      <div class="white-border p-4 row m-0 mb-3">
+        <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
+          <a class="btn btn-light" style="width: 100%;" onclick="add_chap_video()">Add video</a>
+        </div>
+        <div class="col p-3 ms-3" id="chap-video-side">
+        </div>
+      </div>
+
+      <div class="white-border p-4 row m-0 mb-3">
+        <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
+          <a class="btn btn-light" style="width: 100%;" onclick="add_chap_file()">Add file</a>
+        </div>
+        <div class="col p-3 ms-3" id="chap-file-side">
+        </div>
+      </div>
+    </form>
+
+  </section>
+
+<script>
+  function load_everyting() {
+    tinymce.init({
+      selector: 'textarea',
+      plugins: 'ai tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss',
+      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+      tinycomments_mode: 'embedded',
+      tinycomments_author: 'Author name',
+      mergetags_list: [
+        { value: 'First.Name', title: 'First Name' },
+        { value: 'Email', title: 'Email' },
+      ],
+      ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant"))
+    });
+  }
+
+  function add_chap_video() {
+    chapter_side = document.getElementById("chap-video-side");
+    const q_number = ++chapter_side.children.length;
+
+    accord_div = document.createElement("div");
+    accord_div.className = "accordion accordion-flush";
+    accord_div.setAttribute("style", "border-bottom: 1px solid #e4e4e4;");
+    accord_div.setAttribute("id", "question-" + q_number);
+
+    item_div = document.createElement("div");
+    item_div.className = "accordion-item";
+
+    accord_head = document.createElement("h2");
+    accord_head.className = "accordion-header";
+
+    accord_btn = document.createElement("a");
+    accord_btn.className = "accordion-button collapsed";
+    accord_btn.setAttribute("data-bs-toggle", "collapse");
+    accord_btn.setAttribute("data-bs-target", "#flush-collapse-" + q_number);
+    accord_btn.setAttribute("aria-controls", "#flush-collapse-" + q_number);
+
+    accord_p = document.createElement("p");
+    accord_p.innerHTML = q_number;
+
+    accord_btn.appendChild(accord_p);
+    accord_head.appendChild(accord_btn);
+
+    flush_div = document.createElement("div");
+    flush_div.className = "accordion-collapse collapse";
+    flush_div.setAttribute('id', 'flush-collapse-' + q_number);
+
+    flush_body = document.createElement("div");
+    flush_body.className = "accordion-body";
+    flush_body.setAttribute("id", "accordion-body-" + q_number);
+
+    q_label = document.createElement("label");
+    q_label.innerHTML = "Description";
+    q_label.setAttribute("class", "me-3");
+
+    q_input = document.createElement("input");
+    q_input.className = "form-control me-3";
+    q_input.setAttribute("type", "text");
+    q_input.setAttribute("placeholder", "Description here...");
+    q_input.setAttribute("name", "chap-vid-desc-" + q_number);
+    q_input.setAttribute("required", "");
+
+    del_btn = document.createElement("a");
+    del_btn.className = "btn btn-light";
+    del_btn.setAttribute("onclick", "del_chap_vid(this.id)");
+    del_btn.setAttribute("id", "del-chap-vid-" + q_number);
+    del_btn.setAttribute("style", "width: 250px;");
+    
+    del_i = document.createElement("i");
+    del_i.className = "fa-solid fa-trash";
+
+    del_span = document.createElement("span");
+    del_span.innerHTML = " Delete video";
+
+    del_btn.appendChild(del_i);
+    del_btn.appendChild(del_span);
+
+    top_div = document.createElement("div");
+    top_div.setAttribute("style", "display: flex; flex-direction: row;");
+    top_div.setAttribute("class", "mb-3");
+    top_div.appendChild(q_label);
+    top_div.appendChild(q_input);
+    top_div.appendChild(del_btn);
+
+    e_label = document.createElement("label");
+    e_label.innerHTML = "Video here";
+    e_label.setAttribute("class", "mb-3 me-3");
+
+    e_input = document.createElement("input");
+    e_input.className = "mb-3 form-control";
+    e_input.setAttribute("type", "file");
+    e_input.setAttribute("style", "width: 100%");
+    e_input.setAttribute("name", "chap-file-" + q_number);
+
+    mid_div = document.createElement("div");
+    mid_div.setAttribute("style", "display: flex; flex-direction: row;");
+    mid_div.setAttribute("class", "mb-3");
+    mid_div.appendChild(e_label);
+    mid_div.appendChild(e_input);
+
+    flush_body.appendChild(top_div);
+    flush_body.appendChild(mid_div);
+    flush_div.appendChild(flush_body);
+
+    item_div.appendChild(accord_head);
+    item_div.appendChild(flush_div);
+
+    accord_div.appendChild(item_div);
+    chapter_side.appendChild(accord_div);
+  }
+
+  function del_chap_vid(id) {
+    console.log("q");
+  }
+
+  function add_chap_file() {
+    chapter_side = document.getElementById("chap-file-side");
+    const q_number = ++chapter_side.children.length;
+
+    accord_div = document.createElement("div");
+    accord_div.className = "accordion accordion-flush";
+    accord_div.setAttribute("style", "border-bottom: 1px solid #e4e4e4;");
+    accord_div.setAttribute("id", "chap-file-" + q_number);
+
+    item_div = document.createElement("div");
+    item_div.className = "accordion-item";
+
+    accord_head = document.createElement("h2");
+    accord_head.className = "accordion-header";
+
+    accord_btn = document.createElement("a");
+    accord_btn.className = "accordion-button collapsed";
+    accord_btn.setAttribute("data-bs-toggle", "collapse");
+    accord_btn.setAttribute("data-bs-target", "#flush-collapse-" + q_number);
+    accord_btn.setAttribute("aria-controls", "#flush-collapse-" + q_number);
+
+    accord_p = document.createElement("p");
+    accord_p.innerHTML = q_number;
+
+    accord_btn.appendChild(accord_p);
+    accord_head.appendChild(accord_btn);
+
+    flush_div = document.createElement("div");
+    flush_div.className = "accordion-collapse collapse";
+    flush_div.setAttribute('id', 'flush-collapse-' + q_number);
+
+    flush_body = document.createElement("div");
+    flush_body.className = "accordion-body";
+    flush_body.setAttribute("id", "accordion-body-" + q_number);
+
+    q_label = document.createElement("label");
+    q_label.innerHTML = "Description";
+    q_label.setAttribute("class", "me-3");
+
+    q_input = document.createElement("input");
+    q_input.className = "form-control me-3";
+    q_input.setAttribute("type", "text");
+    q_input.setAttribute("placeholder", "Description here...");
+    q_input.setAttribute("name", "chap-file-desc-" + q_number);
+    q_input.setAttribute("required", "");
+
+    del_btn = document.createElement("a");
+    del_btn.className = "btn btn-light";
+    del_btn.setAttribute("onclick", "del_chap_file(this.id)");
+    del_btn.setAttribute("id", "del-chap-file-" + q_number);
+    del_btn.setAttribute("style", "width: 250px;");
+    
+    del_i = document.createElement("i");
+    del_i.className = "fa-solid fa-trash";
+
+    del_span = document.createElement("span");
+    del_span.innerHTML = " Delete file";
+
+    del_btn.appendChild(del_i);
+    del_btn.appendChild(del_span);
+
+    top_div = document.createElement("div");
+    top_div.setAttribute("style", "display: flex; flex-direction: row;");
+    top_div.setAttribute("class", "mb-3");
+    top_div.appendChild(q_label);
+    top_div.appendChild(q_input);
+    top_div.appendChild(del_btn);
+
+    e_label = document.createElement("label");
+    e_label.innerHTML = "File here";
+    e_label.setAttribute("class", "mb-3 me-3");
+
+    e_input = document.createElement("input");
+    e_input.className = "mb-3 form-control";
+    e_input.setAttribute("type", "file");
+    e_input.setAttribute("style", "width: 100%");
+    e_input.setAttribute("name", "chap-file-" + q_number);
+
+    mid_div = document.createElement("div");
+    mid_div.setAttribute("style", "display: flex; flex-direction: row;");
+    mid_div.setAttribute("class", "mb-3");
+    mid_div.appendChild(e_label);
+    mid_div.appendChild(e_input);
+
+    flush_body.appendChild(top_div);
+    flush_body.appendChild(mid_div);
+    flush_div.appendChild(flush_body);
+
+    item_div.appendChild(accord_head);
+    item_div.appendChild(flush_div);
+
+    accord_div.appendChild(item_div);
+    chapter_side.appendChild(accord_div);
+  }
+
+  function del_chap_file(id) {
+    console.log("q");
+  }
+
+  function chapter_close() {
+    window.close();
+  }
+
+  </script>
+
+{% endblock %}

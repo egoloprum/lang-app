@@ -45,8 +45,6 @@ INSTALLED_APPS = [
     'quiz',
     'follower',
 
-    'ckeditor',
-
     # 'django.contrib.sites',
     # 'allauth',
     # 'allauth.account',
