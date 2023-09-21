@@ -8,22 +8,33 @@ from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
 from .models import *
 
+@login_required(login_url='login')
 def createCourse(request):
   host = request.user
   course = Course.objects.create(host=host)
   return redirect('course-edit', course.id)
 
+@login_required(login_url='login')
+def course(request):
+  topics = Topic.objects.all()
+  courses = Course.objects.all()
+
+  if request.method == 'POST':
+    course_id = request.POST.get('course-delete')
+    course = courses.get(id=course_id)
+    course.delete()
+    return redirect('course')   
+
+  context = {'topics': topics, 'courses': courses}
+  return render(request, 'course.html', context)
+
+@login_required(login_url='login')
 def editCourse(request, pk):
   course = Course.objects.get(id=pk)
   contents = Content.objects.filter(course=course)
   topics = Topic.objects.all()
   tags = Tag.objects.all()
-  context = {
-    'course': course,
-    'contents': contents,
-    'topics': topics,
-    'tags': tags,
-  }
+
   if request.method == 'POST':
     name = request.POST.get('course-name')
     topic = request.POST.get('course-topic')
@@ -31,57 +42,55 @@ def editCourse(request, pk):
     body = request.POST.get('course-body')
     start = request.POST.get('course-start')
     end = request.POST.get('course-end')
+    public = True if request.POST.get('course-public') == 'on' else False
 
     course.name = name
     course.body = body
     course.start_date = start
     course.end_date = end
-    course.publication = True
-    course.save()
+    course.publication = public
 
+    x = 1
+    files = []
+
+    while(request.POST.get('cour-file-desc-' + str(x))):
+      file_desc = request.POST.get('cour-file-desc-' + str(x))
+      file = request.POST.get('cour-file-' + str(x))
+      files.append(File.objects.create(file=file, description=file_desc, course=course))
+      x += 1
+  
+    course.save()
     return redirect('course')
 
-  return render(request, 'course-edit.html', context)
+  course_files = File.objects.filter(course=course)
+  content_files = []
 
-def eachCourse(request, pk):
-  course = Course.objects.get(id=pk)
-  contents = Content.objects.filter(course=course)
+  for content in contents:
+    for file in File.objects.filter(content=content):
+      content_files.append(file)
+
   context = {
     'course': course,
     'contents': contents,
+    'topics': topics,
+    'tags': tags,
+    'cour_files': course_files,
+    'cont_files': content_files,
+  }
+
+  return render(request, 'course-edit.html', context)
+
+@login_required(login_url='login')
+def eachCourse(request, pk):
+  course = Course.objects.get(id=pk)
+  contents = Content.objects.filter(course=course)
+  files = File.objects.filter(course=course)
+  context = {
+    'course': course,
+    'contents': contents,
+    'files': files,
   }
   return render(request, 'course-each.html', context)
-
-def course(request):
-    topics = Topic.objects.all()
-    courses = Course.objects.all()
-
-    if request.method == 'POST':
-      course_id = request.POST.get('course-delete')
-      course = courses.get(id=course_id)
-      course.delete()
-      return redirect('course')   
-
-    context = {'topics': topics, 'courses': courses}
-
-    return render(request, 'course.html', context)
-
-# def courseEach(request, pk):
-#   course = Course.objects.get(id=pk)
-
-#   if request.method == 'POST':
-#     course.delete()
-#     return redirect('course')
-
-#   contents = Content.objects.select_related('course').filter(course=course)
-
-#   if contents:
-#     context = {'course': course, 'contents':contents}
-#   else:
-#     contents = None
-#     context = {'course': course, 'contents':contents}
-
-#   return render(request, 'course-each.html')
 
 # def createCourse(request):
 #     host = request.user
@@ -121,7 +130,7 @@ def course(request):
 #     context = {'topics': all_topic, 'form': course_form}
 #     return render(request, 'create-course.html', context)
 
-
+@login_required(login_url='login')
 def eachChapter(request, pk):
    content = Content.objects.get(id=pk)
    course = Course.objects.get(id=content.course.id)
@@ -130,11 +139,13 @@ def eachChapter(request, pk):
    context = {'content': content, 'course': course, 'contents': contents}
    return render(request, 'content-each.html', context)   
 
+@login_required(login_url='login')
 def createChapter(request, pk):
   course = Course.objects.get(id=pk)
   content = Content.objects.create(course=course)
   return redirect('chapter-edit', course.id, content.id)
 
+@login_required(login_url='login')
 def editChapter(request, id, pk):
   content = Content.objects.get(id=id)
   course = Course.objects.get(id=pk)
@@ -147,22 +158,36 @@ def editChapter(request, id, pk):
   if request.method == "POST":
     name = request.POST.get('content-name')
     body = request.POST.get('content-body')
+    public = True if request.POST.get('content-pub') == 'on' else False
     content.name = name
     content.body = body
+    content.publication = public
+
+    x = 1
+    while(request.POST.get('chap-file-desc-' + str(x))):
+      desc = request.POST.get('chap-file-desc-' + str(x))
+      file = request.POST.get('chap-file-' + str(x))
+      File.objects.create(content=content, description=desc, file=file)
+      x += 1
+
     content.save()
     return HttpResponse('<script type="text/javascript">window.close();</script>')
 
   return render(request, 'content-edit.html', context)
 
+@login_required(login_url='login')
 def createQuizFromCourse(request, pk):
   pass
 
+@login_required(login_url='login')
 def editQuizFromCourse(request, pk):
   pass
 
+@login_required(login_url='login')
 def createQuizFromChapter(request, pk):
   pass
 
+@login_required(login_url='login')
 def editQuizFromChapter(request, pk):
   pass
 
@@ -215,6 +240,7 @@ def editQuizFromChapter(request, pk):
 
 #    return render(request, 'course-each-edit.html', context)
 
+@login_required(login_url='login')
 def topic(request, pk):
   topic = Topic.objects.get(id=pk)
   courses = Course.objects.select_related('topic').filter(topic=topic)

@@ -61,18 +61,12 @@
         </div>
         
         <div class="" style="display: grid; grid-template-columns: auto auto;">
-          <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
-            <p class="m-2 p-2">TOEFL final edition book</p>
-          </div>
-          <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
-            <p class="m-2 p-2">IELTS limited edition</p>
-          </div>
-          <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
-            <p class="m-2 p-2">C2 level 2013 edition book</p>
-          </div>
-          <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
-            <p class="m-2 p-2">Collection of Essays</p>
-          </div>
+          {% for file in files %}
+            <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
+              <p class="m-2 p-2">{{ file.description }}</p>
+              <p class="m-2 p-2"><a href="{{ file.url }}" download>download</a></p>
+            </div>
+          {% endfor %}
         </div>
       </div>
 
@@ -81,12 +75,7 @@
       </div>
 
     </div>
-
   </div>
-
-
-
-
 </section>
 
 {% endblock %}

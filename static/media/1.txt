@@ -1,0 +1,57 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+	int x, y;
+	cin >> x >> y;
+
+	if ((x - y < 0) && (x ^ 2 + y ^ 2 - 1 < 0)) {
+		cout << "pridnalejati";
+	}
+	else {
+		cout << "ne pridnalejati";
+	}
+
+	return  0;
+}
+
+==========================================================================
+
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>   
+using namespace std;
+
+int main() {
+	srand(time(NULL));
+	int H[30];
+
+	for (int i = 0; i < 30; i++) {
+		H[i] = rand();
+		cout << H[i] << " ";
+	}
+
+	int max = -1000;
+
+	for (int i = 0; i < 30; i++) {
+		if (H[i] > max) {
+			max = H[i];
+		}
+	}
+	cout << endl << max << endl;
+
+	for (int i = 0; i < 30; i++) {
+		if (H[i] == max) {
+			H[i] = NULL;
+		}
+	}
+
+	for (int i = 0; i < 30; i++) {
+		cout << H[i] << " ";
+	}
+
+}
+
+
+
+

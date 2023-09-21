@@ -6,29 +6,19 @@ class Topic(models.Model):
 
   def __str__(self):
     if self.name == None:
-      return "empty"
+      return f" {self.id} empty"
     else:
-      return self.name
+      return f" {self.id} {self.name}"
   
 class Tag(models.Model):
   name = models.CharField(unique=True, null=False, max_length=200)
 
   def __str__(self):
     if self.name == None:
-      return "empty"
+      return f" {self.id} empty"
     else:
-      return self.name
+      return f" {self.id} {self.name}"
   
-class File(models.Model):
-  file = models.FileField(null=False)
-  file_description = models.CharField(max_length=200, null=False)
-
-  def __str__(self):
-    if self.file_description == None:
-      return "empty"
-    else:
-      return self.file_description
-
 class Course(models.Model):
   host = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
   user = models.ManyToManyField(User, related_name='course_user', blank=True)
@@ -48,9 +38,9 @@ class Course(models.Model):
 
   def __str__(self):
     if self.name == None:
-      return "empty"
+      return f" {self.id} empty"
     else:
-      return self.name
+      return f" {self.id} {self.name}"
 
   def get_quiz_count(self):
     try:
@@ -63,10 +53,22 @@ class Content(models.Model):
 
   name = models.CharField(max_length=200, null=True)
   body = models.TextField(null=True, blank=True)
-  files = models.ForeignKey(File, on_delete=models.CASCADE, null=True, blank=True)
+  publication = models.BooleanField(default=False)
   
   def __str__(self):
     if self.name == None:
-      return "empty"
+      return f" {self.id} empty"
     else:
-      return self.name
+      return f" {self.id} {self.name}"
+
+class File(models.Model):
+  file = models.FileField(null=False, upload_to='media')
+  description = models.CharField(max_length=200, null=False)
+  course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
+  content = models.ForeignKey(Content, on_delete=models.CASCADE, null=True, blank=True)
+
+  def __str__(self):
+    if self.description == None:
+      return f" {self.id} empty"
+    else:
+      return f" {self.id} {self.description}"

@@ -214,7 +214,7 @@
         <div class="m-2">
           {% if curr_user == request.user %}
             <div class="row me-2 ms-2">
-              <a class="btn btn-outline-primary mb-2" href="{% url 'create-course' %}">Create Course</a>
+              <a class="btn btn-outline-primary mb-2" href="{% url 'course-create' %}">Create Course</a>
             </div>
           {% endif %}
           <div class="small-font-size">
@@ -225,7 +225,7 @@
             {% for course in courses %}
               <div class="col-4 border m-2">
                 <label><b>{{ course.name }}</b></label><hr>
-                <p>{{ course.body|truncatewords:80 }}</p>
+                <p>{{ course.body|striptags|safe|truncatechars:100 }}</p>
               </div>
               {% empty %}
                 <p>Currently, no course has been created by this user.</p>

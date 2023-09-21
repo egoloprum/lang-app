@@ -8,83 +8,100 @@ from django.contrib import messages
 
 @login_required(login_url='login')
 def quiz(request):
-
-    data = [{
-        'id': 1,
-    }]
-    # return JsonResponse(data, safe=False)
-
     q = request.GET.get('q') if request.GET.get('q') != None else ''
+    # difficulties = []
 
-    difficulties = []
+    # for quiz in Quiz.objects.all():
+    #     difficulties.append(quiz.difficulty.lower())
 
-    for quiz in Quiz.objects.all():
-        difficulties.append(quiz.difficulty.lower())
-
-    difficulties = list(dict.fromkeys(difficulties))
-    sort_diff = ['a', 'e', 'i',]
-
-    difficulties.sort(key = lambda i: sort_diff.index(i[0]))     
+    # difficulties = list(dict.fromkeys(difficulties))
+    # sort_diff = ['a', 'e', 'i',]
+    # difficulties.sort(key = lambda i: sort_diff.index(i[0]))     
 
     if request.method == 'POST':
         quiz_id = Quiz.objects.get(pk=request.POST.get('quiz-id'))
         quiz_id.delete()
-    
-    count = Quiz.objects.annotate(child_count = models.Count('question_quiz')).filter(difficulty__icontains=q)
 
-    context = {'quizs': count, 'difficulties': difficulties}
+    quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz'))
+    context = {'quizs': quizs}
     return render(request, 'quiz.html', context)
 
 @login_required(login_url='login')
 def quizCreate(request):
+    host = request.user
+    quiz = Quiz.objects.create(host=host)
+    return redirect('quiz-edit', quiz.id)
+
+@login_required(login_url='login')
+def quizEdit(request, pk):
+    quiz = Quiz.objects.get(id=pk)
+    questions = Question.objects.filter(quiz=quiz).select_related('quiz')
+    answers = []
+
+    for question in questions:
+        answers.extend(Answer.objects.filter(question=question).select_related('question'))
+
     if request.method == 'POST':
         quiz_name = request.POST.get('quiz-name')
-        quiz_duration = request.POST.get('quiz-duration')
-        quiz_required_score = request.POST.get('quiz-required-score')
-        quiz_difficulty = request.POST.get('quiz-difficulty')
-        
-        if quiz_duration == "":
-            quiz_duration = None
+        quiz_duration = None if request.POST.get('quiz-duration') == "" else request.POST.get('quiz-duration')
+        quiz_required_score = None if request.POST.get('quiz-score') == "" else request.POST.get('quiz-score')
+        quiz_difficulty = None if request.POST.get('quiz-diff') == "" else request.POST.get('quiz-diff')
+        quiz_public = True if request.POST.get('quiz-public') == 'on' else False
+        quiz_start = None if request.POST.get('quiz-duration') == "" else request.POST.get('quiz-start')
+        quiz_end = None if request.POST.get('quiz-duration') == "" else request.POST.get('quiz-end')
 
-        if quiz_required_score == "":
-            quiz_required_score = None
-
-        if quiz_difficulty == "":
-            quiz_difficulty = None
-            
-        quiz = Quiz.objects.create(name=quiz_name, duration=quiz_duration, difficulty=quiz_difficulty,
-                host=request.user, required_score=quiz_required_score)
-
+        quiz.name = quiz_name
+        quiz.duration = quiz_duration
+        quiz.difficulty = quiz_difficulty
+        quiz.required_score = quiz_required_score
+        quiz.publication = quiz_public
+        quiz.start_date = quiz_start
+        quiz.end_date = quiz_end
+        quiz.save()
         x = 1
 
         while(request.POST.get('question-' + str(x))):
             question_body = request.POST.get('question-' + str(x))
-            question_exp = request.POST.get('explanation-' + str(x))
-            try:
+            question_exp = None if request.POST.get('explanation-' + str(x)) == "" else request.POST.get('explanation-' + str(x))
+            if Question.objects.filter(body=question_body).exists:
+                pass
+            else:
                 question = Question.objects.create(body=question_body, explanation=question_exp, quiz=quiz)
-            except Exception:
-                question = Question.objects.create(body=question_body, quiz=quiz)
-
+ 
             y = 1
-
-            while(request.POST.get('answer-body-' + str(x) + '-' + str(y))):
+            while(request.POST.get('answer-' + str(x) + '-' + str(y))):
                 answer_body = request.POST.get('answer-' + str(x) + '-' + str(y))
-                answer_correct = False
-
-                if request.POST.get('answer-cor-' + str(x) + '-' + str(y)) == 'on':
-                    answer_correct = True
+                answer_correct = True if request.POST.get('answer-cor-' + str(x) + '-' + str(y)) == 'on' else False
+                if Answer.objects.filter(body=answer_body, question=question).exists:
+                    pass
                 else:
-                    answer_correct = False
-
-                Answer.objects.create(body=answer_body, correct=answer_correct, question=question)
+                    Answer.objects.create(body=answer_body, correct=answer_correct, question=question)
                 y += 1
 
             x += 1
 
         return redirect('quiz')
+    
+    context = {
+        'quiz': quiz,
+        'questions': questions,
+        'answers': answers
+    }
+    return render(request, 'quiz-edit.html', context)
 
-    context = {}
-    return render(request, 'quiz-create.html', context)
+@login_required(login_url='login')
+def delete_question(request, pk):
+    question = Question.objects.get(id=pk)
+    id = question.quiz.id
+    question.delete()
+    return redirect("quiz-edit", id)
+
+@login_required(login_url='login')
+def delete_answer(request, pk):
+    answer = Answer.objects.get(id=pk)
+    id = answer.question.quiz.id
+    answer.delete()
+    return redirect("quiz-edit", id)
 
 @login_required(login_url='login')
 def checkQuizName(request):
@@ -100,111 +117,127 @@ def checkQuizName(request):
 @login_required(login_url='login')
 def quizEach(request, pk):
     quiz = Quiz.objects.get(id=pk)
-    questions = Question.objects.filter(quiz=quiz)
-    number_of_questions = len(questions)
+    questions = Question.objects.filter(quiz=quiz).select_related('quiz')
     answers = []
-    answers_correct_num = []
 
     for question in questions:
-        count = 0
-        for a in Answer.objects.filter(question=question).select_related('question'):
-            answers.append(a)
-            if a.correct is True:
-                count += 1
-        
-        answers_correct_num.append(count)
+        answers.extend(Answer.objects.filter(question=question).select_related('question'))
 
-    context = {'quiz': quiz, 'questions': questions, 'answers': answers, 'number_of_questions': range(number_of_questions)}
-
-    if request.method == 'POST':
-        quiz_answers = []
-        result = 0
-
-        for answer in answers:
-            if request.POST.get('answer-' + str(answer.id)) == 'on':
-                quiz_answers.append(True)
-                Selected_Answer.objects.create(answer=answer, correct=True)
-            else:
-                quiz_answers.append("")
-                Selected_Answer.objects.create(answer=answer, correct=False)
-    
-        temp_quiz = quiz_answers.copy()
-        temp_answers = answers.copy()
-        length_answers = len(answers_correct_num)
-
-        for question in questions:
-            count = 0
-            for n in range(len(question.get_answers())):
-                if temp_answers[n].correct is temp_quiz[n]:
-                    count += 1
-
-            for n in range(len(question.get_answers())):
-                temp_quiz.pop(0)
-                temp_answers.pop(0)
-
-            try:
-                result += count / answers_correct_num[0]
-            except ZeroDivisionError:
-                result = result
-
-            answers_correct_num.pop(0)
-        
-        result = (result / length_answers) * 100
-
-        quiz_result = Result.objects.create(quiz=quiz, user=request.user, score=result)
-
-        return redirect('quiz-result', quiz.id)
-
+    context = {
+        'quiz': quiz,
+        'questions': questions,
+        'answers': answers
+    }
     return render(request, 'quiz-each.html', context)
 
-@login_required(login_url='login')
-def quizEdit(request, pk):
-    quiz = Quiz.objects.get(id=pk)
-    questions = Question.objects.filter(quiz=quiz)
-    number_of_questions = len(questions)
-    answers = []
+# @login_required(login_url='login')
+# def quizEach(request, pk):
+#     quiz = Quiz.objects.get(id=pk)
+#     questions = Question.objects.filter(quiz=quiz)
+#     number_of_questions = len(questions)
+#     answers = []
+#     answers_correct_num = []
 
-    for question in questions:
-        for a in Answer.objects.filter(question=question).select_related('question'):
-            answers.append(a)
+#     for question in questions:
+#         count = 0
+#         for a in Answer.objects.filter(question=question).select_related('question'):
+#             answers.append(a)
+#             if a.correct is True:
+#                 count += 1
+        
+#         answers_correct_num.append(count)
 
-    if request.method == "POST":
-        quiz_name = request.POST.get('quiz-name')
-        quiz_duration = request.POST.get('quiz-duration')
-        quiz_required = request.POST.get('quiz-required')
-        quiz_diff = request.POST.get('quiz-difficulty')
+#     context = {'quiz': quiz, 'questions': questions, 'answers': answers, 'number_of_questions': range(number_of_questions)}
 
-        quiz.name = quiz_name
-        if quiz_duration:
-            quiz.duration = quiz_duration
-        if quiz_required:
-            quiz.required_score = quiz_required
-        if quiz_diff:
-            quiz.difficulty = quiz_diff
+#     if request.method == 'POST':
+#         quiz_answers = []
+#         result = 0
 
-        for question in questions:
-            question_body = request.POST.get('question-body-' + str(question.id))
-            question.body = question_body
+#         for answer in answers:
+#             if request.POST.get('answer-' + str(answer.id)) == 'on':
+#                 quiz_answers.append(True)
+#                 Selected_Answer.objects.create(answer=answer, correct=True)
+#             else:
+#                 quiz_answers.append("")
+#                 Selected_Answer.objects.create(answer=answer, correct=False)
+    
+#         temp_quiz = quiz_answers.copy()
+#         temp_answers = answers.copy()
+#         length_answers = len(answers_correct_num)
 
-            for answer in answers:
-                if answer.question.id == question.id:
-                    answer_body = request.POST.get('answer-body-' + str(question.id) + '-' + str(answer.id))
-                    answer.body = answer_body
-                    answer_correct = request.POST.get('answer-correct-' + str(question.id) + '-' + str(answer.id))
-                    if answer_correct == 'on':
-                        answer.correct = True
-                    else:
-                        answer.correct = False
-                    answer.save()
-            question.save()
+#         for question in questions:
+#             count = 0
+#             for n in range(len(question.get_answers())):
+#                 if temp_answers[n].correct is temp_quiz[n]:
+#                     count += 1
 
-        quiz.save()
+#             for n in range(len(question.get_answers())):
+#                 temp_quiz.pop(0)
+#                 temp_answers.pop(0)
 
-        return redirect('/quiz/%d'%quiz.id)
+#             try:
+#                 result += count / answers_correct_num[0]
+#             except ZeroDivisionError:
+#                 result = result
 
-    context = {'quiz': quiz, 'questions': questions, 'answers': answers, 'number_of_questions': range(number_of_questions)}
+#             answers_correct_num.pop(0)
+        
+#         result = (result / length_answers) * 100
 
-    return render(request, 'quiz-edit.html', context)
+#         quiz_result = Result.objects.create(quiz=quiz, user=request.user, score=result)
+
+#         return redirect('quiz-result', quiz.id)
+
+#     return render(request, 'quiz-each.html', context)
+
+# @login_required(login_url='login')
+# def quizEdit(request, pk):
+#     quiz = Quiz.objects.get(id=pk)
+#     questions = Question.objects.filter(quiz=quiz)
+#     number_of_questions = len(questions)
+#     answers = []
+
+#     for question in questions:
+#         for a in Answer.objects.filter(question=question).select_related('question'):
+#             answers.append(a)
+
+#     if request.method == "POST":
+#         quiz_name = request.POST.get('quiz-name')
+#         quiz_duration = request.POST.get('quiz-duration')
+#         quiz_required = request.POST.get('quiz-required')
+#         quiz_diff = request.POST.get('quiz-difficulty')
+
+#         quiz.name = quiz_name
+#         if quiz_duration:
+#             quiz.duration = quiz_duration
+#         if quiz_required:
+#             quiz.required_score = quiz_required
+#         if quiz_diff:
+#             quiz.difficulty = quiz_diff
+
+#         for question in questions:
+#             question_body = request.POST.get('question-body-' + str(question.id))
+#             question.body = question_body
+
+#             for answer in answers:
+#                 if answer.question.id == question.id:
+#                     answer_body = request.POST.get('answer-body-' + str(question.id) + '-' + str(answer.id))
+#                     answer.body = answer_body
+#                     answer_correct = request.POST.get('answer-correct-' + str(question.id) + '-' + str(answer.id))
+#                     if answer_correct == 'on':
+#                         answer.correct = True
+#                     else:
+#                         answer.correct = False
+#                     answer.save()
+#             question.save()
+
+#         quiz.save()
+
+#         return redirect('/quiz/%d'%quiz.id)
+
+#     context = {'quiz': quiz, 'questions': questions, 'answers': answers, 'number_of_questions': range(number_of_questions)}
+
+#     return render(request, 'quiz-edit.html', context)
 
 @login_required(login_url='login')
 def quizResult(request, pk):

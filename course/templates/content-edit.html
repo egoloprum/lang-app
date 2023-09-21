@@ -22,6 +22,15 @@
           <label class="form-label me-3">Body</label>
           <textarea class="mytextarea form-control" style="width: 100%;" name="content-body" required>{{ content.body }}</textarea>
         </div>
+
+        <div class="mb-3" style="display: flex;">
+          <label class="form-label me-3">Publication</label>
+          {% if content.publication is True %}
+            <input type="checkbox" name="content-pub" checked>
+          {% else %}
+            <input type="checkbox" name="content-pub">
+          {% endif %}
+        </div>
         
         <div>
           <button type="submit" class="btn btn-outline-primary me-2">Save form</button>
@@ -31,7 +40,7 @@
 
       <div class="white-border p-4 row m-0 mb-3">
         <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
-          <a class="btn btn-light" style="width: 100%;" href="" onclick="add_chap_quiz()">Add quiz</a>
+          <a class="btn btn-light" style="width: 100%;" onclick="add_chap_quiz()">Add quiz</a>
         </div>
         <div class="col p-3 ms-3" id="chap-quiz-side">
         </div>
@@ -79,7 +88,7 @@
     accord_div = document.createElement("div");
     accord_div.className = "accordion accordion-flush";
     accord_div.setAttribute("style", "border-bottom: 1px solid #e4e4e4;");
-    accord_div.setAttribute("id", "question-" + q_number);
+    accord_div.setAttribute("id", "chap-video-" + q_number);
 
     item_div = document.createElement("div");
     item_div.className = "accordion-item";
@@ -90,8 +99,8 @@
     accord_btn = document.createElement("a");
     accord_btn.className = "accordion-button collapsed";
     accord_btn.setAttribute("data-bs-toggle", "collapse");
-    accord_btn.setAttribute("data-bs-target", "#flush-collapse-" + q_number);
-    accord_btn.setAttribute("aria-controls", "#flush-collapse-" + q_number);
+    accord_btn.setAttribute("data-bs-target", "#flush-collapse2-" + q_number);
+    accord_btn.setAttribute("aria-controls", "#flush-collapse2-" + q_number);
 
     accord_p = document.createElement("p");
     accord_p.innerHTML = q_number;
@@ -101,11 +110,11 @@
 
     flush_div = document.createElement("div");
     flush_div.className = "accordion-collapse collapse";
-    flush_div.setAttribute('id', 'flush-collapse-' + q_number);
+    flush_div.setAttribute('id', 'flush-collapse2-' + q_number);
 
     flush_body = document.createElement("div");
     flush_body.className = "accordion-body";
-    flush_body.setAttribute("id", "accordion-body-" + q_number);
+    flush_body.setAttribute("id", "accordion-body2-" + q_number);
 
     q_label = document.createElement("label");
     q_label.innerHTML = "Description";
@@ -142,7 +151,7 @@
 
     e_label = document.createElement("label");
     e_label.innerHTML = "Video here";
-    e_label.setAttribute("class", "mb-3 me-3");
+    e_label.setAttribute("class", "mb-3 me-3 text-nowrap");
 
     e_input = document.createElement("input");
     e_input.className = "mb-3 form-control";
@@ -189,8 +198,8 @@
     accord_btn = document.createElement("a");
     accord_btn.className = "accordion-button collapsed";
     accord_btn.setAttribute("data-bs-toggle", "collapse");
-    accord_btn.setAttribute("data-bs-target", "#flush-collapse-" + q_number);
-    accord_btn.setAttribute("aria-controls", "#flush-collapse-" + q_number);
+    accord_btn.setAttribute("data-bs-target", "#flush-collapse3-" + q_number);
+    accord_btn.setAttribute("aria-controls", "#flush-collapse3-" + q_number);
 
     accord_p = document.createElement("p");
     accord_p.innerHTML = q_number;
@@ -200,11 +209,11 @@
 
     flush_div = document.createElement("div");
     flush_div.className = "accordion-collapse collapse";
-    flush_div.setAttribute('id', 'flush-collapse-' + q_number);
+    flush_div.setAttribute('id', 'flush-collapse3-' + q_number);
 
     flush_body = document.createElement("div");
     flush_body.className = "accordion-body";
-    flush_body.setAttribute("id", "accordion-body-" + q_number);
+    flush_body.setAttribute("id", "accordion-body3-" + q_number);
 
     q_label = document.createElement("label");
     q_label.innerHTML = "Description";

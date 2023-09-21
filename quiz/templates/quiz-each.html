@@ -1,63 +1,55 @@
 {% extends 'main.html' %}
 
 {% block content %}
+  <section class="m-3 p-3 row" style="scroll-margin-inline-start: 100px; scroll-behavior: smooth;">
+    <!-- left side -->
+    <div class="col-9">
+      <div class="white-border p-4 mb-4">
+        <div class="mb-3">
+          <h4>{{ quiz.name }}</h4>
+          <p>For the questions below, please choose the best option to complete the sentence or conversation.</p>
+        </div>
+      </div>
 
-  <section class="m-3 for-loop">
-    <h3 class="m-3">{{ quiz.name }}</h3>
-    <a href="{% url 'quiz' %}" class="btn btn-primary m-3">Go Back</a>
-
-    <article class="m-3 row">
-      <div class="row col-10"> 
-        <form method="POST" action="">
-          {% csrf_token %}
-          <div id="quiz-each-form">
-            {% for question in questions %}
-              <div class="col-6 border quiz-page-quiz-column">
-                <label class=""><span id="question-{{forloop.counter}}">{{ forloop.counter }}. </span>{{ question.body }}</label><hr>
-                {% for answer in answers %}
-                  {% if answer.question == question %}
-                    <p class="form-control"><input type="checkbox" class="answer-checkbox" name="answer-{{ answer.id }}"> {{ answer.body }} / {{ answer.correct }}</p>
-                  {% endif %}
-        
-                {% endfor %}
-              </div>
+      {% for question in questions %}
+        <div class="white-border p-4 mb-4" id="question-{{ forloop.counter }}">
+          <p class="mb-3" name="question-{{ forloop.counter }}">{{ forloop.counter }}. {{ question.body }}</p>
+          <ul>
+            {% for answer in answers %}
+              {% if answer.question == question %}
+              <li class="mb-2" style="display: flex; align-items: center;">
+                <input type="checkbox" class="me-2" name="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                <span>{{ answer.body }}</span>
+              </li>
+              {% endif %}
             {% endfor %}
-            <button type="button" class="btn btn-info m-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
-              Finish
-            </button>
-          </div>
+          </ul>
+        </div>
+      {% endfor %}
+    </div>
 
-          <!-- finish modal -->
-
-          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  Are you sure that you want to edit ?
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button class="btn btn-info" type="submit">Finish</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </form>
-
+    <div class="col p-0 ms-3" style="position: sticky; top: 0; height: fit-content;">
+      <div class="white-border mb-3">
+        <p>Timer</p>
       </div>
+
+      <div class="white-border">
+        <div class="m-2 p-2 pb-0" style="display: grid; grid-template-columns: auto auto auto auto auto;">
+          {% for question in questions %}
+          <div class="mb-2" style="display: flex; align-items: center; justify-content: center;">
+            <a href="#question-{{ forloop.counter }}" class="btn btn-info me-1 ms-1" style="width: 100%;">{{ forloop.counter }}</a>
+          </div>
+          {% endfor %}
+        </div>
   
-      <div class="col">
-        {% for num in number_of_questions %}
-          <li><a href="#question-{{forloop.counter}}">{{ forloop.counter }}</a></li>
-        {% endfor %}
+        <div class="m-2" style="display: flex; justify-content: space-between;">
+          <button class="btn btn-primary m-2" style="width: 100%;">Finish</button>
+          <button class="btn btn-secondary m-2" style="width: 100%;">Discard</button>
+        </div>
       </div>
 
-    </article>
+    </div>
+
   </section>
 
 {% endblock %}

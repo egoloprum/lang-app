@@ -146,9 +146,7 @@ def profilePath(request, pk):
                 request_sent = -1
 
     follow_requests = FollowRequest.objects.filter(reciever=curr_user, is_active=True)
-
     count = Quiz.objects.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user)
-
     context = {'curr_user': curr_user, 'profile': profile, 'courses': courses,
                 'quizs': count, 'results': results, 'quiz_result': quiz_result,
                 'followers': followers, 'is_self':is_self, 'is_follower': is_follower,

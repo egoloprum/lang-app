@@ -7,8 +7,10 @@ urlpatterns = [
   path('check_quiz_name', views.checkQuizName, name='check-quiz-name'),
 
   path('<str:pk>', views.quizEach, name='quiz-each'),
-  path('<str:pk>/edit', views.quizEdit, name='quiz-edit'),
-  path('<str:pk>/result', views.quizResult, name='quiz-result'),
+  path('each/<str:pk>/edit', views.quizEdit, name='quiz-edit'),
+  path('<str:pk>/delete-question', views.delete_question, name='delete-question'),
+  path('<str:pk>/elete-answer', views.delete_answer, name='delete-answer'),
+  path('each/<str:pk>/result', views.quizResult, name='quiz-result'),
   # path('login', views.loginUser, name='login'),
   # path('register', views.registerUser, name='register'),
   # path('logout', views.logoutUser, name='logout'),

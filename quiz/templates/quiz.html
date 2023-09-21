@@ -41,67 +41,52 @@
         <tbody>
           {% for quiz in quizs %}
             <tr>
-              <th scope="row"></th>
-              <td><a href="" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              <td>{{ quiz.complete }}</td>
+              <td><a href="" data-bs-toggle="modal" data-bs-target="#exampleModal-{{ quiz.id }}">
                 {{ forloop.counter }}. {{ quiz.name }}
                 </a></td>
               <td>{{ quiz.host }}</td>
               <td>{{ quiz.child_count }}</td>
-              <td class="difficulty-color" value="{{ quiz.difficulty }}">{{ quiz.difficulty }}</td>
-              <td>{{ quiz.required_score }} %</td>
+              <td class="difficulty-color" value="{{ quiz.difficulty }}">
+                {% if quiz.difficulty is None %}
+                  --
+                {% else %}
+                  {{ quiz.difficulty }}
+                {% endif %}
+              </td>
+              <td>
+                {% if quiz.required_score is None %}
+                  --
+                {% else %}
+                  {{ quiz.required_score }} %
+                {% endif %}
+              </td>
               <td>{{ quiz.duration|date:"c" }}</td>
             </tr>
 
-          <!-- start-modal -->
+            <!-- start-modal -->
 
-          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="modal-body">
-                  <a href="{% url 'quiz-each' quiz.id %}" class="btn btn-outline-primary">Start</a>
-                  <a class="btn btn-outline-success" href="{% url 'quiz-result' quiz.id %}">Result</a>
-                  {% if request.user == quiz.host %}
-                    <a href="{% url 'quiz-edit' quiz.id %}" class="btn btn-outline-warning">Edit</a>
-                    <a data-bs-toggle="modal" data-bs-target="#delete-modal" class="btn btn-outline-danger">Delete</a>
-                  {% endif %}
-                </div>                  
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- delete-modal -->
-
-          <div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <div class="text-muted">
-                    <p>Are you sure to delete this quiz ?</p>
+            <div class="modal fade" id="exampleModal-{{ quiz.id }}" tabindex="-1" aria-labelledby="exampleModalLabel-{{ quiz.id }}" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel-{{ quiz.id }}">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body" id="modal-body" style="display: flex; justify-content: space-between;">
+                    <a href="{% url 'quiz-each' quiz.id %}" class="btn btn-outline-primary me-1 ms-1" style="width: 100%;">Start {{ quiz.id }}</a>
+                    <a class="btn btn-outline-success me-1 ms-1" href="{% url 'quiz-result' quiz.id %}" style="width: 100%;">Result</a>
+                    {% if request.user == quiz.host %}
+                      <a href="{% url 'quiz-edit' quiz.id %}" class="btn btn-outline-warning me-1 ms-1" style="width: 100%;">Edit</a>
+                      <a data-bs-toggle="modal" data-bs-target="#delete-modal" class="btn btn-outline-danger me-1 ms-1" style="width: 100%;">Delete</a>
+                    {% endif %}
+                  </div>                  
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                   </div>
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <form method="POST" action="">
-                    {% csrf_token %}
-                    <input type="hidden" value="{{ quiz.id }}" name="quiz-id">
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                  </form>
-                </div>
               </div>
             </div>
-          </div>
-
           {% endfor %}
         </tbody>
       </table>
