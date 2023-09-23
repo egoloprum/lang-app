@@ -118,15 +118,35 @@ def checkQuizName(request):
 def quizEach(request, pk):
     quiz = Quiz.objects.get(id=pk)
     questions = Question.objects.filter(quiz=quiz).select_related('quiz')
+    question_cor_num = []
     answers = []
+    answer_correct = [[]]
 
     for question in questions:
         answers.extend(Answer.objects.filter(question=question).select_related('question'))
+        question_cor_num.append(models.Count(Answer.objects.filter(question=question, correct=True)))
+
+    if request.method == 'POST':
+        x = 1
+        while(request.POST.get('question-' + str(x))):
+            y = 1
+            ans = []
+            while(request.POST.get('answer-' + str(x) + '-' + str(y))):
+                print(request.POST.get('answer-' + str(x) + '-' + str(y)))
+                ans.append(True if request.POST.get('answer-' + str(x) + '-' + str(y)) == 'on' else False)
+                y += 1
+            
+            answer_correct[x].append(ans)
+            print(answer_correct)
+            x += 1
+
+        print(answer_correct)
+
 
     context = {
         'quiz': quiz,
         'questions': questions,
-        'answers': answers
+        'answers': answers,
     }
     return render(request, 'quiz-each.html', context)
 

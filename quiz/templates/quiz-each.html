@@ -1,55 +1,128 @@
 {% extends 'main.html' %}
 
 {% block content %}
-  <section class="m-3 p-3 row" style="scroll-margin-inline-start: 100px; scroll-behavior: smooth;">
-    <!-- left side -->
-    <div class="col-9">
-      <div class="white-border p-4 mb-4">
-        <div class="mb-3">
-          <h4>{{ quiz.name }}</h4>
-          <p>For the questions below, please choose the best option to complete the sentence or conversation.</p>
-        </div>
-      </div>
-
-      {% for question in questions %}
-        <div class="white-border p-4 mb-4" id="question-{{ forloop.counter }}">
-          <p class="mb-3" name="question-{{ forloop.counter }}">{{ forloop.counter }}. {{ question.body }}</p>
-          <ul>
-            {% for answer in answers %}
-              {% if answer.question == question %}
-              <li class="mb-2" style="display: flex; align-items: center;">
-                <input type="checkbox" class="me-2" name="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
-                <span>{{ answer.body }}</span>
-              </li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-        </div>
-      {% endfor %}
-    </div>
-
-    <div class="col p-0 ms-3" style="position: sticky; top: 0; height: fit-content;">
-      <div class="white-border mb-3">
-        <p>Timer</p>
-      </div>
-
-      <div class="white-border">
-        <div class="m-2 p-2 pb-0" style="display: grid; grid-template-columns: auto auto auto auto auto;">
-          {% for question in questions %}
-          <div class="mb-2" style="display: flex; align-items: center; justify-content: center;">
-            <a href="#question-{{ forloop.counter }}" class="btn btn-info me-1 ms-1" style="width: 100%;">{{ forloop.counter }}</a>
+  <section class="m-3 p-3" style="scroll-margin-inline-start: 100px; scroll-behavior: smooth;">
+    <form class="row" method="POST" action="">
+      {% csrf_token %}
+      <!-- left side -->
+      <div class="col">
+        <div class="white-border p-4 mb-4">
+          <div class="mb-3">
+            <h4>{{ quiz.name }}</h4>
+            <p>For the questions below, please choose the best option to complete the sentence or conversation.</p>
           </div>
-          {% endfor %}
         </div>
-  
-        <div class="m-2" style="display: flex; justify-content: space-between;">
-          <button class="btn btn-primary m-2" style="width: 100%;">Finish</button>
-          <button class="btn btn-secondary m-2" style="width: 100%;">Discard</button>
-        </div>
+
+        {% for question in questions %}
+          <div class="white-border p-4 mb-4" id="question-{{ forloop.counter }}">
+            <p class="mb-3" name="question-{{ forloop.counter }}">{{ forloop.counter }}. {{ question.body }}</p>
+            <ul id="answers-{{ forloop.counter }}">
+              {% for answer in answers %}
+                {% if answer.question == question %}
+                <li class="p-2 m-3 border" style="display: flex; align-items: center; background: #f4f4f4;" 
+                  id="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" onclick="answer_check(this.id)">
+                  <input type="checkbox" class="me-2 ms-2" name="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                  <span>{{ answer.body }}</span>
+                </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        {% endfor %}
       </div>
 
-    </div>
+      <div class="col-3 p-0 ms-3" style="position: sticky; top: 0; height: fit-content;">
+        <div class="white-border mb-3">
+          <div class="launch-time p-3" style="display: flex; justify-content: space-evenly; align-items: center;">
+            <div style="text-align: center;">
+              <p id="minutes" style="font-size: 30px;">00</p>
+              <span>Minutes</span>
+            </div>
+            <div style="text-align: center;">
+              <p id="seconds" style="font-size: 30px;">00</p>
+              <span>Seconds</span>
+            </div>
+          </div>
+        </div>
 
+        <div class="white-border">
+          <div class="m-2 p-2 pb-0 ms-0 row row-cols-5">
+            {% for question in questions %}
+            <div class="mb-2" >
+              <a href="#question-{{ forloop.counter }}" class="btn btn-info" id="question-num-{{ forloop.counter }}"
+                style="width: 45px; height: 45px;">{{ forloop.counter }}</a>
+            </div>
+            {% endfor %}
+          </div>
+    
+          <div class="m-2" style="display: flex; justify-content: space-between;">
+              <button class="btn btn-primary m-2" style="width: 100%;" type="submit">Finish</button>
+              <a class="btn btn-secondary m-2" style="width: 100%;" href="{% url 'quiz' %}">Discard</a>
+          </div>
+        </div>
+      </div>
+    </form>
   </section>
+
+  <script>
+    function answer_check(id) {
+      const answer = document.getElementById(id);
+      const answers = document.getElementById("answers-" + id.match(/\d+/)[0]);
+      const question = document.getElementById("question-num-" + id.match(/\d+/)[0]);
+
+      if (answer.children[0].checked) {
+        answer.children[0].checked = false;
+        answer.children[0].removeAttribute("checked");
+        answer.setAttribute("style", "display: flex; align-items: center; background: #f4f4f4;");
+        check = true;
+
+        for (let i = 0; i < answers.children.length; i++) {
+          if (answers.children[i].style.background == "rgb(109, 216, 121)") {
+            check = false;
+          }
+        }
+
+        if (check) {
+          question.className = "btn btn-info me-1 ms-1";
+        }
+      }
+      else {
+        answer.children[0].checked = true;
+        answer.children[0].setAttribute("checked", "");
+        answer.setAttribute("style", "display: flex; align-items: center; background: #6dd879;");
+        let check = [];
+
+        for (let i = 0; i < answers.children.length; i++) {
+          if(answers.children[i].style.background == "rgb(244, 244, 244)") {
+            check[i] = false;
+          }
+          else {
+            check[i] = true;
+          }
+        }
+
+
+        if (check.includes(true)) {
+          question.className = "btn btn-warning me-1 ms-1";
+        }
+      }
+    }
+
+    let countdown = 10;
+    let x = setInterval(function() {
+      countdown--;
+
+      let minutes = Math.floor((countdown % (60 * 60)) / (60));
+      let seconds = Math.floor((countdown % (60)));
+
+      if (countdown >= 0) {
+        document.getElementById("minutes").innerHTML = minutes;
+        document.getElementById("seconds").innerHTML = seconds;
+      }
+      if (countdown == 0) {
+        // document.getElementById("suka").click();
+      }
+    }, 1000);
+  </script>
 
 {% endblock %}
