@@ -65,14 +65,15 @@
       <div class="white-border p-4 row m-0">
         <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
           <div>
-            <a class="btn btn-light" style="width: 100%;" onclick="add_question()">Add question</a>
+            <a class="btn btn-light" style="width: 100%;" id="quiz-{{ quiz.id }}" 
+              onclick="add_question(this.id)">Add question</a>
           </div>
         </div>
 
         <div class="col p-3 ms-3" id="question-side">
           {% for question in questions %}
-          <div class="accordion accordion-flush" style="border-bottom: 1px solid #e4e4e4;" id="question-{{ forloop.counter }}">
-            <div class="accordion-item">
+          <div class="accordion accordion-flush" id="question-{{ forloop.counter }}">
+            <div class="accordion-item" style="border-bottom: 1px solid #e4e4e4;">
               <h2 class="accordion-header">
                 <a class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapse-{{ forloop.counter }}"
                   aria-controls="#flush-collapse-{{ forloop.counter }}" aria-expanded="true">
@@ -84,6 +85,7 @@
                 <div class="accordion-body" id="accordion-body-{{ forloop.counter }}">
                   <div class="mb-2" style="display: flex; align-items: center;">
                     <label class="form-label me-3">question</label>
+                    <input type="hidden" name="question-id-{{ forloop.counter }}" value="{{ question.id }}" >
                     <input class="form-control mb-2" type="text" placeholder="Question here..." 
                       name="question-{{ forloop.counter }}" value="{{ question.body }}" required>
                   </div>
@@ -95,12 +97,12 @@
                   </div>
 
                   <div style="display:flex; align-items: center; justify-content: space-between;">
-                    <a class="btn btn-light mb-2" onclick="add_answer(this.id)" id="answer-btn-{{ forloop.counter }}">
+                    <a class="btn btn-light mb-2" onclick="add_answer(this.id)" id="answer-btn-{{ forloop.counter }}-{{ question.id }}">
                       <i class="fa-solid fa-plus"></i>
                       <span> Add answer</span>
                     </a>
-                    <a class="btn btn-light mb-2" onclick="del_question(this.id)" id="del-question-{{ forloop.counter }}"
-                      href="{% url 'delete-question' question.id %}">
+                    <a class="btn btn-light mb-2" hx-boost="true" onclick="del_question(this.id)"
+                      id="del-question-{{ forloop.counter }}-{{ question.id }}">
                       <i class="fa-solid fa-trash"></i>
                       <span> Delete question</span>
                     </a>
@@ -108,19 +110,24 @@
                   <ul id="answer-ul-{{ forloop.counter }}">
                     {% for answer in answers %}
                       {% if answer.question == question %}
-                        <div class="m-2 me-0 answer-{{ forloop.parentloop.counter }}"
-                          style="display: flex; align-items: center;" id="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                        <div class="m-2 me-0 answer-div"style="display: flex; align-items: center;" 
+                          id="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" 
+                          name="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
                           {% if answer.correct %}
                             <input class="me-3" type="checkbox" checked
                               name="answer-cor-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
                           {% else %}
-                            <input class="me-3" type="checkbox" name="answer-cor-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                            <input class="me-3" type="checkbox" 
+                              name="answer-cor-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
                           {% endif %}
+                          <input type="hidden" value="{{ answer.id }}" id="answer-id-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"
+                            name="answer-id-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
                           <input class="form-control" type="text" value="{{ answer.body }}" 
-                            name="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" required>
-                          <a href="{% url 'delete-answer' answer.id %}" hx-boost="true">
+                            name="answer-body-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" required>
+                          <a onclick="del_answer(this.id)"
+                            id="answer-del-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-{{ answer.id }}">
                             <i class="fa-solid fa-x ms-3" id="answer-del-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" 
-                            style="cursor: pointer;" onclick="answer_del(this.id)"></i>
+                              style="cursor: pointer;"></i>
                           </a>
                         </div>
                       {% endif %}
@@ -134,11 +141,12 @@
         </div>
       </div>
     </form>
-
+    <div id="success">
+    </div>
   </section>
 
   <script>
-    function add_question(){
+    function add_question(id){
       question_side = document.getElementById("question-side");
       const q_number = ++question_side.children.length;
 
@@ -175,7 +183,12 @@
 
       q_label = document.createElement("label");
       q_label.innerHTML = "question";
-      q_label.className = "me-3";
+      q_label.className = "form-label me-3";
+
+      q_hidden = document.createElement("input");
+      q_hidden.setAttribute("type", "hidden");
+      q_hidden.setAttribute("id", "question-id-" + q_number);
+      q_hidden.setAttribute("name", "question-id-" + q_number);
 
       q_input = document.createElement("input");
       q_input.className = "form-control mb-2";
@@ -188,11 +201,12 @@
       wrap_1.className = "mb-2";
       wrap_1.setAttribute("style", "display: flex; align-items: center;");
       wrap_1.appendChild(q_label);
+      wrap_1.appendChild(q_hidden);
       wrap_1.appendChild(q_input);
 
       e_label = document.createElement("label");
       e_label.innerHTML = "explanation";
-      e_label.className = "me-3";
+      e_label.className = "form-label me-3";
 
       e_input = document.createElement("input");
       e_input.className = "form-control mb-2";
@@ -206,25 +220,27 @@
       wrap_2.appendChild(e_label);
       wrap_2.appendChild(e_input);
 
-      btns_div = document.createElement("div");
-      btns_div.setAttribute("style", "display:flex; align-items: center; justify-content: space-between;");
+      wrap_3 = document.createElement("div");
+      wrap_3.setAttribute("style", "display:flex; align-items: center; justify-content: space-between;");
 
-      flush_btn = document.createElement("a");
-      flush_btn.className = "btn btn-light mb-2";
-      flush_btn.setAttribute("onclick", "add_answer(this.id)");
-      flush_btn.setAttribute("id", "answer-btn-" + q_number);
-      flush_i = document.createElement("i");
-      flush_i.className = "fa-solid fa-plus";
+      ans_btn = document.createElement("a");
+      ans_btn.className = "btn btn-light mb-2";
+      ans_btn.setAttribute("onclick", "add_answer(this.id)");
+      // here add question id
+      ans_btn.setAttribute("id", "add-answer-" + q_number);
+      ans_i = document.createElement("i");
+      ans_i.className = "fa-solid fa-plus";
 
-      flush_span = document.createElement("span");
-      flush_span.innerHTML = " Add answer";
+      ans_span = document.createElement("span");
+      ans_span.innerHTML = " Add answer";
 
-      flush_ul = document.createElement("ul");
-      flush_ul.setAttribute('id', 'answer-ul-' + q_number);
+      ans_btn.appendChild(ans_i);
+      ans_btn.appendChild(ans_span);
 
       del_btn = document.createElement("a");
       del_btn.className = "btn btn-light mb-2";
       del_btn.setAttribute("onclick", "del_question(this.id)");
+      // here add question id
       del_btn.setAttribute("id", "del-question-" + q_number);
       del_i = document.createElement("i");
       del_i.className = "fa-solid fa-trash";
@@ -232,19 +248,24 @@
       del_span = document.createElement("span");
       del_span.innerHTML = " Delete question";
 
-      flush_btn.appendChild(flush_i);
-      flush_btn.appendChild(flush_span);
-
       del_btn.appendChild(del_i);
       del_btn.appendChild(del_span);
+      
+      ans_ul = document.createElement("ul");
+      ans_ul.setAttribute('id', 'answer-ul-' + q_number);
 
-      btns_div.appendChild(flush_btn);
-      btns_div.appendChild(del_btn);
+      wrap_3.appendChild(ans_btn);
+      wrap_3.appendChild(del_btn);
+
+      question_id = document.createElement("p");
+      question_id.setAttribute("id", "question_id-" + q_number);
+      question_id.setAttribute("style", "display: none;");
 
       flush_body.appendChild(wrap_1);
       flush_body.appendChild(wrap_2);
-      flush_body.appendChild(btns_div);
-      flush_body.appendChild(flush_ul);
+      flush_body.appendChild(wrap_3);
+      flush_body.appendChild(question_id);
+      flush_body.appendChild(ans_ul);
       flush_div.appendChild(flush_body);
 
       item_div.appendChild(accord_head);
@@ -253,15 +274,28 @@
       accord_div.appendChild(item_div);
       question_side.appendChild(accord_div);
 
+      const quiz_id = parseInt(id.split("-")[1]);
+      htmx.ajax('GET', '/quiz/' + quiz_id + '/add-question', {target:'#question_id-' + q_number, swap:'innerHTML'}).then(() => {
+        question_id = document.getElementById("question_id-" + q_number);
+        question_id = question_id.innerHTML;
+        question_id = parseInt(question_id);
+
+        q_hidden = document.getElementById("question-id-" + q_number);
+        q_hidden.value = question_id;
+        ans_btn = document.getElementById("add-answer-" + q_number);
+        ans_btn.setAttribute("id", "add-answer-" + q_number + "-" + question_id);
+        del_btn = document.getElementById("del-question-" + q_number);
+        del_btn.setAttribute("id", "del-question-" + q_number + "-" + question_id);
+      });
     }
 
     function add_answer(id) {
       const q_number = id.match(/\d+/)[0];
       answer_ul = document.getElementById('answer-ul-' + q_number);
-      const a_number = ++answer_ul.children.length;
-      
+      a_number = ++document.getElementsByClassName("answer-div").length;
+
       answer_div = document.createElement("div");
-      answer_div.className = "m-2 me-0 answer-" + q_number;
+      answer_div.className = "m-2 me-0 answer-div";
       answer_div.setAttribute("style", "display: flex; align-items: center;");
       answer_div.setAttribute("id", "answer-" + q_number + "-" + a_number);
 
@@ -270,44 +304,97 @@
       r_input.setAttribute("type", "checkbox");
       r_input.setAttribute("name", "answer-cor-" + q_number + "-" + a_number);
 
+      ans_id = document.createElement("input");
+      ans_id.setAttribute("type", "hidden");
+      ans_id.setAttribute("id", "answer-id-" + q_number + "-" + a_number);
+      ans_id.setAttribute("name", "answer-id-" + q_number + "-" + a_number);
+
       t_input = document.createElement("input");
       t_input.className = "form-control";
       t_input.setAttribute("type", "text");
-      t_input.setAttribute("name", "answer-" + q_number + "-" + a_number);
+      t_input.setAttribute("name", "answer-body-" + q_number + "-" + a_number);
       t_input.setAttribute("required", "");
 
-      answer_i = document.createElement("i");
-      answer_i.className = "fa-solid fa-x ms-3";
-      answer_i.setAttribute("id", "answer-del-" + q_number + "-" + a_number);
-      answer_i.setAttribute("style", "cursor: pointer;");
-      answer_i.setAttribute("onclick", "answer_del(this.id)");
+      ans_a = document.createElement("a");
+      ans_a.setAttribute("id", "answer-del-" + q_number + "-" + a_number);
+      ans_a.setAttribute("onclick", "del_answer(this.id)");
 
+      ans_i = document.createElement("i");
+      ans_i.className = "fa-solid fa-x ms-3";
+      ans_i.setAttribute("style", "cursor: pointer;");
+
+      answer_id_backend = document.createElement("p");
+      answer_id_backend.setAttribute("id", "answer_id-" + q_number + "-" + a_number);
+      answer_id_backend.setAttribute("style", "display: none;");
+
+      ans_a.appendChild(ans_i);
       answer_div.appendChild(r_input);
+      answer_div.appendChild(ans_id);
       answer_div.appendChild(t_input);
-      answer_div.appendChild(answer_i);
+      answer_div.appendChild(ans_a);
+      answer_div.appendChild(answer_id_backend);
       answer_ul.appendChild(answer_div);
+
+      const question_id = parseInt(id.split("-")[3]);
+      htmx.ajax('GET', '/quiz/' + question_id + '/add-answer', {target:'#answer_id-' + q_number + "-" + a_number, swap:'innerHTML'}).then(() => {
+        answer_id = document.getElementById("answer_id-" + q_number + "-" + a_number);
+        answer_id = answer_id.innerHTML;
+        answer_id = parseInt(answer_id);
+        answer_del = document.getElementById("answer-del-" + q_number + '-' + a_number);
+        hidden_input = document.getElementById("answer-id-" + q_number + '-' + a_number);
+        hidden_input.value = answer_id;
+      });
+
+      questions = document.getElementsByClassName("accordion accordion-flush");
+      let answer_number = 1;
+
+      for (let i = 0; i < questions.length; i++) {
+        let question_number = i + 1;
+        answers = document.getElementById("answer-ul-" + question_number);
+        for (let k = 0; k < answers.children.length; k++) {
+          let pk = question_number + "-" + answer_number;
+          answers.children[k].setAttribute("id", "answer-" + pk);
+          answers.children[k].setAttribute("name", "answer-" + pk);
+          answers.children[k].children[0].setAttribute("name", "answer-cor-" + pk);
+          answers.children[k].children[1].setAttribute("id", "answer-id-" + pk);
+          answers.children[k].children[1].setAttribute("name", "answer-id-" + pk);
+          answers.children[k].children[2].setAttribute("name", "answer-body-" + pk);
+          if (typeof answers.children[k].children[4].innerHTML != 'undefined') {
+            hidden_id = answers.children[k].children[4].innerHTML;
+            hidden_id = parseInt(hidden_id);
+            answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + hidden_id);
+          }          
+          answer_number++;
+        }
+      }
+
     }
 
-    function answer_del(id) {
+    function del_answer(id) {
       const number = id.match(/(\d+)-(\d+)/)[0];
       answer_div = document.getElementById("answer-" + number);
       answer_div.remove();
-      answers = document.getElementsByClassName("answer-" + number[0]);
+      htmx.ajax('GET', '/quiz/' + parseInt(id.split("-")[4]) + '/delete-answer', '#success');
+      answers = document.getElementsByClassName("answer-div");
 
       for(let i = 0; i <= answers.length; i++) {
         let j = i + 1;
         answers[i].setAttribute("id", "answer-" + number[0] + "-" + j);
-        answers[i].children[0].setAttribute("name", "answer-" + number[0] + "-" + j);
-        answers[i].children[1].setAttribute("name", "answer-cor-" + number[0] + "-" + j);
-        answers[i].children[2].setAttribute("id", "answer-del-" + number[0] + "-" + j);
+        answers[i].setAttribute("name", "answer-" + number[0] + "-" + j);
+        answers[i].children[0].setAttribute("name", "answer-cor-" + number[0] + "-" + j);
+        answers[i].children[1].setAttribute("name", "answer-id-" + number[0] + "-" + j);
+        answers[i].children[1].setAttribute("id", "answer-id-" + number[0] + "-" + j);
+        answers[i].children[2].setAttribute("name", "answer-body-" + number[0] + "-" + j);
+        const id_num = parseInt(answers[i].children[3].id.split("-")[4]);
+        answers[i].children[3].setAttribute("id", "answer-del-" + number[0] + "-" + j + "-" + id_num);
       }
     }
 
     function del_question(id) {
-      console.log(id);
       const q_number = id.match(/\d+/)[0];
       question_div = document.getElementById("question-" + q_number);
       question_div.remove();
+      htmx.ajax('GET', '/quiz/' + parseInt(id.split("-")[3]) + '/delete-question', '#success');
       questions = document.getElementsByClassName("accordion");
 
       for(let i = 0; i <= questions.length; i++) {
@@ -323,17 +410,17 @@
         // question > div > div > div
         questions[i].children[0].children[1].children[0].setAttribute("id", "accordion-body-" + j);
         // question > div > div > div > input
-        questions[i].children[0].children[1].children[0].children[0].children[1].setAttribute("name", "question-" + j);
+        questions[i].children[0].children[1].children[0].children[0].children[1].setAttribute("name", "question-id-" + j);
+        questions[i].children[0].children[1].children[0].children[0].children[2].setAttribute("name", "question-" + j);
         questions[i].children[0].children[1].children[0].children[1].children[1].setAttribute("name", "explanation-" + j);
         questions[i].children[0].children[1].children[0].children[3].setAttribute("id", "answer-ul-" + j);
-        // question > div > div > div > div > btns
-        questions[i].children[0].children[1].children[0].children[2].children[0].setAttribute("id", "answer-btn-" + j);
-        questions[i].children[0].children[1].children[0].children[2].children[1].setAttribute("id", "del-question-" + j);
 
+        const id_num = parseInt(questions[i].children[0].children[1].children[0].children[2].children[1].id.split("-")[3]);
+        questions[i].children[0].children[1].children[0].children[2].children[1].setAttribute("id", "del-question-" + j + "-" + id_num);
+        // question > div > div > div > div > btns
+        questions[i].children[0].children[1].children[0].children[2].children[0].setAttribute("id", "answer-btn-" + j + + "-" + id_num);
 
       }
-
     }
-
   </script>
 {% endblock %}

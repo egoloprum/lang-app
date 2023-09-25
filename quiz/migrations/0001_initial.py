@@ -37,21 +37,12 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Selected_Answer',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('correct', models.BooleanField(default=False)),
-                ('answer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='quiz.answer')),
-            ],
-        ),
-        migrations.CreateModel(
             name='Result',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('score', models.FloatField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('quiz', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='quiz.quiz')),
-                ('selected_answer', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='quiz.selected_answer')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
@@ -79,7 +70,7 @@ class Migration(migrations.Migration):
                 ('score', models.FloatField()),
                 ('question', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='quiz.question')),
                 ('quiz', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='average_score_quiz', to='quiz.quiz')),
-                ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('user', models.ManyToManyField(related_name='average_score_user', to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(

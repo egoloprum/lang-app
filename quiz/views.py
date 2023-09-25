@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.http import HttpResponse, JsonResponse
+from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist 
 from django.contrib import messages
 # Create your views here.
@@ -59,23 +60,25 @@ def quizEdit(request, pk):
         quiz.end_date = quiz_end
         quiz.save()
         x = 1
-
+        y = 1
         while(request.POST.get('question-' + str(x))):
             question_body = request.POST.get('question-' + str(x))
+            question_id = request.POST.get('question-id-' + str(x))
             question_exp = None if request.POST.get('explanation-' + str(x)) == "" else request.POST.get('explanation-' + str(x))
-            if Question.objects.filter(body=question_body).exists:
-                pass
-            else:
-                question = Question.objects.create(body=question_body, explanation=question_exp, quiz=quiz)
- 
-            y = 1
-            while(request.POST.get('answer-' + str(x) + '-' + str(y))):
-                answer_body = request.POST.get('answer-' + str(x) + '-' + str(y))
+            question = questions.get(id=question_id)
+            question.body = question_body
+            question.explanation = question_exp
+            question.save()
+
+            while(request.POST.get('answer-body-' + str(x) + '-' + str(y))):
+                answer_body = request.POST.get('answer-body-' + str(x) + '-' + str(y))
+                answer_id = request.POST.get('answer-id-' + str(x) + '-' + str(y))
                 answer_correct = True if request.POST.get('answer-cor-' + str(x) + '-' + str(y)) == 'on' else False
-                if Answer.objects.filter(body=answer_body, question=question).exists:
-                    pass
-                else:
-                    Answer.objects.create(body=answer_body, correct=answer_correct, question=question)
+                ans = Answer.objects.get(id=answer_id)
+                ans.body = answer_body
+                ans.correct = answer_correct
+                ans.save()
+
                 y += 1
 
             x += 1
@@ -90,18 +93,30 @@ def quizEdit(request, pk):
     return render(request, 'quiz-edit.html', context)
 
 @login_required(login_url='login')
+def add_question(request, pk):
+    quiz = Quiz.objects.get(id=pk)
+    question = Question.objects.create(quiz=quiz)
+    return HttpResponse(question.id)
+
+@login_required(login_url='login')
+def add_answer(request, pk):
+    question = Question.objects.get(id=pk)
+    answer = Answer.objects.create(question=question)
+    return HttpResponse(answer.id)
+
+@login_required(login_url='login')
 def delete_question(request, pk):
     question = Question.objects.get(id=pk)
     id = question.quiz.id
     question.delete()
-    return redirect("quiz-edit", id)
+    return HttpResponse(' ')
 
 @login_required(login_url='login')
 def delete_answer(request, pk):
     answer = Answer.objects.get(id=pk)
     id = answer.question.quiz.id
     answer.delete()
-    return redirect("quiz-edit", id)
+    return HttpResponse(' ')
 
 @login_required(login_url='login')
 def checkQuizName(request):
@@ -120,28 +135,30 @@ def quizEach(request, pk):
     questions = Question.objects.filter(quiz=quiz).select_related('quiz')
     question_cor_num = []
     answers = []
-    answer_correct = [[]]
+    answer_correct = []
 
     for question in questions:
         answers.extend(Answer.objects.filter(question=question).select_related('question'))
         question_cor_num.append(models.Count(Answer.objects.filter(question=question, correct=True)))
 
+    print(question_cor_num)
+
     if request.method == 'POST':
-        x = 1
-        while(request.POST.get('question-' + str(x))):
-            y = 1
+        y = 1
+        for x in range(1, len(questions) + 1):
             ans = []
-            while(request.POST.get('answer-' + str(x) + '-' + str(y))):
-                print(request.POST.get('answer-' + str(x) + '-' + str(y)))
+            while(request.POST.get('answer-body-' + str(x) + '-' + str(y))):
                 ans.append(True if request.POST.get('answer-' + str(x) + '-' + str(y)) == 'on' else False)
                 y += 1
-            
-            answer_correct[x].append(ans)
-            print(answer_correct)
-            x += 1
+        
+            answer_correct.append(ans)
 
-        print(answer_correct)
+        print(len(answer_correct))
 
+        for x in range(0, len(answer_correct)):
+            for y in range(0, len(answer_correct[x])):
+                pass
+    
 
     context = {
         'quiz': quiz,
@@ -259,42 +276,42 @@ def quizEach(request, pk):
 
 #     return render(request, 'quiz-edit.html', context)
 
-@login_required(login_url='login')
-def quizResult(request, pk):
-    quiz = Quiz.objects.get(id=pk)
-    result = Result.objects.select_related('quiz').filter(quiz=quiz).last
-    results = Result.objects.select_related('quiz').filter(quiz=quiz).order_by('-id')
-    questions = Question.objects.select_related('quiz').filter(quiz=quiz)
-    answers = []
-    selected_answers = []
+# @login_required(login_url='login')
+# def quizResult(request, pk):
+#     quiz = Quiz.objects.get(id=pk)
+#     result = Result.objects.select_related('quiz').filter(quiz=quiz).last
+#     results = Result.objects.select_related('quiz').filter(quiz=quiz).order_by('-id')
+#     questions = Question.objects.select_related('quiz').filter(quiz=quiz)
+#     answers = []
+#     selected_answers = []
 
-    for question in questions:
-        for a in Answer.objects.filter(question=question).select_related('question'):
-            answers.append(a)
-            try:
-                selected_answers.append(Selected_Answer.objects.select_related('answer').filter(answer=a).last)
-                # Selected_Answer.objects.get(answer=a).delete()
-            except ObjectDoesNotExist:
-                ...
+#     for question in questions:
+#         for a in Answer.objects.filter(question=question).select_related('question'):
+#             answers.append(a)
+#             try:
+#                 selected_answers.append(Selected_Answer.objects.select_related('answer').filter(answer=a).last)
+#                 # Selected_Answer.objects.get(answer=a).delete()
+#             except ObjectDoesNotExist:
+#                 ...
 
-    list_answers = dict(zip(answers, selected_answers))
-    average_score = 0
+#     list_answers = dict(zip(answers, selected_answers))
+#     average_score = 0
 
-    for res in results:
-        average_score += res.score
+#     for res in results:
+#         average_score += res.score
 
-    try:
-        average_score = average_score / len(results)
-    except ZeroDivisionError:
-        average_score = 0
+#     try:
+#         average_score = average_score / len(results)
+#     except ZeroDivisionError:
+#         average_score = 0
 
-    if Average_score.objects.filter(quiz=quiz, user=request.user).exists:
-        Average_score.objects.filter(quiz=quiz, user=request.user).delete()
+#     if Average_score.objects.filter(quiz=quiz, user=request.user).exists:
+#         Average_score.objects.filter(quiz=quiz, user=request.user).delete()
 
-    Average_score.objects.create(quiz=quiz, user=request.user, score=average_score)
+#     Average_score.objects.create(quiz=quiz, user=request.user, score=average_score)
 
-    context = {'result': result, 'results': results, 'average_score': average_score,
-               'quiz': quiz, 'questions': questions, 'answers': list_answers, 'ans': answers}
+#     context = {'result': result, 'results': results, 'average_score': average_score,
+#                'quiz': quiz, 'questions': questions, 'answers': list_answers, 'ans': answers}
 
-    return render(request, 'quiz-result.html', context)
+#     return render(request, 'quiz-result.html', context)
 

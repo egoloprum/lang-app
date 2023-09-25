@@ -67,17 +67,9 @@ class Answer(models.Model):
         else:
             return f"{self.question.id} {self.id} {self.body}"
 
-class Selected_Answer(models.Model):
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
-    correct = models.BooleanField(default=False, null=False)
-
-    def __str__(self):
-        return str(self.pk)
-
 class Result(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
-    selected_answer = models.ForeignKey(Selected_Answer, on_delete=models.CASCADE, null=True)
     score = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -87,7 +79,7 @@ class Result(models.Model):
 class Average_score(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, related_name='average_score_quiz')
     question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ManyToManyField(User, related_name='average_score_user')
     score = models.FloatField()
 
     def __str__(self):

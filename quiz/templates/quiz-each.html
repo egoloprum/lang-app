@@ -23,6 +23,7 @@
                   id="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" onclick="answer_check(this.id)">
                   <input type="checkbox" class="me-2 ms-2" name="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
                   <span>{{ answer.body }}</span>
+                  <input type="hidden" value="{{ answer.body }}" name="answer-body-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
                 </li>
                 {% endif %}
               {% endfor %}

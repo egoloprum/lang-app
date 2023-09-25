@@ -8,15 +8,9 @@ urlpatterns = [
 
   path('<str:pk>', views.quizEach, name='quiz-each'),
   path('each/<str:pk>/edit', views.quizEdit, name='quiz-edit'),
+  path('<str:pk>/add-question', views.add_question, name='add-question'),
+  path('<str:pk>/add-answer', views.add_answer, name='add-answer'),
   path('<str:pk>/delete-question', views.delete_question, name='delete-question'),
-  path('<str:pk>/elete-answer', views.delete_answer, name='delete-answer'),
-  path('each/<str:pk>/result', views.quizResult, name='quiz-result'),
-  # path('login', views.loginUser, name='login'),
-  # path('register', views.registerUser, name='register'),
-  # path('logout', views.logoutUser, name='logout'),
-  # path('forgot', views.forgotPass, name='forgot'),
-
-  # path('profile/<str:pk>/', views.profilePath, name='profile'),
-  # path('profile-update', views.profileUpdate, name='profile-update'),
-  # path('delete', views.deleteUser, name='delete'), 
+  path('<str:pk>/delete-answer', views.delete_answer, name='delete-answer'),
+  # path('each/<str:pk>/result', views.quizResult, name='quiz-result'),
 ]
