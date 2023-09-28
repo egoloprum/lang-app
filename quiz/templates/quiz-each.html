@@ -15,6 +15,7 @@
 
         {% for question in questions %}
           <div class="white-border p-4 mb-4" id="question-{{ forloop.counter }}">
+            {{ question.ques_num }}
             <p class="mb-3" name="question-{{ forloop.counter }}">{{ forloop.counter }}. {{ question.body }}</p>
             <ul id="answers-{{ forloop.counter }}">
               {% for answer in answers %}
@@ -59,6 +60,26 @@
           <div class="m-2" style="display: flex; justify-content: space-between;">
               <button class="btn btn-primary m-2" style="width: 100%;" type="submit">Finish</button>
               <a class="btn btn-secondary m-2" style="width: 100%;" href="{% url 'quiz' %}">Discard</a>
+          </div>
+        </div>
+        
+        <div class="white-border" hx-boost="true">
+          <div class="pagination m-2 p-2">
+            <span class="step-links" style="display: flex; justify-content: space-between; width: 100%;">
+                {% if questions.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ questions.previous_page_number }}">previous</a>
+                {% endif %}
+        
+                <span class="current">
+                    Page {{ questions.number }} of {{ questions.paginator.num_pages }}.
+                </span>
+        
+                {% if questions.has_next %}
+                    <a href="?page={{ questions.next_page_number }}">next</a>
+                    <a href="?page={{ questions.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
           </div>
         </div>
       </div>

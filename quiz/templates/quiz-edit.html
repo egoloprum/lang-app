@@ -126,8 +126,7 @@
                             name="answer-body-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" required>
                           <a onclick="del_answer(this.id)"
                             id="answer-del-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-{{ answer.id }}">
-                            <i class="fa-solid fa-x ms-3" id="answer-del-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" 
-                              style="cursor: pointer;"></i>
+                            <i class="fa-solid fa-x ms-3" style="cursor: pointer;"></i>
                           </a>
                         </div>
                       {% endif %}
@@ -264,8 +263,8 @@
       flush_body.appendChild(wrap_1);
       flush_body.appendChild(wrap_2);
       flush_body.appendChild(wrap_3);
-      flush_body.appendChild(question_id);
       flush_body.appendChild(ans_ul);
+      flush_body.appendChild(question_id);
       flush_div.appendChild(flush_body);
 
       item_div.appendChild(accord_head);
@@ -343,14 +342,47 @@
         answer_del = document.getElementById("answer-del-" + q_number + '-' + a_number);
         hidden_input = document.getElementById("answer-id-" + q_number + '-' + a_number);
         hidden_input.value = answer_id;
+
+        questions = document.getElementsByClassName("accordion accordion-flush");
+        let answer_number = 1;
+
+        for (let i = 0; i < questions.length; i++) {
+          let question_number = i + 1;
+          let answers = document.getElementById("answer-ul-" + question_number);
+          for (let k = 0; k < answers.children.length; k++) {
+            let pk = question_number + "-" + answer_number;
+            answers.children[k].setAttribute("id", "answer-" + pk);
+            answers.children[k].setAttribute("name", "answer-" + pk);
+            answers.children[k].children[0].setAttribute("name", "answer-cor-" + pk);
+            answers.children[k].children[1].setAttribute("id", "answer-id-" + pk);
+            answers.children[k].children[1].setAttribute("name", "answer-id-" + pk);
+            answers.children[k].children[2].setAttribute("name", "answer-body-" + pk);
+            if (typeof answers.children[k].children[4]?.innerHTML != 'undefined') {
+              hidden_id = answers.children[k].children[4].innerHTML;
+              hidden_id = parseInt(hidden_id);
+              answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + hidden_id);
+              answers.children[k].children[4].setAttribute("id", "answer_id-" + pk);
+            }
+            const answer_del_id = parseInt(answers.children[k].children[3].id.split("-")[4]);
+            answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + answer_del_id);          
+            answer_number++;
+          }
+        }
       });
+    }
+
+    function del_answer(id) {
+      const number = id.match(/(\d+)-(\d+)/)[0];
+      answer_div = document.getElementById("answer-" + number);
+      answer_div.remove();
+      htmx.ajax('GET', '/quiz/' + parseInt(id.split("-")[4]) + '/delete-answer', '#success');
 
       questions = document.getElementsByClassName("accordion accordion-flush");
       let answer_number = 1;
 
       for (let i = 0; i < questions.length; i++) {
         let question_number = i + 1;
-        answers = document.getElementById("answer-ul-" + question_number);
+        let answers = document.getElementById("answer-ul-" + question_number);
         for (let k = 0; k < answers.children.length; k++) {
           let pk = question_number + "-" + answer_number;
           answers.children[k].setAttribute("id", "answer-" + pk);
@@ -359,34 +391,16 @@
           answers.children[k].children[1].setAttribute("id", "answer-id-" + pk);
           answers.children[k].children[1].setAttribute("name", "answer-id-" + pk);
           answers.children[k].children[2].setAttribute("name", "answer-body-" + pk);
-          if (typeof answers.children[k].children[4].innerHTML != 'undefined') {
+          if (typeof answers.children[k].children[4]?.innerHTML != 'undefined') {
             hidden_id = answers.children[k].children[4].innerHTML;
             hidden_id = parseInt(hidden_id);
             answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + hidden_id);
-          }          
+            answers.children[k].children[4].setAttribute("id", "answer_id-" + pk);
+          }
+          const answer_del_id = parseInt(answers.children[k].children[3].id.split("-")[4]);
+          answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + answer_del_id);                  
           answer_number++;
         }
-      }
-
-    }
-
-    function del_answer(id) {
-      const number = id.match(/(\d+)-(\d+)/)[0];
-      answer_div = document.getElementById("answer-" + number);
-      answer_div.remove();
-      htmx.ajax('GET', '/quiz/' + parseInt(id.split("-")[4]) + '/delete-answer', '#success');
-      answers = document.getElementsByClassName("answer-div");
-
-      for(let i = 0; i <= answers.length; i++) {
-        let j = i + 1;
-        answers[i].setAttribute("id", "answer-" + number[0] + "-" + j);
-        answers[i].setAttribute("name", "answer-" + number[0] + "-" + j);
-        answers[i].children[0].setAttribute("name", "answer-cor-" + number[0] + "-" + j);
-        answers[i].children[1].setAttribute("name", "answer-id-" + number[0] + "-" + j);
-        answers[i].children[1].setAttribute("id", "answer-id-" + number[0] + "-" + j);
-        answers[i].children[2].setAttribute("name", "answer-body-" + number[0] + "-" + j);
-        const id_num = parseInt(answers[i].children[3].id.split("-")[4]);
-        answers[i].children[3].setAttribute("id", "answer-del-" + number[0] + "-" + j + "-" + id_num);
       }
     }
 
@@ -395,9 +409,11 @@
       question_div = document.getElementById("question-" + q_number);
       question_div.remove();
       htmx.ajax('GET', '/quiz/' + parseInt(id.split("-")[3]) + '/delete-question', '#success');
-      questions = document.getElementsByClassName("accordion");
 
-      for(let i = 0; i <= questions.length; i++) {
+      questions = document.getElementsByClassName("accordion accordion-flush");
+      let answer_number = 1;
+
+      for (let i = 0; i < questions.length; i++) {
         let j = i + 1;
         questions[i].setAttribute("id", "question-" + j);
         // question > div > h2 > button > p
@@ -418,8 +434,28 @@
         const id_num = parseInt(questions[i].children[0].children[1].children[0].children[2].children[1].id.split("-")[3]);
         questions[i].children[0].children[1].children[0].children[2].children[1].setAttribute("id", "del-question-" + j + "-" + id_num);
         // question > div > div > div > div > btns
-        questions[i].children[0].children[1].children[0].children[2].children[0].setAttribute("id", "answer-btn-" + j + + "-" + id_num);
+        questions[i].children[0].children[1].children[0].children[2].children[0].setAttribute("id", "answer-btn-" + j + "-" + id_num);
 
+        let answers = document.getElementById("answer-ul-" + j);
+
+        for (let k = 0; k < answers.children.length; k++) {
+          let pk = j + "-" + answer_number;
+          answers.children[k].setAttribute("id", "answer-" + pk);
+          answers.children[k].setAttribute("name", "answer-" + pk);
+          answers.children[k].children[0].setAttribute("name", "answer-cor-" + pk);
+          answers.children[k].children[1].setAttribute("id", "answer-id-" + pk);
+          answers.children[k].children[1].setAttribute("name", "answer-id-" + pk);
+          answers.children[k].children[2].setAttribute("name", "answer-body-" + pk);
+          if (typeof answers.children[k].children[4]?.innerHTML != 'undefined') {
+            hidden_id = answers.children[k].children[4].innerHTML;
+            hidden_id = parseInt(hidden_id);
+            answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + hidden_id);
+            answers.children[k].children[4].setAttribute("id", "answer_id-" + pk);
+          }
+          const answer_del_id = parseInt(answers.children[k].children[3].id.split("-")[4]);
+          answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + answer_del_id);          
+          answer_number++;
+        }
       }
     }
   </script>

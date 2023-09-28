@@ -51,7 +51,7 @@ class Question(models.Model):
         if self.body == None:
             return f" {self.id} empty"
         else:
-            return f" {self.id} {self.body}"
+            return f" {self.id} / {self.body}"
     
     def get_answers(self):
         return self.answer_set.all()
@@ -65,7 +65,7 @@ class Answer(models.Model):
         if self.body == None:
             return f" {self.id} empty"
         else:
-            return f"{self.question.id} {self.id} {self.body}"
+            return f"{self.question.id} / {self.id} / {self.body}"
 
 class Result(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False)

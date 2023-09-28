@@ -3,13 +3,14 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from django.http import HttpResponse, JsonResponse
 from django.db import IntegrityError
-from django.core.exceptions import ObjectDoesNotExist 
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator 
 from django.contrib import messages
 # Create your views here.
 
 @login_required(login_url='login')
 def quiz(request):
-    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    # q = request.GET.get('q') if request.GET.get('q') != None else ''
     # difficulties = []
 
     # for quiz in Quiz.objects.all():
@@ -23,7 +24,7 @@ def quiz(request):
         quiz_id = Quiz.objects.get(pk=request.POST.get('quiz-id'))
         quiz_id.delete()
 
-    quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz'))
+    quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host')
     context = {'quizs': quizs}
     return render(request, 'quiz.html', context)
 
@@ -139,9 +140,11 @@ def quizEach(request, pk):
 
     for question in questions:
         answers.extend(Answer.objects.filter(question=question).select_related('question'))
-        question_cor_num.append(models.Count(Answer.objects.filter(question=question, correct=True)))
+        question_cor_num.append(models.Count(Answer.objects.filter(question=question, correct=True).select_related('question')))
 
-    print(question_cor_num)
+    paginator = Paginator(questions, 5)
+    page_number = request.GET.get("page")  
+    page_obj = paginator.get_page(page_number)
 
     if request.method == 'POST':
         y = 1
@@ -162,7 +165,7 @@ def quizEach(request, pk):
 
     context = {
         'quiz': quiz,
-        'questions': questions,
+        'questions': page_obj,
         'answers': answers,
     }
     return render(request, 'quiz-each.html', context)
