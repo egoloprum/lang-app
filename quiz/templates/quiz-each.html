@@ -15,16 +15,15 @@
 
         {% for question in questions %}
           <div class="white-border p-4 mb-4" id="question-{{ forloop.counter }}">
-            {{ question.ques_num }}
             <p class="mb-3" name="question-{{ forloop.counter }}">{{ forloop.counter }}. {{ question.body }}</p>
             <ul id="answers-{{ forloop.counter }}">
               {% for answer in answers %}
                 {% if answer.question == question %}
                 <li class="p-2 m-3 border" style="display: flex; align-items: center; background: #f4f4f4;" 
                   id="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" onclick="answer_check(this.id)">
-                  <input type="checkbox" class="me-2 ms-2" name="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                  <input type="checkbox" class="me-2 ms-2 answer_cor">
                   <span>{{ answer.body }}</span>
-                  <input type="hidden" value="{{ answer.body }}" name="answer-body-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                  <input type="hidden" class="answer_id" value="{{ answer.id }}">
                 </li>
                 {% endif %}
               {% endfor %}
@@ -62,26 +61,6 @@
               <a class="btn btn-secondary m-2" style="width: 100%;" href="{% url 'quiz' %}">Discard</a>
           </div>
         </div>
-        
-        <div class="white-border" hx-boost="true">
-          <div class="pagination m-2 p-2">
-            <span class="step-links" style="display: flex; justify-content: space-between; width: 100%;">
-                {% if questions.has_previous %}
-                    <a href="?page=1">&laquo; first</a>
-                    <a href="?page={{ questions.previous_page_number }}">previous</a>
-                {% endif %}
-        
-                <span class="current">
-                    Page {{ questions.number }} of {{ questions.paginator.num_pages }}.
-                </span>
-        
-                {% if questions.has_next %}
-                    <a href="?page={{ questions.next_page_number }}">next</a>
-                    <a href="?page={{ questions.paginator.num_pages }}">last &raquo;</a>
-                {% endif %}
-            </span>
-          </div>
-        </div>
       </div>
     </form>
   </section>
@@ -95,8 +74,28 @@
       if (answer.children[0].checked) {
         answer.children[0].checked = false;
         answer.children[0].removeAttribute("checked");
+        answer.children[0].removeAttribute("name");
+        answer.children[2].removeAttribute("name");
         answer.setAttribute("style", "display: flex; align-items: center; background: #f4f4f4;");
         check = true;
+
+        let answers_checked = document.getElementsByClassName("answer_cor");
+        let answers_checked_id = document.getElementsByClassName("answer_id");
+        
+        let checked_answers = [];
+        let checked_id = [];
+        for (let i = 0; i < answers_checked.length; i++) {
+          if (answers_checked[i].checked) {
+            checked_answers.push(answers_checked[i]);
+            checked_id.push(answers_checked_id[i]);
+          }
+        }
+
+        for (let i = 0; i < checked_answers.length; i++) {
+          let j = i + 1;
+          checked_answers[i].setAttribute("name", "answer-cor-" + j);
+          checked_id[i].setAttribute("name", "answer-id-" + j);
+        }
 
         for (let i = 0; i < answers.children.length; i++) {
           if (answers.children[i].style.background == "rgb(109, 216, 121)") {
@@ -111,6 +110,24 @@
       else {
         answer.children[0].checked = true;
         answer.children[0].setAttribute("checked", "");
+        let answers_checked = document.getElementsByClassName("answer_cor");
+        let answers_checked_id = document.getElementsByClassName("answer_id");
+        
+        let checked_answers = [];
+        let checked_id = [];
+        for (let i = 0; i < answers_checked.length; i++) {
+          if (answers_checked[i].checked) {
+            checked_answers.push(answers_checked[i]);
+            checked_id.push(answers_checked_id[i]);
+          }
+        }
+
+        for (let i = 0; i < checked_answers.length; i++) {
+          let j = i + 1;
+          checked_answers[i].setAttribute("name", "answer-cor-" + j);
+          checked_id[i].setAttribute("name", "answer-id-" + j);
+        }
+
         answer.setAttribute("style", "display: flex; align-items: center; background: #6dd879;");
         let check = [];
 
@@ -122,7 +139,6 @@
             check[i] = true;
           }
         }
-
 
         if (check.includes(true)) {
           question.className = "btn btn-warning me-1 ms-1";

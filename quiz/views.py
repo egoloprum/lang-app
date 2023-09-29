@@ -134,40 +134,44 @@ def checkQuizName(request):
 def quizEach(request, pk):
     quiz = Quiz.objects.get(id=pk)
     questions = Question.objects.filter(quiz=quiz).select_related('quiz')
-    question_cor_num = []
+    cor_answers = []
     answers = []
-    answer_correct = []
 
     for question in questions:
         answers.extend(Answer.objects.filter(question=question).select_related('question'))
-        question_cor_num.append(models.Count(Answer.objects.filter(question=question, correct=True).select_related('question')))
-
-    paginator = Paginator(questions, 5)
-    page_number = request.GET.get("page")  
-    page_obj = paginator.get_page(page_number)
-
-    if request.method == 'POST':
-        y = 1
-        for x in range(1, len(questions) + 1):
-            ans = []
-            while(request.POST.get('answer-body-' + str(x) + '-' + str(y))):
-                ans.append(True if request.POST.get('answer-' + str(x) + '-' + str(y)) == 'on' else False)
-                y += 1
-        
-            answer_correct.append(ans)
-
-        print(len(answer_correct))
-
-        for x in range(0, len(answer_correct)):
-            for y in range(0, len(answer_correct[x])):
-                pass
-    
+        cor_answers.append(Answer.objects.filter(question=question, correct=True).select_related('question'))
 
     context = {
         'quiz': quiz,
-        'questions': page_obj,
+        'questions': questions,
         'answers': answers,
     }
+
+    sel_answers = [[] for _ in range(len(questions))]
+
+    if request.method == 'POST':
+        iter = 1
+        q = 1
+        
+        for x in range(len(questions)):
+            while(request.POST.get('answer-id-' + str(iter))):
+                q += 1
+                answer = Answer.objects.get(id=request.POST.get('answer-id-' + str(iter)))
+                if answer.question == questions[x]:
+                    sel_answers[x].append(answer.id)
+                else:
+                    break
+
+                iter += 1
+
+        points = 0
+        for x in range(0, len(questions)):
+            for y in range(0, len(cor_answers[x])):
+                if len(sel_answers[x]) == len(cor_answers[x]) and sel_answers[x][y] == cor_answers[x][y].id:
+                    points += 1
+
+        return HttpResponse(f"you have scored {points} points")
+
     return render(request, 'quiz-each.html', context)
 
 # @login_required(login_url='login')
