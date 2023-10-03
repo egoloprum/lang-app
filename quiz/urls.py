@@ -7,6 +7,7 @@ urlpatterns = [
   path('check_quiz_name', views.checkQuizName, name='check-quiz-name'),
 
   path('<str:pk>', views.quizEach, name='quiz-each'),
+  path('<str:pk>/result', views.quizResult, name='quiz-result'),
   path('each/<str:pk>/edit', views.quizEdit, name='quiz-edit'),
   path('<str:pk>/add-question', views.add_question, name='add-question'),
   path('<str:pk>/add-answer', views.add_answer, name='add-answer'),

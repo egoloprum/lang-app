@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import *
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator 
 from django.contrib import messages
+from django.db.models import Avg, Count, Q
 # Create your views here.
 
 @login_required(login_url='login')
@@ -152,13 +153,20 @@ def quizEach(request, pk):
     if request.method == 'POST':
         iter = 1
         q = 1
+
+        completed_quiz = Completed_Quiz.objects.create(quiz=quiz, user=request.user)
         
         for x in range(len(questions)):
             while(request.POST.get('answer-id-' + str(iter))):
                 q += 1
                 answer = Answer.objects.get(id=request.POST.get('answer-id-' + str(iter)))
+
                 if answer.question == questions[x]:
                     sel_answers[x].append(answer.id)
+                    try:
+                        Selected_Answer.objects.create(selected=answer, user=request.user, quiz=completed_quiz, question=questions[x])
+                    except IntegrityError:
+                        ...
                 else:
                     break
 
@@ -170,118 +178,76 @@ def quizEach(request, pk):
                 if len(sel_answers[x]) == len(cor_answers[x]) and sel_answers[x][y] == cor_answers[x][y].id:
                     points += 1
 
-        return HttpResponse(f"you have scored {points} points")
+        result = Result.objects.create(quiz=quiz, user=request.user, score=points)
 
+        return redirect('quiz-result', quiz.id)
+    
     return render(request, 'quiz-each.html', context)
 
-# @login_required(login_url='login')
-# def quizEach(request, pk):
-#     quiz = Quiz.objects.get(id=pk)
-#     questions = Question.objects.filter(quiz=quiz)
-#     number_of_questions = len(questions)
-#     answers = []
-#     answers_correct_num = []
+@login_required(login_url='login')
+def quizResult(request, pk):
+    quiz = Quiz.objects.select_related('host').get(id=pk)
 
-#     for question in questions:
-#         count = 0
-#         for a in Answer.objects.filter(question=question).select_related('question'):
-#             answers.append(a)
-#             if a.correct is True:
-#                 count += 1
-        
-#         answers_correct_num.append(count)
+    if request.user.is_staff:
+        questions = Question.objects.select_related('quiz').filter(quiz=quiz)
+        completed_quiz = Completed_Quiz.objects.select_related('quiz', 'user').filter(quiz=quiz, user=request.user).last()
+        all_results = Result.objects.select_related('quiz', 'user').filter(quiz=quiz)
+        results = all_results.filter(user=request.user).aggregate(average_score=Avg('score'))
 
-#     context = {'quiz': quiz, 'questions': questions, 'answers': answers, 'number_of_questions': range(number_of_questions)}
+        cor_answers = []
+        sel_answers = []
 
-#     if request.method == 'POST':
-#         quiz_answers = []
-#         result = 0
+        cor_ans = Answer.objects.select_related('question')
+        sel_ans = Selected_Answer.objects.select_related('user', 'quiz', 'question')
 
-#         for answer in answers:
-#             if request.POST.get('answer-' + str(answer.id)) == 'on':
-#                 quiz_answers.append(True)
-#                 Selected_Answer.objects.create(answer=answer, correct=True)
-#             else:
-#                 quiz_answers.append("")
-#                 Selected_Answer.objects.create(answer=answer, correct=False)
-    
-#         temp_quiz = quiz_answers.copy()
-#         temp_answers = answers.copy()
-#         length_answers = len(answers_correct_num)
+        for x in range(0, len(questions)):
+            cor_answers.append(cor_ans.filter(question=questions[x], correct=True))
+            try:
+                sel_answers.append(sel_ans.filter(user=request.user,
+                                                                  quiz=completed_quiz, 
+                                                                  question=questions[x]))
+            except Selected_Answer.DoesNotExist:
+                sel_answers.append(None)
 
-#         for question in questions:
-#             count = 0
-#             for n in range(len(question.get_answers())):
-#                 if temp_answers[n].correct is temp_quiz[n]:
-#                     count += 1
+        answers = list(zip(sel_answers, cor_answers))
 
-#             for n in range(len(question.get_answers())):
-#                 temp_quiz.pop(0)
-#                 temp_answers.pop(0)
+        context = {
+            'quiz': quiz,
+            'results': results,
+            'all_results': all_results,
+            'questions': questions,
+            'answers': answers,
+        }
 
-#             try:
-#                 result += count / answers_correct_num[0]
-#             except ZeroDivisionError:
-#                 result = result
+    else:
+        questions = Question.objects.filter(quiz=quiz).select_related('quiz')
+        completed_quiz = Completed_Quiz.objects.filter(quiz=quiz, user=request.user).last
+        sel_answers = Selected_Answer.objects.filter(user=request.user, quiz=completed_quiz).select_related('user')
+        results = Result.objects.filter(quiz=quiz, user=request.user).select_related('quiz', 'user')
 
-#             answers_correct_num.pop(0)
-        
-#         result = (result / length_answers) * 100
+        cor_answers = []
+        for question in questions:
+            cor_answers.extend(Answer.objects.filter(question=question, correct=True).select_related('question'))
 
-#         quiz_result = Result.objects.create(quiz=quiz, user=request.user, score=result)
+        average_score = 0
+        for result in results:
+            average_score += result.score
 
-#         return redirect('quiz-result', quiz.id)
+        try:
+            average_score /= results.count()
+        except ZeroDivisionError:
+            average_score = 0
 
-#     return render(request, 'quiz-each.html', context)
+        context = {
+            'quiz': quiz,
+            'results': results,
+            'average_score': average_score,
+            'questions': questions,
+            'cor_answers': cor_answers,
+            'sel_answers': sel_answers,
+        }
 
-# @login_required(login_url='login')
-# def quizEdit(request, pk):
-#     quiz = Quiz.objects.get(id=pk)
-#     questions = Question.objects.filter(quiz=quiz)
-#     number_of_questions = len(questions)
-#     answers = []
-
-#     for question in questions:
-#         for a in Answer.objects.filter(question=question).select_related('question'):
-#             answers.append(a)
-
-#     if request.method == "POST":
-#         quiz_name = request.POST.get('quiz-name')
-#         quiz_duration = request.POST.get('quiz-duration')
-#         quiz_required = request.POST.get('quiz-required')
-#         quiz_diff = request.POST.get('quiz-difficulty')
-
-#         quiz.name = quiz_name
-#         if quiz_duration:
-#             quiz.duration = quiz_duration
-#         if quiz_required:
-#             quiz.required_score = quiz_required
-#         if quiz_diff:
-#             quiz.difficulty = quiz_diff
-
-#         for question in questions:
-#             question_body = request.POST.get('question-body-' + str(question.id))
-#             question.body = question_body
-
-#             for answer in answers:
-#                 if answer.question.id == question.id:
-#                     answer_body = request.POST.get('answer-body-' + str(question.id) + '-' + str(answer.id))
-#                     answer.body = answer_body
-#                     answer_correct = request.POST.get('answer-correct-' + str(question.id) + '-' + str(answer.id))
-#                     if answer_correct == 'on':
-#                         answer.correct = True
-#                     else:
-#                         answer.correct = False
-#                     answer.save()
-#             question.save()
-
-#         quiz.save()
-
-#         return redirect('/quiz/%d'%quiz.id)
-
-#     context = {'quiz': quiz, 'questions': questions, 'answers': answers, 'number_of_questions': range(number_of_questions)}
-
-#     return render(request, 'quiz-edit.html', context)
+    return render(request, 'quiz-result.html', context)
 
 # @login_required(login_url='login')
 # def quizResult(request, pk):

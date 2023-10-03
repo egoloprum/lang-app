@@ -67,9 +67,31 @@ class Answer(models.Model):
         else:
             return f"{self.question.id} / {self.id} / {self.body}"
 
+class Completed_Quiz(models.Model):
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False, related_name='complete_quiz_quiz')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name='complete_quiz_user')
+
+    def __str__(self):
+        if self.quiz == None:
+            return f" {self.id} empty"
+        else:
+            return f"{self.id} / {self.quiz.name}"
+
+class Selected_Answer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name='sel_answer_user')
+    selected = models.ForeignKey(Answer, on_delete=models.CASCADE, null=False, related_name='sel_answer_ans')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=False, related_name='sel_answer_ques')
+    quiz = models.ForeignKey(Completed_Quiz, on_delete=models.CASCADE, null=False, related_name='sel_answer_quiz')
+
+    def __str__(self):
+        if self == None:
+            return f"{self.id} empty"
+        else:
+            return f"{self.selected.id} / {self.id}"
+
 class Result(models.Model):
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False, related_name='result_quiz')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name='result_user')
     score = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -78,7 +100,7 @@ class Result(models.Model):
 
 class Average_score(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, related_name='average_score_quiz')
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, related_name='average_score_ques')
     user = models.ManyToManyField(User, related_name='average_score_user')
     score = models.FloatField()
 
