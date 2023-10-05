@@ -151,14 +151,15 @@ def quizEach(request, pk):
     sel_answers = [[] for _ in range(len(questions))]
 
     if request.method == 'POST':
+        if request.path != "http://127.0.0.1:8000/quiz/" + str(quiz.id):
+            request.path = "http://127.0.0.1:8000/quiz/" + str(quiz.id)
         iter = 1
-        q = 1
+
 
         completed_quiz = Completed_Quiz.objects.create(quiz=quiz, user=request.user)
         
         for x in range(len(questions)):
             while(request.POST.get('answer-id-' + str(iter))):
-                q += 1
                 answer = Answer.objects.get(id=request.POST.get('answer-id-' + str(iter)))
 
                 if answer.question == questions[x]:
@@ -179,7 +180,6 @@ def quizEach(request, pk):
                     points += 1
 
         result = Result.objects.create(quiz=quiz, user=request.user, score=points)
-
         return redirect('quiz-result', quiz.id)
     
     return render(request, 'quiz-each.html', context)
@@ -198,18 +198,17 @@ def quizResult(request, pk):
         sel_answers = []
 
         cor_ans = Answer.objects.select_related('question')
-        sel_ans = Selected_Answer.objects.select_related('user', 'quiz', 'question')
+        sel_ans = Selected_Answer.objects.select_related('question', 'selected')
 
-        for x in range(0, len(questions)):
-            cor_answers.append(cor_ans.filter(question=questions[x], correct=True))
+        for question in questions:
+            # cor_answers.append(cor_ans.filter(question=question, correct=True))
+            cor_answers.append(question.answer_question.filter(correct=True))
             try:
-                sel_answers.append(sel_ans.filter(user=request.user,
-                                                                  quiz=completed_quiz, 
-                                                                  question=questions[x]))
+                sel_answers.append(sel_ans.filter(user=request.user, quiz=completed_quiz, question=question))
             except Selected_Answer.DoesNotExist:
                 sel_answers.append(None)
 
-        answers = list(zip(sel_answers, cor_answers))
+        answers = list(zip(sel_answers, cor_answers, questions))
 
         context = {
             'quiz': quiz,
@@ -221,30 +220,32 @@ def quizResult(request, pk):
 
     else:
         questions = Question.objects.filter(quiz=quiz).select_related('quiz')
-        completed_quiz = Completed_Quiz.objects.filter(quiz=quiz, user=request.user).last
-        sel_answers = Selected_Answer.objects.filter(user=request.user, quiz=completed_quiz).select_related('user')
-        results = Result.objects.filter(quiz=quiz, user=request.user).select_related('quiz', 'user')
+        completed_quiz = Completed_Quiz.objects.select_related('quiz', 'user').filter(quiz=quiz, user=request.user).last()
+        results = Result.objects.filter(quiz=quiz, user=request.user)
+        all_results = Result.objects.select_related('quiz', 'user').filter(quiz=quiz, user=request.user).order_by('-created_at')
+        average_score = Result.objects.filter(quiz=quiz, user=request.user).aggregate(average_score=Avg('score'))
+        answers = []
 
-        cor_answers = []
-        for question in questions:
-            cor_answers.extend(Answer.objects.filter(question=question, correct=True).select_related('question'))
+        if request.META.get('HTTP_REFERER').replace("http://127.0.0.1:8000", "") == request.path.replace("/result", ""):
+            cor_answers = []
+            sel_answers = []
+            sel_ans = Selected_Answer.objects.select_related('question', 'selected')
+            for question in questions:
+                cor_answers.append(question.answer_question.filter(correct=True))
+                try:
+                    sel_answers.append(sel_ans.filter(user=request.user, quiz=completed_quiz, question=question))
+                except Selected_Answer.DoesNotExist:
+                    sel_answers.append(None)
 
-        average_score = 0
-        for result in results:
-            average_score += result.score
-
-        try:
-            average_score /= results.count()
-        except ZeroDivisionError:
-            average_score = 0
+            answers = list(zip(sel_answers, cor_answers, questions))
 
         context = {
             'quiz': quiz,
             'results': results,
+            'all_results': all_results,
             'average_score': average_score,
             'questions': questions,
-            'cor_answers': cor_answers,
-            'sel_answers': sel_answers,
+            'answers': answers,
         }
 
     return render(request, 'quiz-result.html', context)

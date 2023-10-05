@@ -2,13 +2,46 @@
 {% load static %}
 {% block content %}
 
-  <div class="row row-cols-3 m-3">
-
+<div class="m-3 pe-3 ps-3">
+  {% if curr_user.is_staff %}
+    <div class="row rows-col-2 ms-0" style="height: fit-content;">
       <!-- profile info side -->
+      <section class="white-border col-3">
+        <div class="m-2 mt-3">
+          {% if request.user != curr_user %}
 
-      <section class="for-loop col-3 m-3">
-        <div class="m-2">
+            {% if is_follower == False and is_self == False %}
 
+              <!-- they sent you -->
+              {% if request_sent == 0 %}
+                <a class="btn btn-outline-success" href="{% url 'accept-follow-request' pending_follow_request_id %}">Accept Follow Request</a>
+                <a class="btn btn-outline-danger" href="{% url 'cancel-follow-request' curr_user.id %}">Cancel</a>
+              {% endif %}
+
+              <!-- you sent them request -->
+              {% if request_sent == 1 %}
+                  <a class="btn btn-outline-danger" hx-boost="true" hx-trigger="load" hx-target="#request-result"
+                  href="{% url 'cancel-follow-request' curr_user.id %}">Cancel Follow Request</a>
+              {% endif %}
+        
+              <!-- no request sent -->
+              {% if request_sent == -1 %}
+                  <a class="btn btn-outline-primary" hx-boost="true" hx-trigger="load" hx-target="#request-result"
+                    href="{% url 'send-follow-request' curr_user.id %}" style="width: 100%;">Send Follow Request</a>
+              {% endif %}
+      
+            {% endif %}
+
+            {% if is_follower %}
+              <a class="btn btn-outline-info" href="">Message</a>
+              <a class="btn btn-outline-dark" href="{% url 'decline-follow' curr_user.id  %}">Unfollow</a>
+            {% endif %}
+
+          {% endif %}
+          <div id="request-result"></div>
+        </div>
+
+        <div class="m-2 mb-3">
           <div class="row mb-2">
             <img class="col" src="{% static '/images/pic.jpg' %}" style="width: 100px;">
             <div class="col">
@@ -72,99 +105,103 @@
             </div>
           </div>
         </div>
+      </section>
 
-        <div class="m-2">
-          {% if request.user != curr_user %}
+      <div class="col mb-3 pe-0 ps-0">
+        <div class="row m-0 pe-3">
+          <!-- Solved Quizes -->
+          <section class="white-border col-5 ms-3" style="max-height: 220px;">
+            <div class="m-2 mt-3 small-font-size">
+              <label class="form-label">Solved Quizes</label>
+              <div class="row">
+                <div class="col-4 ms-2 mb-2">
+                  <p></p>
+                </div>
 
-            {% if is_follower == False and is_self == False %}
+                <div class="col">
+                  <p class="row">
+                    <span class="col">Easy</span> 
+                    <span class="col">1 /100</span>
+                    <span class="col">Beats 15.3%</span>
+                  </p>
+                  <p class="row">
+                    <span class="col">Medium</span> 
+                    <span class="col">2 /200</span>
+                    <span class="col">Beats 25.3%</span>
+                  </p>
+                  <p class="row">
+                    <span class="col">Hard</span> 
+                    <span class="col">3 /300</span>
+                    <span class="col">Beats 35.3%</span>
+                  </p>
+                </div>
 
-              <!-- they sent you -->
-              {% if request_sent == 0 %}
-                <a class="btn btn-outline-success" href="{% url 'accept-follow-request' pending_follow_request_id %}">Accept Follow Request</a>
-                <a class="btn btn-outline-danger" href="{% url 'cancel-follow-request' curr_user.id %}">Cancel</a>
-              {% endif %}
-
-              <!-- you sent them request -->
-              {% if request_sent == 1 %}
-                  <a class="btn btn-outline-danger" hx-boost="true" hx-trigger="load" hx-target="#request-result"
-                  href="{% url 'cancel-follow-request' curr_user.id %}">Cancel Follow Request</a>
-              {% endif %}
-        
-              <!-- no request sent -->
-              {% if request_sent == -1 %}
-                  <a class="btn btn-outline-primary" hx-boost="true" hx-trigger="load" hx-target="#request-result"
-                    href="{% url 'send-follow-request' curr_user.id %}">Send Follow Request</a>
-              {% endif %}
+              </div>
+            </div>
+          </section>
       
-            {% endif %}
-
-            {% if is_follower %}
-              <a class="btn btn-outline-info" href="">Message</a>
-              <a class="btn btn-outline-dark" href="{% url 'decline-follow' curr_user.id  %}">Unfollow</a>
-            {% endif %}
-
-          {% endif %}
-          <div id="request-result"></div>
+          <!-- Badges -->
+          <section class="white-border col ms-3" style="max-height: 220px;">
+            <div class="m-2 mt-3">
+              <label class="small-font-size">Badges</label>
+              <div class="mb-2">
+                <p>{{ profile.badges.count }}</p>
+              </div>
+              <div class="row m-0">
+                <div class="col m-2" style="background: black; height: 100px;">
+                  <p></p>
+                </div>
+                <div class="col m-2" style="background: black;">
+                  <p></p>
+                </div>
+                <div class="col m-2" style="background: black;">
+                  <p></p>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
-      </section>
-
-      <!-- Solved Quizes -->
-
-      <section class="for-loop col-4 m-3" style="max-height: 220px;">
-        <div class="m-2 small-font-size">
-          <label class="form-label">Solved Quizes</label>
-          <div class="row">
-            <div class="col-4 ms-2 mb-2">
-              <p></p>
-            </div>
-
-            <div class="col">
-              <p class="row">
-                <span class="col">Easy</span> 
-                <span class="col">1 /100</span>
-                <span class="col">Beats 15.3%</span>
-              </p>
-              <p class="row">
-                <span class="col">Medium</span> 
-                <span class="col">2 /200</span>
-                <span class="col">Beats 25.3%</span>
-              </p>
-              <p class="row">
-                <span class="col">Hard</span> 
-                <span class="col">3 /300</span>
-                <span class="col">Beats 35.3%</span>
-              </p>
-            </div>
-
-          </div>
+        <!-- graphics -->
+        <div class="white-border m-3 p-3" style="height: 59%;">
+          <p>Graphics</p>
         </div>
-      </section>
-  
-      <!-- Badges -->
+      </div>
+    </div>
 
-      <section class="for-loop col m-3" style="max-height: 220px;">
-        <div class="m-2">
-          <label class="small-font-size">Badges</label>
-          <div class="mb-2">
-            <p>{{ profile.badges.count }}</p>
-          </div>
-          <div class="row">
-            <div class="col m-2" style="background: black; height: 100px;">
-              <p></p>
-            </div>
-            <div class="col m-2" style="background: black;">
-              <p></p>
-            </div>
-            <div class="col m-2" style="background: black;">
-              <p></p>
-            </div>
-          </div>
-        </div>
-      </section>
+    <!-- recent result -->
+    <section class="p-3 mt-3 white-border text-nowrap">
+      <div class="mb-3">
+        <h3>Result data</h3>
+      </div>
+      <div class="mb-3">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th style="width: 10px;">#</th>
+              <th>Quiz</th>
+              <th>Score</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for average_result in results reversed %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ average_result.quiz.name }}</td>
+              <td>{{ average_result.score|floatformat:2 }}</td>
+              <td>{{ average_result.created_at}}</td>
+            </tr>
+            {% empty %}
+              This user has not taken any test.
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-      <!-- Quiz side -->
-  
-      <section class="for-loop m-3" style="width: 1225px;">
+    <div class="mt-3" style="display: flex; justify-content: space-between; width: 100%;">
+      <!-- Quiz side -->  
+      <section class="white-border me-2 mb-0 p-3" style="width: 100%;">
         <div class="m-2">
           {% if curr_user == request.user %}
             <div class="row me-1 ms-1">
@@ -209,8 +246,7 @@
       </section>
 
       <!-- course side -->
-
-      <section class="for-loop m-3" style="width: 1225px;">
+      <section class="white-border ms-2 mb-0 p-3" style="width: 100%;">
         <div class="m-2">
           {% if curr_user == request.user %}
             <div class="row me-2 ms-2">
@@ -233,34 +269,278 @@
           </div>
         </div>
       </section>
+    </div>
 
-      <!-- bottom side -->
+    <div class="mt-3" style="display: flex; justify-content: space-between; width: 100%;">
+      <!-- Contest side -->  
+      <section class="white-border me-2 mb-0 p-3" style="width: 100%;">
+        <div class="m-2">
+          {% if curr_user == request.user %}
+            <div class="row me-1 ms-1">
+              <a class="btn btn-outline-primary mb-2" href="{% url 'quiz-create' %}">Add Contest</a>
+            </div> 
+          {% endif %}
 
-      <section class="for-loop m-3" style="width: 1225px;">
-        <div class="m-3">
           <div class="small-font-size">
-            <p>Recent AC</p>
+            <p>{{ quizs.count }} Contest have been created</p>
           </div>
-
+          
           <div class="small-font-size">
             <table class="table table-striped">
-              <tbody>
-                {% for average_result in results reversed %}
-                <tr style="display: flex; justify-content: space-between;">
-                  <td style="width: 100%;">{{ average_result.quiz.name }}</td>
-                  <td style="width: 100%;">{{ average_result.score|floatformat:2 }}%</td>
-                  <td style="width: 100%;">{{ average_result.created_at }}</td>
+              <thead>
+                <tr>
+                  <th scope="col">Status</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Questions</th>
+                  <th scope="col">Difficulty</th>
+                  <th scope="col">Acceptance</th>
+                  <th scope="col">Duration</th>
                 </tr>
-                {% empty %}
-                  <p class="form-control">This user has not attempted any quiz</p>  
+              </thead>
+
+              <tbody>
+                {% for quiz in quizs %}
+                  <tr>
+                    <th scope="row"></th>
+                    <td>
+                      {{ forloop.counter }}. <a href="{% url 'profile-result' quiz.id %}">{{ quiz.name }}</a>
+                    </td>
+                    <td>{{ quiz.child_count }}</td>
+                    <td class="difficulty-color" value="{{ quiz.difficulty }}">{{ quiz.difficulty }}</td>
+                    <td>{{ quiz.required_score }} %</td>
+                    <td>{{ quiz.duration|date:"c" }}</td>
+                  </tr>
                 {% endfor %}
               </tbody>
             </table>
           </div>
         </div>
       </section>
-  </div>
 
-  
+      <!-- Daily challenge -->
+      <section class="white-border ms-2 mb-0 p-3" style="width: 100%;">
+        <div class="m-2">
+          {% if curr_user == request.user %}
+            <div class="row me-2 ms-2">
+              <a class="btn btn-outline-primary mb-2" href="{% url 'course-create' %}">Create challenge</a>
+            </div>
+          {% endif %}
+          <div class="small-font-size">
+            <p>{{ courses.count }} Challenges have been created</h3>
+          </div>
+          
+          <div class="row small-font-size">
+            {% for course in courses %}
+              <div class="col-4 border m-2">
+                <label><b>{{ course.name }}</b></label><hr>
+                <p>{{ course.body|striptags|safe|truncatechars:100 }}</p>
+              </div>
+              {% empty %}
+                <p>Currently, no challenge has been created by this user.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+    </div>
+
+  {% else %}
+    <div class="row rows-col-2 m-0" style="height: fit-content;">
+      <!-- profile info side -->
+      <section class="white-border col-3 m-3">
+        <div class="m-2">
+          {% if request.user != curr_user %}
+
+            {% if is_follower == False and is_self == False %}
+
+              <!-- they sent you -->
+              {% if request_sent == 0 %}
+                <a class="btn btn-outline-success" href="{% url 'accept-follow-request' pending_follow_request_id %}">Accept Follow Request</a>
+                <a class="btn btn-outline-danger" href="{% url 'cancel-follow-request' curr_user.id %}">Cancel</a>
+              {% endif %}
+
+              <!-- you sent them request -->
+              {% if request_sent == 1 %}
+                  <a class="btn btn-outline-danger" hx-boost="true" hx-trigger="load" hx-target="#request-result"
+                  href="{% url 'cancel-follow-request' curr_user.id %}">Cancel Follow Request</a>
+              {% endif %}
+        
+              <!-- no request sent -->
+              {% if request_sent == -1 %}
+                  <a class="btn btn-outline-primary" hx-boost="true" hx-trigger="load" hx-target="#request-result"
+                    href="{% url 'send-follow-request' curr_user.id %}" style="width: 100%;">Send Follow Request</a>
+              {% endif %}
+      
+            {% endif %}
+
+            {% if is_follower %}
+              <a class="btn btn-outline-info" href="">Message</a>
+              <a class="btn btn-outline-dark" href="{% url 'decline-follow' curr_user.id  %}">Unfollow</a>
+            {% endif %}
+
+          {% endif %}
+          <div id="request-result"></div>
+        </div>
+
+        <div class="m-2">
+          <div class="row mb-2">
+            <img class="col" src="{{ curr_user.profile.avatar.url }}" style="width: 100px;">
+            <div class="col">
+              <p><b>{{ curr_user.username|title }}</b></p>
+              <p>Rank : 00000</p>
+            </div>
+          </div>
+
+          <div class="row m-1 mb-2">
+            {% if request.user == curr_user %}
+              <a type="button" class="btn btn-outline-success" href="{% url 'profile-update' %}">Edit Profile</a>
+            {% endif %}
+          </div>
+
+          <div class="mb-2 small-font-size">
+              <a class="col" href="{% url 'followers' curr_user.id %}">Followers: {{ curr_user.followers.count }}</a> /
+              <a class="col" href="{% url 'followers' curr_user.id %}">Request {{ follow_requests|length }}</a>
+          </div>
+
+          <div class="mb-2 small-font-size">
+            <a href="#">Facebook</a><br>
+            <a href="#">Instagram</a><br>
+            <a href="#">LinkedIn</a><br>
+            <a href="#">Medium</a>
+          </div><hr>
+
+          <div class="mb-2">
+            <label class="form-label"><b>Languages</b></label>
+            <p class="small-font-size">
+              <a href="">English 10 quizes solved</a>
+            </p>
+          </div><hr>
+
+          <div class="mb-2">
+            <label class="form-label"><b>Skills</b></label>
+            <div class="small-font-size">
+              <li class="profile-skills-list-1"><b>Advanced</b></li>
+              <p class="ms-3">
+                <a class="me-2" href="">Gerund x1</a>
+                <a class="me-2" href="">Gerund x1</a>
+                <a class="me-2" href="">Gerund x1</a>
+              </p>
+            </div>
+            
+            <div class="small-font-size">
+              <li class="profile-skills-list-2"><b>Intermediate</b></li>
+              <p class="ms-3">
+                <a class="me-2" href="">Gerund x1</a>
+                <a class="me-2" href="">Gerund x1</a>
+                <a class="me-2" href="">Gerund x1</a>
+              </p>
+            </div>
+
+            <div class="small-font-size">
+              <li class="profile-skills-list-3"><b>Beginner</b></li>
+              <p class="ms-3">
+                <a class="me-2" href="">Gerund x1</a>
+                <a class="me-2" href="">Gerund x1</a>
+                <a class="me-2" href="">Gerund x1</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="col mb-3 pe-0 ps-0">
+        <div class="row m-0">
+          <!-- Solved Quizes -->
+          <section class="white-border col-5 m-3" style="max-height: 220px;">
+            <div class="m-2 small-font-size">
+              <label class="form-label">Solved Quizes</label>
+              <div class="row">
+                <div class="col-4 ms-2 mb-2">
+                  <p></p>
+                </div>
+
+                <div class="col">
+                  <p class="row">
+                    <span class="col">Easy</span> 
+                    <span class="col">1 /100</span>
+                    <span class="col">Beats 15.3%</span>
+                  </p>
+                  <p class="row">
+                    <span class="col">Medium</span> 
+                    <span class="col">2 /200</span>
+                    <span class="col">Beats 25.3%</span>
+                  </p>
+                  <p class="row">
+                    <span class="col">Hard</span> 
+                    <span class="col">3 /300</span>
+                    <span class="col">Beats 35.3%</span>
+                  </p>
+                </div>
+
+              </div>
+            </div>
+          </section>
+      
+          <!-- Badges -->
+          <section class="white-border col m-3" style="max-height: 220px;">
+            <div class="m-2">
+              <label class="small-font-size">Badges</label>
+              <div class="mb-2">
+                <p>{{ profile.badges.count }}</p>
+              </div>
+              <div class="row">
+                <div class="col m-2" style="background: black; height: 100px;">
+                  <p></p>
+                </div>
+                <div class="col m-2" style="background: black;">
+                  <p></p>
+                </div>
+                <div class="col m-2" style="background: black;">
+                  <p></p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div class="white-border m-3" style="height: 50%;">
+
+        </div>
+      </div>
+    </div>
+
+    <!-- recent result -->
+    <section class="p-3 m-3 white-border text-nowrap">
+      <div class="mb-3">
+        <h3>Result data</h3>
+      </div>
+      <div class="mb-3">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th style="width: 10px;">#</th>
+              <th>Quiz</th>
+              <th>Difficulty</th>
+              <th>Score</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for average_result in results reversed %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ average_result.quiz.name }}</td>
+              <td>{{ average_result.quiz.difficulty }}</td>
+              <td>{{ average_result.score|floatformat:2 }}</td>
+              <td>{{ average_result.created_at}}</td>
+            </tr>
+            {% empty %}
+              This user has not taken any test.
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  {% endif %}
+</div>
+
+
 
 {% endblock %}

@@ -1,9 +1,10 @@
 {% extends 'main.html' %}
-
+{% load static %}
 {% block content %}
 
-  <section class="">
-    <div class="row p-3">
+  <section class="m-3 ps-3 pe-3">
+    <div class="row p-3 m-0 white-border">
+      <!-- search bar -->
       <div class="mb-3">
         <label class="form-label">Search User</label>
         <form method="POST" action="">
@@ -19,36 +20,44 @@
         {% endif %}
       </div>
 
-      {% for user in users %}
-        <div class="col-3 for-loop">
-            <div>
-              <a class="btn btn-outline-primary" href="{% url 'profile' user.id %}">Go to Profile</a>
-            </div>
-            <div>
-              <img src="images/avatar.png" >
-            </div>
-            <div class="m-2">
-              <label class="form-label">Username</label>
-              <p class="form-control">{{ user.username }}</p>
-            </div>
-  
-            <div class="m-2">
-              <label class="form-label">Level</label>
-              <p class="form-control">{{ user.profile.level }}</p>
-            </div>
-  
-            <div class="m-2">
-              <label class="form-label">Badges</label>
-              {% for badge in badges %}
-  
-                {% empty %}
-                <p class="form-control">This user does not have a badge.</p>
-              {% endfor %}
-            </div> 
-        </div>
-
-
-      {% endfor %}
+      <div class="p-3">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th style="width: 10px;">#</th>
+              <th>Username</th>
+              <th>Active</th>
+              <th>Country</th>
+              <th>Level</th>
+              <th>Badges</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>
+                <a href="{% url 'profile' user.id %}">
+                  <img src="{{ user.profile.avatar.url }}" style="width: 30px; border-radius: 50%;" class="me-2 ms-2">{{ user.username }}
+                </a>
+              </td>
+              <td>
+                {% if user.profile.active %}
+                  Active now
+                {% else %}
+                  False
+                {% endif %}
+              </td>
+              <td>{{ user.profile.country }}</td>
+              <td>{{ user.profile.level }}</td>
+              <td>{{ user.profile.badges.count }}</td>
+            </tr>
+            {% empty %}
+              There is no user.
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 

@@ -47,24 +47,6 @@ body li {
   list-style: none;
 }
 
-/* footer.html */
-
-.footer-page-footer {
-  position: relative;
-  bottom: 0;
-  width: 100%;
-  background: #7be8ea;
-}
-
-.footer-page-ul {
-  text-align: left;
-  margin-top: 5px;
-  padding: 5px;
-}
-.footer-page-ul .footer-page-li {
-  list-style: none;
-}
-
 .border {
   border: var(--form-border);
   border-radius: var(--form-border-radius);  
@@ -79,7 +61,8 @@ body li {
 
 .white-border {
   background: var(--color-white);
-  box-shadow: 0 2rem 3rem var(--color-light); 
+  /* box-shadow: 0 2rem 3rem var(--color-light);  */
+  box-shadow: 0 0.5rem 3rem var(--color-light);
 }
 
 .wrapper-margin-padding {

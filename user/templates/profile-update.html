@@ -1,11 +1,10 @@
 {% extends 'main.html' %}
-
+{% load static %}
 {% block content %}
 
   <section class="m-3">
 
     <div class="m-3 row">
-
       <div class="m-3 col-3" hx-boost="true">
         <div>
           <a class="btn" style="width: 100%;" href="{% url 'profile-update' %}">Basic Info</a>
@@ -26,7 +25,7 @@
 
       <div class="for-loop col m-3">
         {% if messages %}
-          <ul class="messages" style="color:#e80d0d;">
+          <ul class="messages">
             {% for message in messages %}
             <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
             {% endfor %}
@@ -38,23 +37,25 @@
             <div>
               <p>Basic Info</p>
             </div>
-            <form class="small-font-size">
+            <form class="small-font-size" method="POST" action="" enctype="multipart/form-data">
               {% csrf_token %}
 
               <div class="" style="display: flex; justify-content: space-between;">
                 <label class="form-label" style="width: 100px;">First Name</label>
-                <input type="text" class="form-control" style="width: 200px;" placeholder="First Name">
+                <input type="text" class="form-control" style="width: 200px;" name="first_name" 
+                  placeholder="First Name" value="{{ user.first_name }}">
               </div><hr>
 
               <div class="" style="display: flex; justify-content: space-between;">
                 <label class="form-label" style="width: 100px;">Last Name</label>
-                <input type="text" class="form-control" style="width: 200px;" placeholder="Last Name">
+                <input type="text" class="form-control" style="width: 200px;" name="last_name" 
+                  placeholder="Last Name" value="{{ user.last_name }}">
               </div><hr>
 
               <div class="" style="display: flex; justify-content: space-between;">
                 <label class="form-label" style="width: 100px;">Gender</label>
-                <select class="form-select" style="width: 200px;">
-                  <option>Select...</option>
+                <select class="form-select" style="width: 200px;" name="gender">
+                  <option selected>{{ user.profile.gender }}</option>
                   <option>Male</option>
                   <option>Female</option>
                   <option>Other</option>
@@ -63,8 +64,8 @@
 
               <div class="" style="display: flex; justify-content: space-between;">
                 <label class="form-label" style="width: 100px;">Country</label>
-                <select class="form-select" style="width: 200px;">
-                  <option>Select...</option>
+                <select class="form-select" style="width: 200px;" name="country">
+                  <option>{{ user.profile.country }}</option>
                   <option>USA</option>
                   <option>China</option>
                   <option>Taiwan</option>
@@ -81,10 +82,15 @@
                 </select>
               </div><hr>
 
-              <div class="mb-4" style="display: flex; justify-content: space-between;">
+              <div class="" style="display: flex; justify-content: space-between;">
                 <label class="form-label" style="width: 100px;">Links</label>
                 <input type="text" class="form-control" style="width: 200px;" placeholder="Your Links">
-              </div>
+              </div><hr>
+
+              <div class="" style="display: flex; justify-content: space-between;">
+                <label class="form-label" style="width: 100px;">Profile picture</label>
+                <input type="file" class="form-control" accept="image/*" style="width: 200px;" name="picture">
+              </div><hr>
 
               <div class="">
                 <button class="btn btn-outline-primary" style="width: 100%;">Save Changes</button>
@@ -106,6 +112,7 @@
         <div class="me-3 ms-3">
           <div>
             <p>Account Information</p>
+            <p id="success"></p>
           </div>
           <form class="small-font-size" method="POST" action="">
             {% csrf_token %}
@@ -140,7 +147,7 @@
             </div>
 
             <div>
-              <button type="button" class="btn btn-outline-primary" style="width: 100%;">Save Changes</button>  
+              <button type="submit" class="btn btn-outline-primary" style="width: 100%;">Save Changes</button>  
             </div>
           </form>
         </div>
@@ -230,11 +237,16 @@
         {% endif %}
 
       </div>
-
-
     </div>
-
-    
   </section>
+
+  <style>
+    .success {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+  </style>
 
 {% endblock %}

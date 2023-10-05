@@ -28,8 +28,10 @@ def loginUser(request):
 
         user = authenticate(request, username=username, password=password)
 
-        if user is not None:
+        if user:
             login(request, user)
+            user.profile.active = True
+            user.profile.save()
             return redirect('home')
         else:
             messages.error(request, "Username or password does not match")
@@ -78,6 +80,9 @@ def checkUsername(request):
 
 @login_required(login_url='login')
 def logoutUser(request):
+    user = User.objects.get(id=request.user.id)
+    user.profile.active = False
+    user.save()
     logout(request)
     return redirect('home')
 
@@ -90,7 +95,6 @@ def get_follow_request_or_false(sender, reciever):
     except FollowRequest.DoesNotExist:
         return False
 
-
 @login_required(login_url='login')
 def profilePath(request, pk):
     curr_user = User.objects.select_related('profile').get(id=pk)
@@ -101,7 +105,7 @@ def profilePath(request, pk):
     courses = Course.objects.filter(host=pk)
 
     quiz_result = Average_score.objects.filter(user=curr_user)
-    results = Result.objects.filter(user=curr_user)
+    results = Result.objects.filter(user=curr_user).select_related('quiz')
 
     data = [{
         'id': 1,
@@ -147,6 +151,7 @@ def profilePath(request, pk):
 
     follow_requests = FollowRequest.objects.filter(reciever=curr_user, is_active=True)
     count = Quiz.objects.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user)
+
     context = {'curr_user': curr_user, 'profile': profile, 'courses': courses,
                 'quizs': count, 'results': results, 'quiz_result': quiz_result,
                 'followers': followers, 'is_self':is_self, 'is_follower': is_follower,
@@ -154,7 +159,6 @@ def profilePath(request, pk):
                 'pending_follow_request_id': pending_follow_request_id}
 
     return render(request, 'profile.html', context)
-
 
 @login_required(login_url='login')
 def deleteUser(request):
@@ -173,50 +177,73 @@ def deleteUser(request):
 
     return render(request, 'delete.html', context)
 
-
 @login_required(login_url='login')
 def profileUpdate(request):
-    user = request.user
+    user = User.objects.get(id=request.user.id)
     context = {'user': user}
 
     if request.method == "POST":
-        user_name = request.POST.get('user_name')
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
-        cur_password = request.POST.get('current-password')
-        password = request.POST.get('password')
+        if request.path == '/user/profile-update':
+            first_name = None if request.POST.get('first_name') == '' else request.POST.get('first_name') 
+            last_name = None if request.POST.get('last_name') == '' else request.POST.get('last_name') 
+            gender = None if request.POST.get('gender') == '' else request.POST.get('gender') 
+            country = None if request.POST.get('country') == '' else request.POST.get('country')
+            avatar = None if request.FILES['picture'] == '' else request.FILES['picture']
 
-        if check_password(cur_password, user.password):
-            if email:
-                user.email = email
-                try:
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
+
+            user_profile = Profile.objects.get(user=user)
+            user_profile.gender = gender
+            user_profile.country = country
+            if avatar:
+                user_profile.avatar = avatar
+            user_profile.save()
+
+            return redirect('profile', user.id)
+
+        if request.path == '/user/profile-update/account':
+            user_name = request.POST.get('user_name')
+            email = request.POST.get('email')
+            cur_password = request.POST.get('current-password')
+            new_password = request.POST.get('password')
+
+            if check_password(cur_password, user.password):
+                if user_name:
+                    user.username = user_name
+                    try:
+                        user.save()
+                    except:
+                        messages.error(request, 'This username is already taken')
+                        return redirect('profile-update-account')
+                if email:
+                    user.email = email
+                    try:
+                        user.save()
+                    except:
+                        messages.error(request, 'This email is already used')
+                        return redirect('profile-update-account')
+                if new_password:
+                    try:
+                        validate_password(new_password)
+                    except ValidationError:
+                        messages.error(request, 'Your password is not strong enough')
+                        return redirect('profile-update-account')
+                    user.password = make_password(new_password)
                     user.save()
-                except:
-                    messages.error(request, 'This email is already used')
-                    return redirect('profile-update')
-            if password:
-                try:
-                    validate_password(password)
-                except ValidationError:
-                    messages.error(request, 'Your password sucks')
-                    return redirect('profile-update')
-                user.password = make_password(password)
-                user.save()
-            if first_name:
-                user.first_name = first_name
-                user.save()
-            if last_name:
-                user.last_name = last_name
-                user.save()
+
+            else:
+                messages.error(request, 'Wrong password input')
+                return redirect('profile-update-account')
             
             login(request, user)
-            # profile.get_or_create(first_name=first_name, last_name=last_name)
-            return redirect('profile/%d/'%request.user.id)
+            messages.success(request, 'Profile has been updated')
+            return redirect('profile-update-account')
 
         else:
             messages.error(request, "Please enter correct password")
-            return redirect('profile-update')
+            return redirect('profile-update-account')
 
     return render(request, 'profile-update.html', context)
 
@@ -227,11 +254,13 @@ def userPath(request):
     if request.method == 'POST':
         username = request.POST.get('q').lower()
 
-        if User.objects.filter(username__startswith=username).exists():
-            users = User.objects.filter(username__startswith=username)
+        if users.filter(username__startswith=username).exists():
+            users = users.filter(username__startswith=username)
+            return redirect('user-path')
 
         elif username == '':
-            users = User.objects.select_related('profile')
+            users = users
+            return redirect('user-path')
         else:
             messages.error(request, 'This user does not exist')
             return redirect('user-path')

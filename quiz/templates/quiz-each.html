@@ -57,7 +57,7 @@
           </div>
     
           <div class="m-2" style="display: flex; justify-content: space-between;">
-              <button class="btn btn-primary m-2" style="width: 100%;" type="submit">Finish</button>
+              <button class="btn btn-primary m-2" style="width: 100%;" type="submit" id="{{ quiz.id }}"">Finish</button>
               <a class="btn btn-secondary m-2" style="width: 100%;" href="{% url 'quiz' %}">Discard</a>
           </div>
         </div>
@@ -161,6 +161,7 @@
         // document.getElementById("suka").click();
       }
     }, 1000);
+
   </script>
 
 {% endblock %}

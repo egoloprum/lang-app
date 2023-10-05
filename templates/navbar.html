@@ -1,82 +1,56 @@
 {% load static %}
 {% if user.is_authenticated %}
-<section class="navbar-page-section-header">
-  <header class="navbar navbar-default navbar-fixed-top navbar-expand-lg navbar-page-header">
-    <div class="container-fluid">
 
-      <div class="small-font-size">
-        <a href="{% url 'home' %}" class="me-2">
-          <img src="{% static 'images/kiwi.png' %}" style="width: 50px;">
-        </a>
-        <a class="navbar-link me-3" href="{% url 'course' %}">Explore</a>
-        <a class="navbar-link me-3" href="{% url 'quiz' %}">Problems</a>
-        <a class="navbar-link me-3" href="">Discuss</a>
-        <a class="navbar-link me-3" href="{% url 'contest' %}">Contest</a>
-        <a class="navbar-link me-3 btn btn-light" href="{% url 'store' %}">Store</a>
-      </div>
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- class="collapse navbar-collapse" id="navbarSupportedContent" -->
-
-      <div class="small-font-size">
-        <a class="navbar-link me-3 btn btn-light" href="{% url 'subscribe' %}">Premium</a>
-        <a class="navbar-link me-3" href="{% url 'user-path' %}">Users</a>
-        <a class="navbar-link me-3" href=""><i class="fa-regular fa-bell"></i></a>
-        <a class="navbar-link me-3" href="{% url 'daily_challenge' %}"><i class="fa-regular fa-star"></i></a>
-
-        {% if user.is_authenticated %}
-          <a hx-boost="true" class="navbar-link me-3" href="{% url 'profile' request.user.id %}">
-            <i class="fa-regular fa-user"></i>
-          </a>
-          <a class="navbar-link me-3" href="{% url 'logout' %}">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-          </a>
-        {% else %}
-          {% if request.path != "/user/login" %}
-            <a class="navbar-link me-3" href="{% url 'login' %}">LOGIN</a>
-          {% endif %}
-        {% endif %}
-  
-      </div>
-
+<section class="m-3 p-3 mt-0 pt-0 mb-0 pb-0">
+  <div class="white-border p-2" style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <a href="{% url 'home' %}" class="me-2" style="text-decoration: none;">
+        <img src="{% static 'images/kiwi.png' %}" style="width: 50px;">
+      </a>
+      <a class="navbar-link me-3 btn btn-warning" href="{% url 'subscribe' %}">Premium</a>
     </div>
-  </header>
+    <div>
+      <a class="navbar-link me-3" href="{% url 'user-path' %}">Users</a>
+      <a class="navbar-link me-3" href=""><i class="fa-regular fa-bell"></i></a>
+      <a class="navbar-link me-3" href="{% url 'daily_challenge' %}"><i class="fa-regular fa-star"></i></a>
+  
+      <a hx-boost="true" class="navbar-link me-3" href="{% url 'profile' request.user.id %}">
+        <i class="fa-regular fa-user"></i>
+      </a>
+      <a class="navbar-link me-3" href="{% url 'logout' %}">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </a>
+    </div>  
+  </div>
 </section>
 
 {% else %}
 
 <section class="">
-  <header class="">
-    <div class="">
-      <div class="p-3" style="height: 70px; background: #3e9ee7; display: flex; justify-content: space-around; align-items: center;">
-        <div style="display: flex; align-items: center;">
-          <a href="{% url 'home' %}" class="me-2">
-            <img src="{% static 'images/kiwi.png' %}" style="width: 50px;">
-          </a>
-          <span style="border-right: 2px solid #ffffff; height: 50px;"></span>
-          <a href="{% url 'home' %}" class="ms-2">MOANA</a>
-        </div>
-        
-        <div>
-          <a class="me-2" href="{% url 'login' %}">Log In</a>
-          <a href="{% url 'register' %}">Register</a>
-        </div>
-      </div>
-
-      </div>
-      <div class="p-2" style="display: flex; justify-content: space-around; background: linear-gradient(45deg, #48ff7f, #1bfaca);">
-        <a class="navbar-link me-3" href="{% url 'home' %}">Home</a>
-        <a class="navbar-link me-3" href="{% url 'base-courses' %}">Courses</a>
-        <a class="navbar-link me-3" href="{% url 'base-skills' %}">Skills</a>
-        <a class="navbar-link me-3" href="{% url 'base-grammar' %}">Grammar</a>
-        <a class="navbar-link me-3" href="{% url 'base-bus-eng' %}">Business English</a>
-        <a class="navbar-link me-3" href="{% url 'base-gen-eng' %}">General English</a>
-        <a class="navbar-link me-3" href="{% url 'base-eng-lev' %}">English Level</a>
-      </div>
+  <div class="p-3" style="height: 70px; background: #3e9ee7; display: flex; justify-content: space-around; align-items: center;">
+    <div style="display: flex; align-items: center;">
+      <a href="{% url 'home' %}" class="me-2">
+        <img src="{% static 'images/kiwi.png' %}" style="width: 50px;">
+      </a>
+      <span style="border-right: 2px solid #ffffff; height: 50px;"></span>
+      <a href="{% url 'home' %}" class="ms-2">English Study</a>
     </div>
-  </header>
+    
+    <div>
+      <a class="me-2" href="{% url 'login' %}">Log In</a>
+      <a href="{% url 'register' %}">Register</a>
+    </div>
+  </div>
+
+  </div>
+  <div class="p-2" style="display: flex; justify-content: space-around; background: linear-gradient(45deg, #48ff7f, #1bfaca);">
+    <a class="navbar-link me-3" href="{% url 'home' %}">Home</a>
+    <a class="navbar-link me-3" href="{% url 'base-courses' %}">Courses</a>
+    <a class="navbar-link me-3" href="{% url 'base-skills' %}">Skills</a>
+    <a class="navbar-link me-3" href="{% url 'base-grammar' %}">Grammar</a>
+    <a class="navbar-link me-3" href="{% url 'base-bus-eng' %}">Business English</a>
+    <a class="navbar-link me-3" href="{% url 'base-gen-eng' %}">General English</a>
+    <a class="navbar-link me-3" href="{% url 'base-eng-lev' %}">English Level</a>
+  </div>
 </section>
 {% endif %}
