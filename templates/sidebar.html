@@ -1,53 +1,63 @@
 {% load static %}
 {% if user.is_authenticated %}
-<section class="white-border p-3 pt-0" style="position: fixed; top: 0; left: 0; height: 100%; width: 250px;">
+
+<section class="white-border p-3 pt-0" id="sidebar" style="position: fixed; top: 0; left: 0; 
+  height: 100%; width: 250px; transition: ease 0.5s;">
   <div class="mt-3" style="border-bottom: 1px solid black; height: 50px; display: flex; align-items: center;">
-    <a>
-      <i class="fa-solid fa-bars me-2 ms-2"></i>
-      <span style="font-weight: 600;">English Study</span>
+    <a style=" display: flex; flex-direction: row; align-items: center;">
+      <i class="fa-solid fa-bars me-2 ms-2" id="sidebar-toggle" style="cursor: pointer;"></i>
+      <span class="sidebar-tags" style="font-weight: 600;">English Study</span>
     </a>
   </div>
   <div class="mt-3" style="display: flex; flex-direction: column;">
-    <a class="btn btn-light pt-2 pb-2" href="{% url 'profile' request.user.id %}" style="text-align: left;">
+    <a class="btn btn-light pt-2 pb-2" href="{% url 'profile' request.user.id %}" style="text-align: left;
+      display: flex; flex-direction: row; align-items: center;">
       <i class="fa-solid fa-address-card me-2"></i>
-      <span>Dashboard</span>
+      <span class="sidebar-tags">Dashboard</span>
     </a>
-    <a class="btn btn-light pt-2 pb-2" href="{% url 'profile-update' %}" style="text-align: left;">
+    <a class="btn btn-light pt-2 pb-2" href="{% url 'profile-update' %}" style="text-align: left;
+      display: flex; flex-direction: row; align-items: center;">
       <i class="fa-solid fa-gears me-2"></i>
-      <span>Account Settings</span>
+      <span class="sidebar-tags">Account Settings</span>
     </a>
-    <p class="mt-2 ms-3 mb-2 text-muted">Pages</p>
-    <a class="btn btn-light pt-2 pb-2" href="{% url 'home' %}" style="text-align: left;">
+    <p class="mt-2 ms-3 mb-2">
+      <span class=" text-muted sidebar-tags">Pages</span>
+    </p>
+    <a class="btn btn-light pt-2 pb-2" href="{% url 'home' %}" style="text-align: left;
+      display: flex; flex-direction: row; align-items: center;">
       <i class="fa-solid fa-house me-2"></i>
-      <span>Home</span>
+      <span class="sidebar-tags">Home</span>
     </a>
-    <a class="btn btn-light pt-2 pb-2" href="" style="text-align: left;">
+    <a class="btn btn-light pt-2 pb-2" href="{% url 'calendar' %}" style="text-align: left;
+      display: flex; flex-direction: row; align-items: center;">
       <i class="fa-solid fa-calendar me-2"></i>
-      <span>Calendar</span>
+      <span class="sidebar-tags">Calendar</span>
     </a>
-    <a class="btn btn-light pt-2 pb-2" href="{% url 'course' %}" style="text-align: left;">
+    <a class="btn btn-light pt-2 pb-2" href="{% url 'course' %}" style="text-align: left;
+      display: flex; flex-direction: row; align-items: center;">
       <i class="fa-solid fa-person-chalkboard me-2"></i>
-      <span>Explore</span>
+      <span class="sidebar-tags">Explore</span>
     </a>
-    <a class="btn btn-light pt-2 pb-2" href="{% url 'quiz' %}" style="text-align: left;">
+    <a class="btn btn-light pt-2 pb-2" href="{% url 'quiz' %}" style="text-align: left;
+      display: flex; flex-direction: row; align-items: center;">
       <i class="fa-solid fa-check me-2"></i>
-      <span>Problems</span>
+      <span class="sidebar-tags">Problems</span>
     </a>
-    <a class="btn btn-light pt-2 pb-2" href="" style="text-align: left;">
+    <a class="btn btn-light pt-2 pb-2" href="" style="text-align: left;
+      display: flex; flex-direction: row; align-items: center;">
       <i class="fa-regular fa-comment me-2"></i>
-      <span>Discuss</span>
+      <span class="sidebar-tags">Discuss</span>
     </a>
-    <a class="btn btn-light pt-2 pb-2" href="{% url 'contest' %}" style="text-align: left;">
+    <a class="btn btn-light pt-2 pb-2" href="{% url 'contest' %}" style="text-align: left;
+      display: flex; flex-direction: row; align-items: center;">
       <i class="fa-solid fa-award me-2"></i>
-      <span>Contest</span>
+      <span class="sidebar-tags">Contest</span>
     </a>
-    <a class="btn btn-light pt-2 pb-2" href="{% url 'store' %}" style="text-align: left;">
+    <a class="btn btn-light pt-2 pb-2" href="{% url 'store' %}" style="text-align: left;
+      display: flex; flex-direction: row; align-items: center;">
       <i class="fa-solid fa-store me-2"></i>
-      <span>Store</span>
+      <span class="sidebar-tags">Store</span>
     </a>
-  </div>
-  <div>
-
   </div>
 </section>
 

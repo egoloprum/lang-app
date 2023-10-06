@@ -2,251 +2,240 @@
 {% load static %}
 {% block content %}
 
-  <section class="m-3">
-
-    <div class="m-3 row">
-      <div class="m-3 col-3" hx-boost="true">
-        <div>
-          <a class="btn" style="width: 100%;" href="{% url 'profile-update' %}">Basic Info</a>
-        </div>
-        <div>
-          <a class="btn" style="width: 100%;" href="{% url 'profile-update-points' %}">Points</a>
-        </div>
-        <div>
-          <a class="btn" style="width: 100%;" href="{% url 'profile-update-account' %}">Account</a>
-        </div>
-        <div>
-          <a class="btn" style="width: 100%;" href="{% url 'profile-update-notif' %}">Notifications</a>
-        </div>
-        <div>
-          <a class="btn" style="width: 100%;" href="{% url 'profile-update-pricing' %}">Pricing</a>
-        </div>
+<section class="m-3">
+  <div class="m-3 row">
+    <div class="col-2 p-3 white-border me-3" hx-boost="true">
+      <div>
+        <a class="btn" style="width: 100%;" href="{% url 'profile-update' %}">Basic Info</a>
       </div>
+      <div>
+        <a class="btn" style="width: 100%;" href="{% url 'profile-update-points' %}">Points</a>
+      </div>
+      <div>
+        <a class="btn" style="width: 100%;" href="{% url 'profile-update-account' %}">Account</a>
+      </div>
+      <div>
+        <a class="btn" style="width: 100%;" href="{% url 'profile-update-notif' %}">Notifications</a>
+      </div>
+      <div>
+        <a class="btn" style="width: 100%;" href="{% url 'profile-update-pricing' %}">Pricing</a>
+      </div>
+    </div>
 
-      <div class="for-loop col m-3">
-        {% if messages %}
-          <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
+    <div class="col p-3 white-border">
+      {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
 
-        {% if request.path == '/user/profile-update' %}
-          <div class="me-3 ms-3">
-            <div>
-              <p>Basic Info</p>
-            </div>
-            <form class="small-font-size" method="POST" action="" enctype="multipart/form-data">
-              {% csrf_token %}
-
-              <div class="" style="display: flex; justify-content: space-between;">
-                <label class="form-label" style="width: 100px;">First Name</label>
-                <input type="text" class="form-control" style="width: 200px;" name="first_name" 
-                  placeholder="First Name" value="{{ user.first_name }}">
-              </div><hr>
-
-              <div class="" style="display: flex; justify-content: space-between;">
-                <label class="form-label" style="width: 100px;">Last Name</label>
-                <input type="text" class="form-control" style="width: 200px;" name="last_name" 
-                  placeholder="Last Name" value="{{ user.last_name }}">
-              </div><hr>
-
-              <div class="" style="display: flex; justify-content: space-between;">
-                <label class="form-label" style="width: 100px;">Gender</label>
-                <select class="form-select" style="width: 200px;" name="gender">
-                  <option selected>{{ user.profile.gender }}</option>
-                  <option>Male</option>
-                  <option>Female</option>
-                  <option>Other</option>
-                </select>
-              </div><hr>
-
-              <div class="" style="display: flex; justify-content: space-between;">
-                <label class="form-label" style="width: 100px;">Country</label>
-                <select class="form-select" style="width: 200px;" name="country">
-                  <option>{{ user.profile.country }}</option>
-                  <option>USA</option>
-                  <option>China</option>
-                  <option>Taiwan</option>
-                </select>
-              </div><hr>
-
-              <div class="" style="display: flex; justify-content: space-between;">
-                <label class="form-label" style="width: 100px;">Birthday</label>
-                <select class="form-select" style="width: 200px;">
-                  <option>Select...</option>
-                  <option>2000</option>
-                  <option>2001</option>
-                  <option>2002</option>
-                </select>
-              </div><hr>
-
-              <div class="" style="display: flex; justify-content: space-between;">
-                <label class="form-label" style="width: 100px;">Links</label>
-                <input type="text" class="form-control" style="width: 200px;" placeholder="Your Links">
-              </div><hr>
-
-              <div class="" style="display: flex; justify-content: space-between;">
-                <label class="form-label" style="width: 100px;">Profile picture</label>
-                <input type="file" class="form-control" accept="image/*" style="width: 200px;" name="picture">
-              </div><hr>
-
-              <div class="">
-                <button class="btn btn-outline-primary" style="width: 100%;">Save Changes</button>
-              </div>
-
-            </form>
-          </div>
-        {% endif %}
-
-        {% if request.path == '/user/profile-update/points' %}
-          <div class="me-3 ms-3">
-            <div>
-              <p>Points</p>
-            </div>
-          </div>
-        {% endif %}
-
-        {% if request.path == '/user/profile-update/account' %}
+      {% if request.path == '/user/profile-update' %}
         <div class="me-3 ms-3">
-          <div>
-            <p>Account Information</p>
-            <p id="success"></p>
+          <div class="mt-1 mb-3">
+            <p>Basic Info</p>
           </div>
-          <form class="small-font-size" method="POST" action="">
+          <form class="small-font-size" method="POST" action="" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <div class="" style="display: flex; justify-content: space-between;">
-              <label class="form-label" style="width: 100px;">User Name</label>
-              <input type="text" class="form-control" style="width: 200px;" 
-              name="user_name" value="{{ user.username }}" placeholder="User Name">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label class="form-label" style="width: 100px;">First Name</label>
+              <input type="text" class="form-control" style="width: 200px;" name="first_name" 
+                placeholder="First Name" value="{{ user.first_name }}">
             </div><hr>
 
-            <div class="" style="display: flex; justify-content: space-between;">
-              <label class="form-label" style="width: 100px;">Email Address</label>
-              <input type="email" class="form-control" style="width: 200px;" 
-              name="email" value="{{ user.email }}" placeholder="Email">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label class="form-label" style="width: 100px;">Last Name</label>
+              <input type="text" class="form-control" style="width: 200px;" name="last_name" 
+                placeholder="Last Name" value="{{ user.last_name }}">
             </div><hr>
-  
-            <div class="" style="display: flex; justify-content: space-between;">
-              <label class="form-label" style="width: 200px;">New Password</label>
-              <input type="password" id="profile-update-password" style="width: 200px;" 
-              class="form-control" name="password" aria-labelledby="passwordHelpBlock">
-            </div>
-            <div id="passwordHelpBlock" class="form-text">
-              Your password must be <span class="profile-update-requirement-1">8-20 characters long</span>, contain <span class="profile-update-requirement-2">letters</span>,
-              <span class="profile-update-requirement-3">capital letters</span>
-              and <span class="profile-update-requirement-4">numbers</span>, and must not contain spaces and special characters.
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label class="form-label" style="width: 100px;">Gender</label>
+              <select class="form-select" style="width: 200px;" name="gender">
+                <option selected>{{ user.profile.gender }}</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
             </div><hr>
-  
-            <div class="mb-4" style="display: flex; justify-content: space-between;">
-              <label class="form-label" style="width: 200px;">Current Password</label>
-              <input type="password" class="form-control" style="width: 200px;"
-              name="current-password" aria-labelledby="passwordHelpBlock" required>
-            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label class="form-label" style="width: 100px;">Country</label>
+              <select class="form-select" style="width: 200px;" name="country">
+                <option>{{ user.profile.country }}</option>
+                <option>USA</option>
+                <option>China</option>
+                <option>Taiwan</option>
+              </select>
+            </div><hr>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label class="form-label" style="width: 100px;">Birthday</label>
+              <select class="form-select" style="width: 200px;">
+                <option>Select...</option>
+                <option>2000</option>
+                <option>2001</option>
+                <option>2002</option>
+              </select>
+            </div><hr>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label class="form-label" style="width: 100px;">Links</label>
+              <input type="text" class="form-control" style="width: 200px;" placeholder="Your Links">
+            </div><hr>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label class="form-label" style="width: 100px;">Profile picture</label>
+              <input type="file" class="form-control" accept="image/*" style="width: 200px;" name="picture">
+            </div><hr>
 
             <div>
-              <button type="submit" class="btn btn-outline-primary" style="width: 100%;">Save Changes</button>  
+              <button class="btn btn-outline-primary" style="width: 100%;">Save Changes</button>
             </div>
           </form>
         </div>
-        {% endif %}
+      {% endif %}
 
-        {% if request.path == '/user/profile-update/notifications' %}
+      {% if request.path == '/user/profile-update/points' %}
         <div class="me-3 ms-3">
           <div>
-            <p class="row">
-              <span class="col-8">Notifications</span>
-              <span class="col">Email</span>
-              <span class="col">Site</span>
-            </p>
+            <p>Points</p>
           </div>
-          <div class="small-font-size mb-4">
-            <div>
-              <div>
-                <p class="text-muted">Announcements</p>
-                <p class="row ms-2">
-                  <span class="col-8">Important Announcements</span>
-                  <span class="col"><input type="checkbox" checked></span>
-                  <span class="col"><input type="checkbox"></span>
-                </p><hr>
-                <p class="row ms-2">
-                  <span class="col-8">Feature Announcements</span>
-                  <span class="col"><input type="checkbox"></span>
-                  <span class="col"><input type="checkbox"></span>
-                </p>
-              </div>
+        </div>
+      {% endif %}
 
-              <div>
-                <p class="text-muted">Award</p>
-                <p class="row ms-2">
-                  <span class="col-8">Award Notification</span>
-                  <span class="col"><input type="checkbox" checked></span>
-                  <span class="col"><input type="checkbox"></span>
-                </p>
-              </div>
+      {% if request.path == '/user/profile-update/account' %}
+      <div class="me-3 ms-3">
+        <div>
+          <p>Account Information</p>
+          <p id="success"></p>
+        </div>
+        <form class="small-font-size" method="POST" action="">
+          {% csrf_token %}
 
-              <div>
-                <p class="text-muted">Contest</p>
-                <p class="row ms-2">
-                  <span class="col-8">Global ranking updates</span>
-                  <span class="col"><input type="checkbox"></span>
-                  <span class="col"><input type="checkbox" checked></span>
-                </p><hr>
-                <p class="row ms-2">
-                  <span class="col-8">Contest badge updates</span>
-                  <span class="col"><input type="checkbox"></span>
-                  <span class="col"><input type="checkbox" checked></span>
-                </p><hr>
-                <p class="row ms-2">
-                  <span class="col-8">Contest announcements</span>
-                  <span class="col"><input type="checkbox" checked></span>
-                  <span class="col"><input type="checkbox"></span>
-                </p>
-              </div>
+          <div class="" style="display: flex; justify-content: space-between;">
+            <label class="form-label" style="width: 100px;">User Name</label>
+            <input type="text" class="form-control" style="width: 200px;" 
+            name="user_name" value="{{ user.username }}" placeholder="User Name">
+          </div><hr>
 
-              <div>
-                <p class="text-muted">Other</p>
-                <p class="row ms-2">
-                  <span class="col-8">Other notifications</span>
-                  <span class="col"><input type="checkbox"></span>
-                  <span class="col"><input type="checkbox"></span>
-                </p>
-              </div>
+          <div class="" style="display: flex; justify-content: space-between;">
+            <label class="form-label" style="width: 100px;">Email Address</label>
+            <input type="email" class="form-control" style="width: 200px;" 
+            name="email" value="{{ user.email }}" placeholder="Email">
+          </div><hr>
 
-              <div>
-                <p class="text-muted">Weekly Email</p>
-                <p class="row ms-2">
-                  <span class="col-8">Weekly recommendations</span>
-                  <span class="col"><input type="checkbox"></span>
-                  <span class="col"><input type="checkbox"></span>
-                </p>
-              </div>
-            </div>
+          <div class="" style="display: flex; justify-content: space-between;">
+            <label class="form-label" style="width: 200px;">New Password</label>
+            <input type="password" id="profile-update-password" style="width: 200px;" 
+            class="form-control" name="password" aria-labelledby="passwordHelpBlock">
+          </div>
+          <div id="passwordHelpBlock" class="form-text">
+            Your password must be <span class="profile-update-requirement-1">8-20 characters long</span>, contain <span class="profile-update-requirement-2">letters</span>,
+            <span class="profile-update-requirement-3">capital letters</span>
+            and <span class="profile-update-requirement-4">numbers</span>, and must not contain spaces and special characters.
+          </div><hr>
+
+          <div class="mb-4" style="display: flex; justify-content: space-between;">
+            <label class="form-label" style="width: 200px;">Current Password</label>
+            <input type="password" class="form-control" style="width: 200px;"
+            name="current-password" aria-labelledby="passwordHelpBlock" required>
           </div>
 
           <div>
-            <button type="button" class="btn btn-outline-primary" style="width: 100%;">Save Changes</button>  
+            <button type="submit" class="btn btn-outline-primary" style="width: 100%;">Save Changes</button>  
+          </div>
+        </form>
+      </div>
+      {% endif %}
+
+      {% if request.path == '/user/profile-update/notifications' %}
+      <div class="me-3 ms-3">
+        <div>
+          <p class="row">
+            <span class="col-8">Notifications</span>
+            <span class="col">Email</span>
+            <span class="col">Site</span>
+          </p>
+        </div>
+        <div class="small-font-size mb-4">
+          <div>
+            <div>
+              <p class="text-muted">Announcements</p>
+              <p class="row ms-2">
+                <span class="col-8">Important Announcements</span>
+                <span class="col"><input type="checkbox" checked></span>
+                <span class="col"><input type="checkbox"></span>
+              </p><hr>
+              <p class="row ms-2">
+                <span class="col-8">Feature Announcements</span>
+                <span class="col"><input type="checkbox"></span>
+                <span class="col"><input type="checkbox"></span>
+              </p>
+            </div>
+
+            <div>
+              <p class="text-muted">Award</p>
+              <p class="row ms-2">
+                <span class="col-8">Award Notification</span>
+                <span class="col"><input type="checkbox" checked></span>
+                <span class="col"><input type="checkbox"></span>
+              </p>
+            </div>
+
+            <div>
+              <p class="text-muted">Contest</p>
+              <p class="row ms-2">
+                <span class="col-8">Global ranking updates</span>
+                <span class="col"><input type="checkbox"></span>
+                <span class="col"><input type="checkbox" checked></span>
+              </p><hr>
+              <p class="row ms-2">
+                <span class="col-8">Contest badge updates</span>
+                <span class="col"><input type="checkbox"></span>
+                <span class="col"><input type="checkbox" checked></span>
+              </p><hr>
+              <p class="row ms-2">
+                <span class="col-8">Contest announcements</span>
+                <span class="col"><input type="checkbox" checked></span>
+                <span class="col"><input type="checkbox"></span>
+              </p>
+            </div>
+
+            <div>
+              <p class="text-muted">Other</p>
+              <p class="row ms-2">
+                <span class="col-8">Other notifications</span>
+                <span class="col"><input type="checkbox"></span>
+                <span class="col"><input type="checkbox"></span>
+              </p>
+            </div>
+
+            <div>
+              <p class="text-muted">Weekly Email</p>
+              <p class="row ms-2">
+                <span class="col-8">Weekly recommendations</span>
+                <span class="col"><input type="checkbox"></span>
+                <span class="col"><input type="checkbox"></span>
+              </p>
+            </div>
           </div>
         </div>
-        {% endif %}
 
-        {% if request.path == '/user/profile-update/pricing' %}
-          <p>1</p>
-        {% endif %}
-
+        <div>
+          <button type="button" class="btn btn-outline-primary" style="width: 100%;">Save Changes</button>  
+        </div>
       </div>
+      {% endif %}
+
+      {% if request.path == '/user/profile-update/pricing' %}
+        <p>1</p>
+      {% endif %}
+
     </div>
-  </section>
-
-  <style>
-    .success {
-      color: green;
-    }
-    .error {
-      color: red;
-    }
-  </style>
-
+  </div>
+</section>
+  
 {% endblock %}

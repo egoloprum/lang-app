@@ -1,21 +1,21 @@
 {% extends 'main.html' %}
 
 {% block content %}
-  <section class="m-3 p-3" style="scroll-margin-inline-start: 100px; scroll-behavior: smooth;">
-    <form class="row" method="POST" action="">
+
+<section class="m-3" style="scroll-margin-inline-start: 100px; scroll-behavior: smooth;">
+  <div class="m-3">
+    <form class="row me-0" method="POST" action="">
       {% csrf_token %}
       <!-- left side -->
       <div class="col">
-        <div class="white-border p-4 mb-4">
-          <div class="mb-3">
-            <h4>{{ quiz.name }}</h4>
-            <p>For the questions below, please choose the best option to complete the sentence or conversation.</p>
-          </div>
+        <div class="white-border p-4 mb-3">
+          <h4>{{ quiz.name }}</h4>
+          <p>For the questions below, please choose the best option to complete the sentence or conversation.</p>
         </div>
-
+  
         {% for question in questions %}
-          <div class="white-border p-4 mb-4" id="question-{{ forloop.counter }}">
-            <p class="mb-3" name="question-{{ forloop.counter }}">{{ forloop.counter }}. {{ question.body }}</p>
+          <div class="white-border p-4 pb-2 mb-3" id="question-{{ forloop.counter }}">
+            <p name="question-{{ forloop.counter }}">{{ forloop.counter }}. {{ question.body }}</p>
             <ul id="answers-{{ forloop.counter }}">
               {% for answer in answers %}
                 {% if answer.question == question %}
@@ -31,7 +31,7 @@
           </div>
         {% endfor %}
       </div>
-
+  
       <div class="col-3 p-0 ms-3" style="position: sticky; top: 0; height: fit-content;">
         <div class="white-border mb-3">
           <div class="launch-time p-3" style="display: flex; justify-content: space-evenly; align-items: center;">
@@ -45,7 +45,7 @@
             </div>
           </div>
         </div>
-
+  
         <div class="white-border">
           <div class="m-2 p-2 pb-0 ms-0 row row-cols-5">
             {% for question in questions %}
@@ -63,105 +63,7 @@
         </div>
       </div>
     </form>
-  </section>
-
-  <script>
-    function answer_check(id) {
-      const answer = document.getElementById(id);
-      const answers = document.getElementById("answers-" + id.match(/\d+/)[0]);
-      const question = document.getElementById("question-num-" + id.match(/\d+/)[0]);
-
-      if (answer.children[0].checked) {
-        answer.children[0].checked = false;
-        answer.children[0].removeAttribute("checked");
-        answer.children[0].removeAttribute("name");
-        answer.children[2].removeAttribute("name");
-        answer.setAttribute("style", "display: flex; align-items: center; background: #f4f4f4;");
-        check = true;
-
-        let answers_checked = document.getElementsByClassName("answer_cor");
-        let answers_checked_id = document.getElementsByClassName("answer_id");
-        
-        let checked_answers = [];
-        let checked_id = [];
-        for (let i = 0; i < answers_checked.length; i++) {
-          if (answers_checked[i].checked) {
-            checked_answers.push(answers_checked[i]);
-            checked_id.push(answers_checked_id[i]);
-          }
-        }
-
-        for (let i = 0; i < checked_answers.length; i++) {
-          let j = i + 1;
-          checked_answers[i].setAttribute("name", "answer-cor-" + j);
-          checked_id[i].setAttribute("name", "answer-id-" + j);
-        }
-
-        for (let i = 0; i < answers.children.length; i++) {
-          if (answers.children[i].style.background == "rgb(109, 216, 121)") {
-            check = false;
-          }
-        }
-
-        if (check) {
-          question.className = "btn btn-info me-1 ms-1";
-        }
-      }
-      else {
-        answer.children[0].checked = true;
-        answer.children[0].setAttribute("checked", "");
-        let answers_checked = document.getElementsByClassName("answer_cor");
-        let answers_checked_id = document.getElementsByClassName("answer_id");
-        
-        let checked_answers = [];
-        let checked_id = [];
-        for (let i = 0; i < answers_checked.length; i++) {
-          if (answers_checked[i].checked) {
-            checked_answers.push(answers_checked[i]);
-            checked_id.push(answers_checked_id[i]);
-          }
-        }
-
-        for (let i = 0; i < checked_answers.length; i++) {
-          let j = i + 1;
-          checked_answers[i].setAttribute("name", "answer-cor-" + j);
-          checked_id[i].setAttribute("name", "answer-id-" + j);
-        }
-
-        answer.setAttribute("style", "display: flex; align-items: center; background: #6dd879;");
-        let check = [];
-
-        for (let i = 0; i < answers.children.length; i++) {
-          if(answers.children[i].style.background == "rgb(244, 244, 244)") {
-            check[i] = false;
-          }
-          else {
-            check[i] = true;
-          }
-        }
-
-        if (check.includes(true)) {
-          question.className = "btn btn-warning me-1 ms-1";
-        }
-      }
-    }
-
-    let countdown = 10;
-    let x = setInterval(function() {
-      countdown--;
-
-      let minutes = Math.floor((countdown % (60 * 60)) / (60));
-      let seconds = Math.floor((countdown % (60)));
-
-      if (countdown >= 0) {
-        document.getElementById("minutes").innerHTML = minutes;
-        document.getElementById("seconds").innerHTML = seconds;
-      }
-      if (countdown == 0) {
-        // document.getElementById("suka").click();
-      }
-    }, 1000);
-
-  </script>
+  </div>
+</section>
 
 {% endblock %}

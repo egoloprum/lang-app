@@ -14,7 +14,7 @@
       <a class="navbar-link me-3" href=""><i class="fa-regular fa-bell"></i></a>
       <a class="navbar-link me-3" href="{% url 'daily_challenge' %}"><i class="fa-regular fa-star"></i></a>
   
-      <a hx-boost="true" class="navbar-link me-3" href="{% url 'profile' request.user.id %}">
+      <a class="navbar-link me-3" href="{% url 'profile' request.user.id %}">
         <i class="fa-regular fa-user"></i>
       </a>
       <a class="navbar-link me-3" href="{% url 'logout' %}">
@@ -53,4 +53,5 @@
     <a class="navbar-link me-3" href="{% url 'base-eng-lev' %}">English Level</a>
   </div>
 </section>
+
 {% endif %}

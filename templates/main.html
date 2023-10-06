@@ -18,7 +18,7 @@
     <div style="height: fit-content">
       {% if request.user.is_authenticated %}
         {% include 'sidebar.html' %}
-        <div style="margin-left: 250px;">
+        <div id="main-page" style="margin-left: 250px; transition: ease 0.5s;">
         {% include 'navbar.html' %}
       {% else %}
         {% include 'navbar.html' %}
@@ -35,7 +35,8 @@
 
     </div>
 
-    <script src="{% static 'js/script.js' %}" defer></script>
+    <script src="{% static 'js/script.js' %}" defer>
+    </script>
 
   </body>
 </html>

@@ -2,117 +2,117 @@
 
 {% block content %}
 
-  <section class="ms-3 me-3 ps-3 pe-3">
-    <div class="">
-      <!-- top part -->
+<section class="ms-3 me-3 ps-3 pe-3">
+  <div class="">
+    <!-- top part -->
 
-      <div class="mb-3 p-4" style="background: rgb(179, 245, 108);">
-        <div class="mb-3" style="display: flex; justify-content: center;">
-          <h3>Moana Store</h3>
-        </div>
-  
-        <div class="mb-3" style="display: flex; justify-content: center;">
-          <p class="text-muted">Shop in our store or redeem our products for free by using LeetCoins.</p>
-        </div>
-  
-        <div class="mb-3" style="margin: auto; display: flex; justify-content: space-between; width: 400px;">
-          <a class="btn btn-outline-dark" href="{% url 'store' %}">Redeem</a>
-          <a class="btn btn-outline-dark" href="{% url 'coins' %}">Earn Coin</a>
-          <a class="btn btn-outline-dark">Go Premium</a>
-        </div>
+    <div class="mb-3 p-4" style="background: rgb(179, 245, 108);">
+      <div class="mb-3" style="display: flex; justify-content: center;">
+        <h3>Moana Store</h3>
       </div>
 
-      {% if request.path == '/store' %}
-
-      <div>
-        <div style="margin-left: 200px; margin-right: 200px;">
-          <div class="mt-3 mb-3 pt-3 pb-3" style="display: grid; grid-template-columns: 2fr 2fr 2fr; grid-column-gap: auto;">
-            <div class="m-3 p-3 border" style="max-width: 300px; height: 250px; background: rgb(255, 189, 189);">
-              <div class="p-3 mb-3 border" style="display: flex; align-items: end; justify-content: center;
-                width: 100%; height: 150px; background: rgb(189, 90, 250);">
-                <p>Finish 1 missing challenge</p>
-              </div>
-      
-              <div class="small-font-size" style="display: flex; justify-content: space-between;">
-                <div>
-                  <p style="margin: 0;">Time Travel Ticket</p>
-                  <p style="margin: 0; font-size: 11px;">For Daily Challenge</p>
-                </div>
-                <div>
-                  <button class="btn btn-light">100 coin</button>
-                </div>
-              </div>
-            </div>
-      
-            <div class="m-3 p-3 border" style="max-width: 300px; height: 250px; background: rgb(198, 255, 189);">
-              <div class="p-3 mb-3 border" style="display: flex; align-items: end; justify-content: center;
-                width: 100%; height: 150px; background: rgb(90, 239, 250);">
-                <p>Premium with Moana</p>
-              </div>
-      
-              <div class="small-font-size" style="display: flex; justify-content: space-between;">
-                <div>
-                  <p style="margin: 0;">30-Day Premium Subscription</p>
-                  <p style="margin: 0; font-size: 11px;">Premium</p>
-                </div>
-                <div>
-                  <button class="btn btn-light" style="width: max-content;">3,000 coin</button>
-                </div>
-              </div>
-            </div>
-      
-            <div class="m-3 p-3 border" style="max-width: 300px; height: 250px; background: rgb(189, 192, 255);">
-              <div class="p-3 mb-3 border" style="display: flex; align-items: end; justify-content: center;
-                width: 100%; height: 150px; background: rgb(138, 250, 90);">
-                <p>Redeem Your Free T-Shirts</p>
-              </div>
-      
-              <div class="small-font-size" style="display: flex; justify-content: space-between;">
-                <div>
-                  <p style="margin: 0;">LeetCode T-Shirt</p>
-                  <p style="margin: 0; font-size: 11px;">Redeem our high quality t-shirts</p>
-                </div>
-                <div>
-                  <button class="btn btn-light" style="width: max-content;">6,000 coin</button>
-                </div>
-              </div>
-            </div>
-    
-            <div class="m-3 p-3 border" style="max-width: 300px; height: 250px; background: rgb(251, 189, 255);">
-              <div class="p-3 mb-3 border" style="display: flex; align-items: end; justify-content: center;
-                width: 100%; height: 150px; background: rgb(138, 250, 90);">
-                <p>Exclusive Leetcode Kit</p>
-              </div>
-      
-              <div class="small-font-size" style="display: flex; justify-content: space-between;">
-                <div>
-                  <p style="margin: 0;">LeetCode Kit</p>
-                  <p style="margin: 0; font-size: 11px;">Includes official t-shirt, keychain and coaster</p>
-                </div>
-                <div>
-                  <button class="btn btn-light" style="width: max-content;">7,800 coin</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-  
-        <div class="pb-3">
-          <div class="mb-2" style="display: flex; justify-content: center;">
-            <h4>Redeem With Code</h4>
-          </div>
-    
-          <div class="pb-3" style="display: flex; justify-content: center;">
-            <input type="text" class="form-control" placeholder="Enter Redeem Code"
-            style="width: 300px; border-radius: 10px 0 0 10px; border-color: green;">
-            <button class="btn btn-outline-success" 
-            style="border-radius: 0 10px 10px 0;">Redeem</button>
-          </div>
-        </div>
+      <div class="mb-3" style="display: flex; justify-content: center;">
+        <p class="text-muted">Shop in our store or redeem our products for free by using LeetCoins.</p>
       </div>
 
-      {% endif %}
+      <div class="mb-3" style="margin: auto; display: flex; justify-content: space-between; width: 400px;">
+        <a class="btn btn-outline-dark" href="{% url 'store' %}">Redeem</a>
+        <a class="btn btn-outline-dark" href="{% url 'coins' %}">Earn Coin</a>
+        <a class="btn btn-outline-dark">Go Premium</a>
+      </div>
     </div>
-  </section>
+
+    {% if request.path == '/store' %}
+
+    <div>
+      <div style="margin-left: 200px; margin-right: 200px;">
+        <div class="mt-3 mb-3 pt-3 pb-3" style="display: grid; grid-template-columns: 2fr 2fr 2fr; grid-column-gap: auto;">
+          <div class="m-3 p-3 border" style="max-width: 300px; height: 250px; background: rgb(255, 189, 189);">
+            <div class="p-3 mb-3 border" style="display: flex; align-items: end; justify-content: center;
+              width: 100%; height: 150px; background: rgb(189, 90, 250);">
+              <p>Finish 1 missing challenge</p>
+            </div>
+    
+            <div class="small-font-size" style="display: flex; justify-content: space-between;">
+              <div>
+                <p style="margin: 0;">Time Travel Ticket</p>
+                <p style="margin: 0; font-size: 11px;">For Daily Challenge</p>
+              </div>
+              <div>
+                <button class="btn btn-light">100 coin</button>
+              </div>
+            </div>
+          </div>
+    
+          <div class="m-3 p-3 border" style="max-width: 300px; height: 250px; background: rgb(198, 255, 189);">
+            <div class="p-3 mb-3 border" style="display: flex; align-items: end; justify-content: center;
+              width: 100%; height: 150px; background: rgb(90, 239, 250);">
+              <p>Premium with Moana</p>
+            </div>
+    
+            <div class="small-font-size" style="display: flex; justify-content: space-between;">
+              <div>
+                <p style="margin: 0;">30-Day Premium Subscription</p>
+                <p style="margin: 0; font-size: 11px;">Premium</p>
+              </div>
+              <div>
+                <button class="btn btn-light" style="width: max-content;">3,000 coin</button>
+              </div>
+            </div>
+          </div>
+    
+          <div class="m-3 p-3 border" style="max-width: 300px; height: 250px; background: rgb(189, 192, 255);">
+            <div class="p-3 mb-3 border" style="display: flex; align-items: end; justify-content: center;
+              width: 100%; height: 150px; background: rgb(138, 250, 90);">
+              <p>Redeem Your Free T-Shirts</p>
+            </div>
+    
+            <div class="small-font-size" style="display: flex; justify-content: space-between;">
+              <div>
+                <p style="margin: 0;">LeetCode T-Shirt</p>
+                <p style="margin: 0; font-size: 11px;">Redeem our high quality t-shirts</p>
+              </div>
+              <div>
+                <button class="btn btn-light" style="width: max-content;">6,000 coin</button>
+              </div>
+            </div>
+          </div>
+  
+          <div class="m-3 p-3 border" style="max-width: 300px; height: 250px; background: rgb(251, 189, 255);">
+            <div class="p-3 mb-3 border" style="display: flex; align-items: end; justify-content: center;
+              width: 100%; height: 150px; background: rgb(138, 250, 90);">
+              <p>Exclusive Leetcode Kit</p>
+            </div>
+    
+            <div class="small-font-size" style="display: flex; justify-content: space-between;">
+              <div>
+                <p style="margin: 0;">LeetCode Kit</p>
+                <p style="margin: 0; font-size: 11px;">Includes official t-shirt, keychain and coaster</p>
+              </div>
+              <div>
+                <button class="btn btn-light" style="width: max-content;">7,800 coin</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pb-3">
+        <div class="mb-2" style="display: flex; justify-content: center;">
+          <h4>Redeem With Code</h4>
+        </div>
+  
+        <div class="pb-3" style="display: flex; justify-content: center;">
+          <input type="text" class="form-control" placeholder="Enter Redeem Code"
+          style="width: 300px; border-radius: 10px 0 0 10px; border-color: green;">
+          <button class="btn btn-outline-success" 
+          style="border-radius: 0 10px 10px 0;">Redeem</button>
+        </div>
+      </div>
+    </div>
+
+    {% endif %}
+  </div>
+</section>
 
 {% endblock %}

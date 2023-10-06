@@ -10,7 +10,7 @@ urlpatterns = [
     path('general-english', views.baseGenEng, name='base-gen-eng'),
     path('english-level', views.baseEngLev, name='base-eng-lev'),
 
-
+    path('calendar', views.calendar, name='calendar'),
     path('subscribe', views.subscribe, name='subscribe'),
     path('daily_challenge', views.daily_challenge, name='daily_challenge'),
     path('store', views.store, name='store'),

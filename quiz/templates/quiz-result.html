@@ -1,186 +1,187 @@
 {% extends 'main.html' %}
 
 {% block content %}
-  <section class="m-3">
-    <div class="p-3">
-      {% if request.user.is_staff %}
-        <div class="p-3 white-border text-nowrap">
-          <div class="mb-3">
-            <h3>Staff side</h3>
-          </div>
-          <div class="mb-3" style="display: flex; align-items: center;">
-            <label class="me-3">Quiz name</label>
-            <p class="form-control">{{ quiz.name }}</p>
-            <label class="me-3 ms-3">Quiz creator</label>
-            <p class="form-control">{{ quiz.host }}</p>
-          </div>
-          <div class="mb-3" style="display: flex; align-items: center;">
-            <label class="me-3">Course</label>
-            <p class="form-control">{{ quiz.course }}</p>
-            <label class="me-3 ms-3">Content</label>
-            <p class="form-control">{{ quiz.content }}</p>
-          </div>
-          <div class="mb-3" style="display: flex; align-items: center;">
-            <label class="me-3">Minimum score</label>
-            <p class="form-control">{{ quiz.required_score }}%</p>
-            <label class="me-3 ms-3">Average score</label>
-            <p class="form-control">{{ results.average_score|floatformat:-2 }}</p>
-          </div>
-          <div class="mb-3" style="display: flex; align-items: center;">
-            <label class="me-3">Attempts</label>
-            <p class="form-control">{{ all_results.count }}</p>
-          </div>
-          <div class="mb-3" style="display: flex; align-items: center;">
-            <label class="me-3">Created at</label>
-            <p class="form-control">{{ quiz.created_at }}</p>
-            <label class="me-3 ms-3">Duration</label>
-            <p class="form-control">{{ quiz.duration }}</p>
-          </div>
-        </div>
 
-        <div class="p-3 mt-3 white-border text-nowrap">
-          <div class="mb-3">
-            <h3>Result data</h3>
-          </div>
-          <div class="mb-3">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th style="width: 10px;">#</th>
-                  <th>User</th>
-                  <th>Score</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for all_result in all_results %}
-                <tr>
-                  <td>{{ forloop.counter }}</td>
-                  <td>{{ all_result.user.username }}</td>
-                  <td>{{ all_result.score }}</td>
-                  <td>{{ all_result.created_at }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+<section class="m-3">
+  <div class="m-3">
+    {% if request.user.is_staff %}
+      <div class="p-3 white-border text-nowrap">
+        <div class="mb-3">
+          <h3>Staff side</h3>
         </div>
-
-        <div class="p-3 mt-3 white-border text-nowrap">
-          <div class="mb-3">
-            <h3>Result graph</h3>
-          </div>
+        <div class="mb-3" style="display: flex; align-items: center;">
+          <label class="me-3">Quiz name</label>
+          <p class="form-control">{{ quiz.name }}</p>
+          <label class="me-3 ms-3">Quiz creator</label>
+          <p class="form-control">{{ quiz.host }}</p>
         </div>
-
-      {% else %}
-        <div class="p-3 white-border text-nowrap">
-          <div class="mb-3">
-            <h3>User side</h3>
-          </div>
-          <div class="mb-3" style="display: flex; align-items: center;">
-            <label class="me-3" style="width: 150px;">Quiz name</label>
-            <p class="form-control">{{ quiz.name }}</p>
-          </div>
-          <div class="mb-3" style="display: flex; align-items: center;">
-            <label class="me-3" style="width: 150px;">User name</label>
-            <p class="form-control">{{ request.user.username }}</p>
-          </div>
-          <div class="mb-3" style="display: flex; align-items: center;">
-            <label class="me-3" style="width: 150px;">Last Score</label>
-            <p class="form-control">{{ results.last.score }}</p>
-          </div>
-          <div class="mb-3" style="display: flex; align-items: center;">
-            <label class="me-3" style="width: 150px;">Average Score</label>
-            <p class="form-control">{{ average_score.average_score|floatformat:-2 }}</p>
-          </div>
-          <div class="mb-3" style="display: flex; align-items: center;">
-            <label class="me-3" style="width: 150px;">Attempts</label>
-            <p class="form-control">{{ results.count }}</p>
-          </div>
+        <div class="mb-3" style="display: flex; align-items: center;">
+          <label class="me-3">Course</label>
+          <p class="form-control">{{ quiz.course }}</p>
+          <label class="me-3 ms-3">Content</label>
+          <p class="form-control">{{ quiz.content }}</p>
         </div>
+        <div class="mb-3" style="display: flex; align-items: center;">
+          <label class="me-3">Minimum score</label>
+          <p class="form-control">{{ quiz.required_score }}%</p>
+          <label class="me-3 ms-3">Average score</label>
+          <p class="form-control">{{ results.average_score|floatformat:-2 }}</p>
+        </div>
+        <div class="mb-3" style="display: flex; align-items: center;">
+          <label class="me-3">Attempts</label>
+          <p class="form-control">{{ all_results.count }}</p>
+        </div>
+        <div class="mb-3" style="display: flex; align-items: center;">
+          <label class="me-3">Created at</label>
+          <p class="form-control">{{ quiz.created_at }}</p>
+          <label class="me-3 ms-3">Duration</label>
+          <p class="form-control">{{ quiz.duration }}</p>
+        </div>
+      </div>
 
-        <div class="p-3 mt-3 white-border text-nowrap">
+      <div class="p-3 mt-3 white-border text-nowrap">
+        <div class="mb-3">
+          <h3>Result data</h3>
+        </div>
+        <div class="mb-3">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th style="width: 10px;">#</th>
+                <th>User</th>
+                <th>Score</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for all_result in all_results %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ all_result.user.username }}</td>
+                <td>{{ all_result.score }}</td>
+                <td>{{ all_result.created_at }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="p-3 mt-3 white-border text-nowrap">
+        <div class="mb-3">
+          <h3>Result graph</h3>
+        </div>
+      </div>
+
+    {% else %}
+      <div class="p-3 white-border text-nowrap">
+        <div class="mb-3">
+          <h3>User side</h3>
+        </div>
+        <div class="mb-3" style="display: flex; align-items: center;">
+          <label class="me-3" style="width: 150px;">Quiz name</label>
+          <p class="form-control">{{ quiz.name }}</p>
+        </div>
+        <div class="mb-3" style="display: flex; align-items: center;">
+          <label class="me-3" style="width: 150px;">User name</label>
+          <p class="form-control">{{ request.user.username }}</p>
+        </div>
+        <div class="mb-3" style="display: flex; align-items: center;">
+          <label class="me-3" style="width: 150px;">Last Score</label>
+          <p class="form-control">{{ results.last.score }}</p>
+        </div>
+        <div class="mb-3" style="display: flex; align-items: center;">
+          <label class="me-3" style="width: 150px;">Average Score</label>
+          <p class="form-control">{{ average_score.average_score|floatformat:-2 }}</p>
+        </div>
+        <div class="mb-3" style="display: flex; align-items: center;">
+          <label class="me-3" style="width: 150px;">Attempts</label>
+          <p class="form-control">{{ results.count }}</p>
+        </div>
+      </div>
+
+      <div class="p-3 mt-3 white-border text-nowrap">
+        <div class="mb-3">
+          <h3>Result data</h3>
+        </div>
+        <div class="mb-3">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th style="width: 10px;">#</th>
+                <th>User</th>
+                <th>Score</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for all_result in all_results %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ all_result.user.username }}</td>
+                <td>{{ all_result.score }}</td>
+                <td>{{ all_result.created_at }}</td>
+              </tr>
+              {% empty %}
+                This user has not taken any test.
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="p-3 mt-3 white-border text-nowrap">
+        <div class="mb-3">
+          <h3>Result graph</h3>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if request.META.HTTP_REFERER|cut:"http://127.0.0.1:8000" == request.path|cut:"/result" %}
+      <div class="p-3 mt-3 white-border text-nowrap">
+        <div>
           <div class="mb-3">
-            <h3>Result data</h3>
+            <h3>Last data</h3>
           </div>
-          <div class="mb-3">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th style="width: 10px;">#</th>
-                  <th>User</th>
-                  <th>Score</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for all_result in all_results %}
-                <tr>
-                  <td>{{ forloop.counter }}</td>
-                  <td>{{ all_result.user.username }}</td>
-                  <td>{{ all_result.score }}</td>
-                  <td>{{ all_result.created_at }}</td>
-                </tr>
+          <div class="mb-3"><hr>
+            {% for sel_answers, cor_answers, questions in answers %}
+              <div class="mb-3">
+                <div class="mb-2" style="display: flex;">
+                  <label class="me-3">{{ forloop.counter }}.</label>
+                  <p>{{ questions.body }}</p>
+                </div>
+                <label class="mb-2" style="font-weight: 600; color: #045894;">Your answer</label>
+                {% for sel_answer in sel_answers %}
+                <div>
+                  <p class="mb-2" style="width: 500px; height: 50px; display: flex; border: 2px solid #045894;
+                    border-radius: 10px;  font-weight: 600; color: #045894;
+                    align-items: center; border-color: #045894;">
+                    <span class="ms-3">{{ sel_answer.selected.body }}</span>
+                  </p>
+                </div>
                 {% empty %}
-                  This user has not taken any test.
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="p-3 mt-3 white-border text-nowrap">
-          <div class="mb-3">
-            <h3>Result graph</h3>
-          </div>
-        </div>
-      {% endif %}
-
-      {% if request.META.HTTP_REFERER|cut:"http://127.0.0.1:8000" == request.path|cut:"/result" %}
-        <div class="p-3 mt-3 white-border text-nowrap">
-          <div>
-            <div class="mb-3">
-              <h3>Last data</h3>
-            </div>
-            <div class="mb-3"><hr>
-              {% for sel_answers, cor_answers, questions in answers %}
-                <div class="mb-3">
-                  <div class="mb-2" style="display: flex;">
-                    <label class="me-3">{{ forloop.counter }}.</label>
-                    <p>{{ questions.body }}</p>
-                  </div>
-                  <label class="mb-2" style="font-weight: 600; color: #045894;">Your answer</label>
-                  {% for sel_answer in sel_answers %}
                   <div>
-                    <p class="mb-2" style="width: 500px; height: 50px; display: flex; border: 2px solid #045894;
-                      border-radius: 10px;  font-weight: 600; color: #045894;
-                      align-items: center; border-color: #045894;">
-                      <span class="ms-3">{{ sel_answer.selected.body }}</span>
+                    <p>No answer is selected</p>
+                  </div>
+                {% endfor %}
+
+                <label class="mb-2" style="font-weight: 600; color: #04948d;">Correct answer</label>
+                {% for cor_answer in cor_answers %}
+                  <div>
+                    <p class="mb-2" style="width: 500px; height: 50px; display: flex; border: 2px solid #04948d;
+                      border-radius: 10px;  font-weight: 600; color: #04948d;
+                      align-items: center; border-color: #04948d;">
+                      <span class="ms-3">{{ cor_answer.body }}</span>
                     </p>
                   </div>
-                  {% empty %}
-                    <div>
-                      <p>No answer is selected</p>
-                    </div>
-                  {% endfor %}
-
-                  <label class="mb-2" style="font-weight: 600; color: #04948d;">Correct answer</label>
-                  {% for cor_answer in cor_answers %}
-                    <div>
-                      <p class="mb-2" style="width: 500px; height: 50px; display: flex; border: 2px solid #04948d;
-                        border-radius: 10px;  font-weight: 600; color: #04948d;
-                        align-items: center; border-color: #04948d;">
-                        <span class="ms-3">{{ cor_answer.body }}</span>
-                      </p>
-                    </div>
-                  {% endfor %}
-                </div><hr>
-              {% endfor %}
-            </div>
+                {% endfor %}
+              </div><hr>
+            {% endfor %}
           </div>
         </div>
-      {% endif %}
-    </div>
-  </section>
+      </div>
+    {% endif %}
+  </div>
+</section>
 
 {% endblock %}

@@ -2,13 +2,9 @@
 {% load static %}
 {% block content %}
 
-  <section class="p-3">
-    <div class="row">
-
-      <div class="col">
-        <a class="btn btn-outline-primary" href="{% url 'quiz-create' %}">Create Quiz</a>
-      </div>
-
+<section class="m-3">
+  <div class="white-border p-3 m-3">
+    <div class="row">  
       <div class="col">
         <input type="search" class="form-control" placeholder="Search...">
       </div>
@@ -21,12 +17,51 @@
           {% endfor %}
         </select>
       </div>
+    </div>
 
+    <div class="mt-3" style="display: flex; justify-content: space-between;">
+      <div class="me-2" style="width: 100%;">
+        <select class="form-select">
+          <option selected>Status</option>
+          <option>Not Started</option>
+          <option>Attempted</option>
+          <option>Solved</option>
+        </select>
+      </div>
+      <div class="me-2" style="width: 100%;">
+        <select class="form-select">
+          <option selected>Tags</option>
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Advanced</option>
+        </select>
+      </div>
+      <div class="me-2" style="width: 100%;">
+        <select class="form-select">
+          <option selected>Topics</option>
+          <option>Advice</option>
+          <option>Self Development</option>
+        </select>
+      </div>
+      <div class="me-2" style="width: 100%;">
+        <select class="form-select">
+          <option selected>Access</option>
+          <option>Free</option>
+          <option>Premium</option>
+        </select>
+      </div>
+      <div style="width: 100%;">
+        <select class="form-select">
+          <option selected>Date</option>
+          <option>Not Started</option>
+          <option>Started</option>
+          <option>Finished</option>
+        </select>
+      </div>
     </div><hr>
 
-    <div class="mt-3 p-3 row">
-
-      <table class="table table-striped">
+    <div class="row p-3 pb-0">
+      <table class="table table-bordered">
         <thead>
           <tr>
             <th scope="col">Status</th>
@@ -91,24 +126,8 @@
         </tbody>
       </table>
     </div>
-  </section>
+  </div>
 
-<script>
-  diff_colors = document.getElementsByClassName('difficulty-color');
-
-  for(let i = 0; i < diff_colors.length; i++){
-    if(diff_colors[i].innerHTML == 'Intermediate') {
-      diff_colors[i].style.color = "#f0bc1f";
-    }
-    else if(diff_colors[i].innerHTML == 'Elementary') {
-      diff_colors[i].style.color = "#069d75";
-    }
-    else {
-      diff_colors[i].style.color = "#f02b39";
-    }
-  }
-
-</script>
-
+</section>
 
 {% endblock %}

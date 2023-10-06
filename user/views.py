@@ -184,11 +184,11 @@ def profileUpdate(request):
 
     if request.method == "POST":
         if request.path == '/user/profile-update':
-            first_name = None if request.POST.get('first_name') == '' else request.POST.get('first_name') 
-            last_name = None if request.POST.get('last_name') == '' else request.POST.get('last_name') 
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
             gender = None if request.POST.get('gender') == '' else request.POST.get('gender') 
             country = None if request.POST.get('country') == '' else request.POST.get('country')
-            avatar = None if request.FILES['picture'] == '' else request.FILES['picture']
+            avatar = None if request.FILES.get('picture') == '' else request.FILES.get('picture')
 
             user.first_name = first_name
             user.last_name = last_name

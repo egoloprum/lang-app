@@ -2,47 +2,47 @@
 
 {% block content %}
 
-  <section class="p-2 col-5">
-    {% if messages %}
-      <ul class="messages" style="color:#e80d0d;">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+<section class="p-2 col-5">
+  {% if messages %}
+    <ul class="messages" style="color:#e80d0d;">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 
-    <form method="POST" action="" class="for-loop">
-      {% csrf_token %}
-      <div class="m-3">
-        <label for="inputPassword5" class="form-label">Input password</label>
-        <input type="password" class="form-control" name="password" aria-labelledby="passwordHelpBlock"
-        placeholder="********">
-      </div>
+  <form method="POST" action="" class="for-loop">
+    {% csrf_token %}
+    <div class="m-3">
+      <label for="inputPassword5" class="form-label">Input password</label>
+      <input type="password" class="form-control" name="password" aria-labelledby="passwordHelpBlock"
+      placeholder="********">
+    </div>
 
-      <a class="btn btn-secondary m-3" href="{% url 'profile' user.id %}">Cancel</a>
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Delete
-      </button>
+    <a class="btn btn-secondary m-3" href="{% url 'profile' user.id %}">Cancel</a>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      Delete
+    </button>
 
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              Are you sure that you want to delete ?
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Delete</button>
-            </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Are you sure that you want to delete ?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Delete</button>
           </div>
         </div>
       </div>
+    </div>
 
-    </form>
-  </section>
+  </form>
+</section>
 
 {% endblock %}

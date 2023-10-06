@@ -1,462 +1,152 @@
 {% extends 'main.html' %}
 
 {% block content %}
-  <section class="m-3 p-3">
-    <form method="POST" action="">
-      {% csrf_token %}
 
-      <div class="white-border p-4 mb-4">
-        <div class="mb-3">
-          <h4>Quiz Edit Form</h4>
-        </div>
+<section class="m-3">
+  <form method="POST" action="" class="m-3">
+    {% csrf_token %}
 
-          <!-- quiz part -->
-        <div class="mb-3" style="display: flex; align-items: center;">
-          <label class="form-label me-3">Name</label>
-          <input class="form-control" type="text" name="quiz-name" placeholder="Name" value="{{ quiz.name }}" required>
-        </div>
+    <div class="white-border p-4 mb-4">
+      <div class="mb-3">
+        <h4>Quiz Edit Form</h4>
+      </div>
 
-        <div class="mb-3" style="display: flex; ">
-          <div style="width: 100%; display: flex; align-items: center;" class="me-3 text-nowrap">
-            <label class="form-label me-3" style="width: 100px;">Duration</label>
-            <input class="form-control" type="time" name="quiz-duration" value="{{ quiz.duration }}">
-          </div>
-          <div style="width: 100%; display: flex; align-items: center;" class="me-3 text-nowrap">
-            <label class="form-label me-3" style="width: 100px;">Start Date</label>
-            <input class="form-control" type="date" name="quiz-start" value="{{ quiz.start_date }}">
-          </div>
-          <div style="width: 100%; display: flex; align-items: center;" class="text-nowrap">
-            <label class="form-label me-3" style="width: 100px;">End Date</label>
-            <input class="form-control" type="date" name="quiz-end" value="{{ quiz.end_date }}">
-          </div>
-        </div>
+        <!-- quiz part -->
+      <div class="mb-3" style="display: flex; align-items: center;">
+        <label class="form-label me-3">Name</label>
+        <input class="form-control" type="text" name="quiz-name" placeholder="Name" value="{{ quiz.name }}" required>
+      </div>
 
-        <div class="mb-3" style="display: flex; ">
-          <div style="width: 100%; display: flex; align-items: center;" class="me-3">
-            <label class="form-label me-3" style="width: 100px;">Minimum score</label>
-            <input class="form-control" type="number" name="quiz-score" value="{{ quiz.required_score }}" min="50">
-          </div>
-          <div style="width: 100%; display: flex; align-items: center;" class="">
-            <label class="form-label me-3" style="width: 100px;">Difficulty</label>
-            <select class="form-select" name="quiz-diff">
-              <option class="form-control">Easy</option>
-              <option class="form-control">Medium</option>
-              <option class="form-control">Hard</option>
-            </select>
-          </div>
+      <div class="mb-3" style="display: flex; ">
+        <div style="width: 100%; display: flex; align-items: center;" class="me-3 text-nowrap">
+          <label class="form-label me-3" style="width: 100px;">Duration</label>
+          <input class="form-control" type="time" name="quiz-duration" value="{{ quiz.duration }}">
         </div>
-
-        <div class="mb-3">
-          <label class="form-label me-3">Publication</label>
-          {% if quiz.publication == True %}
-            <input type="checkbox" name="quiz-public" checked>
-          {% else %}
-            <input type="checkbox" name="quiz-public">
-          {% endif %}
+        <div style="width: 100%; display: flex; align-items: center;" class="me-3 text-nowrap">
+          <label class="form-label me-3" style="width: 100px;">Start Date</label>
+          <input class="form-control" type="date" name="quiz-start" value="{{ quiz.start_date }}">
         </div>
-        
-        <!-- question part -->
-        <div>
-          <button class="btn btn-outline-primary me-2">Save form</button>
-          <a class="btn btn-secondary" href="{% url 'quiz' %}">Discard</a>
+        <div style="width: 100%; display: flex; align-items: center;" class="text-nowrap">
+          <label class="form-label me-3" style="width: 100px;">End Date</label>
+          <input class="form-control" type="date" name="quiz-end" value="{{ quiz.end_date }}">
         </div>
       </div>
 
-      <div class="white-border p-4 row m-0">
-        <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
-          <div>
-            <a class="btn btn-light" style="width: 100%;" id="quiz-{{ quiz.id }}" 
-              onclick="add_question(this.id)">Add question</a>
-          </div>
+      <div class="mb-3" style="display: flex; ">
+        <div style="width: 100%; display: flex; align-items: center;" class="me-3">
+          <label class="form-label me-3" style="width: 100px;">Minimum score</label>
+          <input class="form-control" type="number" name="quiz-score" value="{{ quiz.required_score }}" min="50">
         </div>
+        <div style="width: 100%; display: flex; align-items: center;" class="">
+          <label class="form-label me-3" style="width: 100px;">Difficulty</label>
+          <select class="form-select" name="quiz-diff">
+            <option class="form-control">Easy</option>
+            <option class="form-control">Medium</option>
+            <option class="form-control">Hard</option>
+          </select>
+        </div>
+      </div>
 
-        <div class="col p-3 ms-3" id="question-side">
-          {% for question in questions %}
-          <div class="accordion accordion-flush" id="question-{{ forloop.counter }}">
-            <div class="accordion-item" style="border-bottom: 1px solid #e4e4e4;">
-              <h2 class="accordion-header">
-                <a class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapse-{{ forloop.counter }}"
-                  aria-controls="#flush-collapse-{{ forloop.counter }}" aria-expanded="true">
-                  <p>{{ forloop.counter }}</p>
-                </a>
-              </h2>
+      <div class="mb-3">
+        <label class="form-label me-3">Publication</label>
+        {% if quiz.publication == True %}
+          <input type="checkbox" name="quiz-public" checked>
+        {% else %}
+          <input type="checkbox" name="quiz-public">
+        {% endif %}
+      </div>
+      
+      <!-- question part -->
+      <div>
+        <button class="btn btn-outline-primary me-2">Save form</button>
+        <a class="btn btn-secondary" href="{% url 'quiz' %}">Discard</a>
+      </div>
+    </div>
 
-              <div class="accordion-collapse collapse" id="flush-collapse-{{ forloop.counter }}">
-                <div class="accordion-body" id="accordion-body-{{ forloop.counter }}">
-                  <div class="mb-2" style="display: flex; align-items: center;">
-                    <label class="form-label me-3">question</label>
-                    <input type="hidden" name="question-id-{{ forloop.counter }}" value="{{ question.id }}" >
-                    <input class="form-control mb-2" type="text" placeholder="Question here..." 
-                      name="question-{{ forloop.counter }}" value="{{ question.body }}" required>
-                  </div>
+    <div class="white-border p-4 row m-0">
+      <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
+        <div>
+          <a class="btn btn-light" style="width: 100%;" id="quiz-{{ quiz.id }}" 
+            onclick="add_question(this.id)">Add question</a>
+        </div>
+      </div>
 
-                  <div class="mb-2" style="display: flex; align-items: center;">
-                    <label class="form-label me-3">explanation</label>
-                    <input class="form-control mb-2" type="text" placeholder="Explanation here..." 
-                      name="explanation-{{ forloop.counter }}" value="{{ question.explanation }}">
-                  </div>
+      <div class="col p-3 ms-3" id="question-side">
+        {% for question in questions %}
+        <div class="accordion accordion-flush" id="question-{{ forloop.counter }}">
+          <div class="accordion-item" style="border-bottom: 1px solid #e4e4e4;">
+            <h2 class="accordion-header">
+              <a class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapse-{{ forloop.counter }}"
+                aria-controls="#flush-collapse-{{ forloop.counter }}" aria-expanded="true">
+                <p>{{ forloop.counter }}</p>
+              </a>
+            </h2>
 
-                  <div style="display:flex; align-items: center; justify-content: space-between;">
-                    <a class="btn btn-light mb-2" onclick="add_answer(this.id)" id="answer-btn-{{ forloop.counter }}-{{ question.id }}">
-                      <i class="fa-solid fa-plus"></i>
-                      <span> Add answer</span>
-                    </a>
-                    <a class="btn btn-light mb-2" hx-boost="true" onclick="del_question(this.id)"
-                      id="del-question-{{ forloop.counter }}-{{ question.id }}">
-                      <i class="fa-solid fa-trash"></i>
-                      <span> Delete question</span>
-                    </a>
-                  </div>
-                  <ul id="answer-ul-{{ forloop.counter }}">
-                    {% for answer in answers %}
-                      {% if answer.question == question %}
-                        <div class="m-2 me-0 answer-div"style="display: flex; align-items: center;" 
-                          id="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" 
-                          name="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
-                          {% if answer.correct %}
-                            <input class="me-3" type="checkbox" checked
-                              name="answer-cor-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
-                          {% else %}
-                            <input class="me-3" type="checkbox" 
-                              name="answer-cor-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
-                          {% endif %}
-                          <input type="hidden" value="{{ answer.id }}" id="answer-id-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"
-                            name="answer-id-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
-                          <input class="form-control" type="text" value="{{ answer.body }}" 
-                            name="answer-body-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" required>
-                          <a onclick="del_answer(this.id)"
-                            id="answer-del-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-{{ answer.id }}">
-                            <i class="fa-solid fa-x ms-3" style="cursor: pointer;"></i>
-                          </a>
-                        </div>
-                      {% endif %}
-                    {% endfor %}
-                  </ul>
+            <div class="accordion-collapse collapse" id="flush-collapse-{{ forloop.counter }}">
+              <div class="accordion-body" id="accordion-body-{{ forloop.counter }}">
+                <div class="mb-2" style="display: flex; align-items: center;">
+                  <label class="form-label me-3">question</label>
+                  <input type="hidden" name="question-id-{{ forloop.counter }}" value="{{ question.id }}" >
+                  <input class="form-control mb-2" type="text" placeholder="Question here..." 
+                    name="question-{{ forloop.counter }}" value="{{ question.body }}" required>
                 </div>
+
+                <div class="mb-2" style="display: flex; align-items: center;">
+                  <label class="form-label me-3">explanation</label>
+                  <input class="form-control mb-2" type="text" placeholder="Explanation here..." 
+                    name="explanation-{{ forloop.counter }}" value="{{ question.explanation }}">
+                </div>
+
+                <div style="display:flex; align-items: center; justify-content: space-between;">
+                  <a class="btn btn-light mb-2" onclick="add_answer(this.id)" id="answer-btn-{{ forloop.counter }}-{{ question.id }}">
+                    <i class="fa-solid fa-plus"></i>
+                    <span> Add answer</span>
+                  </a>
+                  <a class="btn btn-light mb-2" hx-boost="true" onclick="del_question(this.id)"
+                    id="del-question-{{ forloop.counter }}-{{ question.id }}">
+                    <i class="fa-solid fa-trash"></i>
+                    <span> Delete question</span>
+                  </a>
+                </div>
+                <ul id="answer-ul-{{ forloop.counter }}">
+                  {% for answer in answers %}
+                    {% if answer.question == question %}
+                      <div class="m-2 me-0 answer-div"style="display: flex; align-items: center;" 
+                        id="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" 
+                        name="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                        {% if answer.correct %}
+                          <input class="me-3" type="checkbox" checked
+                            name="answer-cor-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                        {% else %}
+                          <input class="me-3" type="checkbox" 
+                            name="answer-cor-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                        {% endif %}
+                        <input type="hidden" value="{{ answer.id }}" id="answer-id-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"
+                          name="answer-id-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                        <input class="form-control" type="text" value="{{ answer.body }}" 
+                          name="answer-body-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" required>
+                        <a onclick="del_answer(this.id)"
+                          id="answer-del-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-{{ answer.id }}">
+                          <i class="fa-solid fa-x ms-3" style="cursor: pointer;"></i>
+                        </a>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
               </div>
             </div>
           </div>
-          {% endfor %}
         </div>
+        {% endfor %}
       </div>
-    </form>
-    <div id="success">
     </div>
-  </section>
+  </form>
+  <div id="success">
+  </div>
+</section>
 
-  <script>
-    function add_question(id){
-      question_side = document.getElementById("question-side");
-      const q_number = ++question_side.children.length;
+<script>
 
-      accord_div = document.createElement("div");
-      accord_div.className = "accordion accordion-flush";
-      accord_div.setAttribute("style", "border-bottom: 1px solid #e4e4e4;");
-      accord_div.setAttribute("id", "question-" + q_number);
+</script>
 
-      item_div = document.createElement("div");
-      item_div.className = "accordion-item";
-
-      accord_head = document.createElement("h2");
-      accord_head.className = "accordion-header";
-
-      accord_btn = document.createElement("a");
-      accord_btn.className = "accordion-button collapsed";
-      accord_btn.setAttribute("data-bs-toggle", "collapse");
-      accord_btn.setAttribute("data-bs-target", "#flush-collapse-" + q_number);
-      accord_btn.setAttribute("aria-controls", "#flush-collapse-" + q_number);
-
-      accord_p = document.createElement("p");
-      accord_p.innerHTML = q_number;
-
-      accord_btn.appendChild(accord_p);
-      accord_head.appendChild(accord_btn);
-
-      flush_div = document.createElement("div");
-      flush_div.className = "accordion-collapse collapse";
-      flush_div.setAttribute('id', 'flush-collapse-' + q_number);
-
-      flush_body = document.createElement("div");
-      flush_body.className = "accordion-body";
-      flush_body.setAttribute("id", "accordion-body-" + q_number);
-
-      q_label = document.createElement("label");
-      q_label.innerHTML = "question";
-      q_label.className = "form-label me-3";
-
-      q_hidden = document.createElement("input");
-      q_hidden.setAttribute("type", "hidden");
-      q_hidden.setAttribute("id", "question-id-" + q_number);
-      q_hidden.setAttribute("name", "question-id-" + q_number);
-
-      q_input = document.createElement("input");
-      q_input.className = "form-control mb-2";
-      q_input.setAttribute("type", "text");
-      q_input.setAttribute("placeholder", "Question here...");
-      q_input.setAttribute("name", "question-" + q_number);
-      q_input.setAttribute("required", "");
-
-      wrap_1 = document.createElement("div");
-      wrap_1.className = "mb-2";
-      wrap_1.setAttribute("style", "display: flex; align-items: center;");
-      wrap_1.appendChild(q_label);
-      wrap_1.appendChild(q_hidden);
-      wrap_1.appendChild(q_input);
-
-      e_label = document.createElement("label");
-      e_label.innerHTML = "explanation";
-      e_label.className = "form-label me-3";
-
-      e_input = document.createElement("input");
-      e_input.className = "form-control mb-2";
-      e_input.setAttribute("type", "text");
-      e_input.setAttribute("placeholder", "Explanation here...");
-      e_input.setAttribute("name", "explanation-" + q_number);
-
-      wrap_2 = document.createElement("div");
-      wrap_2.className = "mb-2";
-      wrap_2.setAttribute("style", "display: flex; align-items: center;");
-      wrap_2.appendChild(e_label);
-      wrap_2.appendChild(e_input);
-
-      wrap_3 = document.createElement("div");
-      wrap_3.setAttribute("style", "display:flex; align-items: center; justify-content: space-between;");
-
-      ans_btn = document.createElement("a");
-      ans_btn.className = "btn btn-light mb-2";
-      ans_btn.setAttribute("onclick", "add_answer(this.id)");
-      // here add question id
-      ans_btn.setAttribute("id", "add-answer-" + q_number);
-      ans_i = document.createElement("i");
-      ans_i.className = "fa-solid fa-plus";
-
-      ans_span = document.createElement("span");
-      ans_span.innerHTML = " Add answer";
-
-      ans_btn.appendChild(ans_i);
-      ans_btn.appendChild(ans_span);
-
-      del_btn = document.createElement("a");
-      del_btn.className = "btn btn-light mb-2";
-      del_btn.setAttribute("onclick", "del_question(this.id)");
-      // here add question id
-      del_btn.setAttribute("id", "del-question-" + q_number);
-      del_i = document.createElement("i");
-      del_i.className = "fa-solid fa-trash";
-
-      del_span = document.createElement("span");
-      del_span.innerHTML = " Delete question";
-
-      del_btn.appendChild(del_i);
-      del_btn.appendChild(del_span);
-      
-      ans_ul = document.createElement("ul");
-      ans_ul.setAttribute('id', 'answer-ul-' + q_number);
-
-      wrap_3.appendChild(ans_btn);
-      wrap_3.appendChild(del_btn);
-
-      question_id = document.createElement("p");
-      question_id.setAttribute("id", "question_id-" + q_number);
-      question_id.setAttribute("style", "display: none;");
-
-      flush_body.appendChild(wrap_1);
-      flush_body.appendChild(wrap_2);
-      flush_body.appendChild(wrap_3);
-      flush_body.appendChild(ans_ul);
-      flush_body.appendChild(question_id);
-      flush_div.appendChild(flush_body);
-
-      item_div.appendChild(accord_head);
-      item_div.appendChild(flush_div);
-
-      accord_div.appendChild(item_div);
-      question_side.appendChild(accord_div);
-
-      const quiz_id = parseInt(id.split("-")[1]);
-      htmx.ajax('GET', '/quiz/' + quiz_id + '/add-question', {target:'#question_id-' + q_number, swap:'innerHTML'}).then(() => {
-        question_id = document.getElementById("question_id-" + q_number);
-        question_id = question_id.innerHTML;
-        question_id = parseInt(question_id);
-
-        q_hidden = document.getElementById("question-id-" + q_number);
-        q_hidden.value = question_id;
-        ans_btn = document.getElementById("add-answer-" + q_number);
-        ans_btn.setAttribute("id", "add-answer-" + q_number + "-" + question_id);
-        del_btn = document.getElementById("del-question-" + q_number);
-        del_btn.setAttribute("id", "del-question-" + q_number + "-" + question_id);
-      });
-    }
-
-    function add_answer(id) {
-      const q_number = id.match(/\d+/)[0];
-      answer_ul = document.getElementById('answer-ul-' + q_number);
-      a_number = ++document.getElementsByClassName("answer-div").length;
-
-      answer_div = document.createElement("div");
-      answer_div.className = "m-2 me-0 answer-div";
-      answer_div.setAttribute("style", "display: flex; align-items: center;");
-      answer_div.setAttribute("id", "answer-" + q_number + "-" + a_number);
-
-      r_input = document.createElement("input");
-      r_input.className = "me-3";
-      r_input.setAttribute("type", "checkbox");
-      r_input.setAttribute("name", "answer-cor-" + q_number + "-" + a_number);
-
-      ans_id = document.createElement("input");
-      ans_id.setAttribute("type", "hidden");
-      ans_id.setAttribute("id", "answer-id-" + q_number + "-" + a_number);
-      ans_id.setAttribute("name", "answer-id-" + q_number + "-" + a_number);
-
-      t_input = document.createElement("input");
-      t_input.className = "form-control";
-      t_input.setAttribute("type", "text");
-      t_input.setAttribute("name", "answer-body-" + q_number + "-" + a_number);
-      t_input.setAttribute("required", "");
-
-      ans_a = document.createElement("a");
-      ans_a.setAttribute("id", "answer-del-" + q_number + "-" + a_number);
-      ans_a.setAttribute("onclick", "del_answer(this.id)");
-
-      ans_i = document.createElement("i");
-      ans_i.className = "fa-solid fa-x ms-3";
-      ans_i.setAttribute("style", "cursor: pointer;");
-
-      answer_id_backend = document.createElement("p");
-      answer_id_backend.setAttribute("id", "answer_id-" + q_number + "-" + a_number);
-      answer_id_backend.setAttribute("style", "display: none;");
-
-      ans_a.appendChild(ans_i);
-      answer_div.appendChild(r_input);
-      answer_div.appendChild(ans_id);
-      answer_div.appendChild(t_input);
-      answer_div.appendChild(ans_a);
-      answer_div.appendChild(answer_id_backend);
-      answer_ul.appendChild(answer_div);
-
-      const question_id = parseInt(id.split("-")[3]);
-      htmx.ajax('GET', '/quiz/' + question_id + '/add-answer', {target:'#answer_id-' + q_number + "-" + a_number, swap:'innerHTML'}).then(() => {
-        answer_id = document.getElementById("answer_id-" + q_number + "-" + a_number);
-        answer_id = answer_id.innerHTML;
-        answer_id = parseInt(answer_id);
-        answer_del = document.getElementById("answer-del-" + q_number + '-' + a_number);
-        hidden_input = document.getElementById("answer-id-" + q_number + '-' + a_number);
-        hidden_input.value = answer_id;
-
-        questions = document.getElementsByClassName("accordion accordion-flush");
-        let answer_number = 1;
-
-        for (let i = 0; i < questions.length; i++) {
-          let question_number = i + 1;
-          let answers = document.getElementById("answer-ul-" + question_number);
-          for (let k = 0; k < answers.children.length; k++) {
-            let pk = question_number + "-" + answer_number;
-            answers.children[k].setAttribute("id", "answer-" + pk);
-            answers.children[k].setAttribute("name", "answer-" + pk);
-            answers.children[k].children[0].setAttribute("name", "answer-cor-" + pk);
-            answers.children[k].children[1].setAttribute("id", "answer-id-" + pk);
-            answers.children[k].children[1].setAttribute("name", "answer-id-" + pk);
-            answers.children[k].children[2].setAttribute("name", "answer-body-" + pk);
-            if (typeof answers.children[k].children[4]?.innerHTML != 'undefined') {
-              hidden_id = answers.children[k].children[4].innerHTML;
-              hidden_id = parseInt(hidden_id);
-              answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + hidden_id);
-              answers.children[k].children[4].setAttribute("id", "answer_id-" + pk);
-            }
-            const answer_del_id = parseInt(answers.children[k].children[3].id.split("-")[4]);
-            answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + answer_del_id);          
-            answer_number++;
-          }
-        }
-      });
-    }
-
-    function del_answer(id) {
-      const number = id.match(/(\d+)-(\d+)/)[0];
-      answer_div = document.getElementById("answer-" + number);
-      answer_div.remove();
-      htmx.ajax('GET', '/quiz/' + parseInt(id.split("-")[4]) + '/delete-answer', '#success');
-
-      questions = document.getElementsByClassName("accordion accordion-flush");
-      let answer_number = 1;
-
-      for (let i = 0; i < questions.length; i++) {
-        let question_number = i + 1;
-        let answers = document.getElementById("answer-ul-" + question_number);
-        for (let k = 0; k < answers.children.length; k++) {
-          let pk = question_number + "-" + answer_number;
-          answers.children[k].setAttribute("id", "answer-" + pk);
-          answers.children[k].setAttribute("name", "answer-" + pk);
-          answers.children[k].children[0].setAttribute("name", "answer-cor-" + pk);
-          answers.children[k].children[1].setAttribute("id", "answer-id-" + pk);
-          answers.children[k].children[1].setAttribute("name", "answer-id-" + pk);
-          answers.children[k].children[2].setAttribute("name", "answer-body-" + pk);
-          if (typeof answers.children[k].children[4]?.innerHTML != 'undefined') {
-            hidden_id = answers.children[k].children[4].innerHTML;
-            hidden_id = parseInt(hidden_id);
-            answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + hidden_id);
-            answers.children[k].children[4].setAttribute("id", "answer_id-" + pk);
-          }
-          const answer_del_id = parseInt(answers.children[k].children[3].id.split("-")[4]);
-          answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + answer_del_id);                  
-          answer_number++;
-        }
-      }
-    }
-
-    function del_question(id) {
-      const q_number = id.match(/\d+/)[0];
-      question_div = document.getElementById("question-" + q_number);
-      question_div.remove();
-      htmx.ajax('GET', '/quiz/' + parseInt(id.split("-")[3]) + '/delete-question', '#success');
-
-      questions = document.getElementsByClassName("accordion accordion-flush");
-      let answer_number = 1;
-
-      for (let i = 0; i < questions.length; i++) {
-        let j = i + 1;
-        questions[i].setAttribute("id", "question-" + j);
-        // question > div > h2 > button > p
-        questions[i].children[0].children[0].children[0].children[0].innerHTML = j;
-
-        questions[i].children[0].children[0].children[0].setAttribute("data-bs-target", "#flush-collapse-" + j);
-        questions[i].children[0].children[0].children[0].setAttribute("aria-controls", "#flush-collapse-" + j);
-        // question > div > div
-        questions[i].children[0].children[1].setAttribute("id", "flush-collapse-" + j);
-        // question > div > div > div
-        questions[i].children[0].children[1].children[0].setAttribute("id", "accordion-body-" + j);
-        // question > div > div > div > input
-        questions[i].children[0].children[1].children[0].children[0].children[1].setAttribute("name", "question-id-" + j);
-        questions[i].children[0].children[1].children[0].children[0].children[2].setAttribute("name", "question-" + j);
-        questions[i].children[0].children[1].children[0].children[1].children[1].setAttribute("name", "explanation-" + j);
-        questions[i].children[0].children[1].children[0].children[3].setAttribute("id", "answer-ul-" + j);
-
-        const id_num = parseInt(questions[i].children[0].children[1].children[0].children[2].children[1].id.split("-")[3]);
-        questions[i].children[0].children[1].children[0].children[2].children[1].setAttribute("id", "del-question-" + j + "-" + id_num);
-        // question > div > div > div > div > btns
-        questions[i].children[0].children[1].children[0].children[2].children[0].setAttribute("id", "answer-btn-" + j + "-" + id_num);
-
-        let answers = document.getElementById("answer-ul-" + j);
-
-        for (let k = 0; k < answers.children.length; k++) {
-          let pk = j + "-" + answer_number;
-          answers.children[k].setAttribute("id", "answer-" + pk);
-          answers.children[k].setAttribute("name", "answer-" + pk);
-          answers.children[k].children[0].setAttribute("name", "answer-cor-" + pk);
-          answers.children[k].children[1].setAttribute("id", "answer-id-" + pk);
-          answers.children[k].children[1].setAttribute("name", "answer-id-" + pk);
-          answers.children[k].children[2].setAttribute("name", "answer-body-" + pk);
-          if (typeof answers.children[k].children[4]?.innerHTML != 'undefined') {
-            hidden_id = answers.children[k].children[4].innerHTML;
-            hidden_id = parseInt(hidden_id);
-            answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + hidden_id);
-            answers.children[k].children[4].setAttribute("id", "answer_id-" + pk);
-          }
-          const answer_del_id = parseInt(answers.children[k].children[3].id.split("-")[4]);
-          answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + answer_del_id);          
-          answer_number++;
-        }
-      }
-    }
-  </script>
 {% endblock %}

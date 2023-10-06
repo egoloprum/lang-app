@@ -2,390 +2,171 @@
 
 {% block content %}
 
-  <section class="m-3 p-3">
-    <form method="POST" action="">
-      {% csrf_token %}
+<section class="m-3 p-3">
+  <form method="POST" action="">
+    {% csrf_token %}
 
-      <div class="white-border p-4 mb-4">
-        <div class="mb-3">
-          <h4>Course Create Form</h4>
-          <p onclick="load_everyting()">click here to load form !!!</p>
-        </div>
+    <div class="white-border p-4 mb-4">
+      <div class="mb-3">
+        <h4>Course Create Form</h4>
+        <p onclick="load_everyting()">click here to load form !!!</p>
+      </div>
 
-          <!-- quiz part -->
-        <div class="mb-3" style="display: flex;">
-          <label class="form-label me-3">Name</label>
-          <input class="form-control" type="text" name="course-name" placeholder="Name" value="{{ course.name }}" required>
-        </div>
+        <!-- quiz part -->
+      <div class="mb-3" style="display: flex;">
+        <label class="form-label me-3">Name</label>
+        <input class="form-control" type="text" name="course-name" placeholder="Name" value="{{ course.name }}" required>
+      </div>
 
-        <div class="mb-3" style="display: flex;">
-          <label class="form-label me-3">Topic</label>
-          <input class="form-control me-3" type="text" name="course-topic">
-          <select class="form-select">
-            {% for topic in topics %}
-              <option class="form-control">{{ topic.name }}</option>
-            {% endfor %}
-          </select>
-        </div>
+      <div class="mb-3" style="display: flex;">
+        <label class="form-label me-3">Topic</label>
+        <input class="form-control me-3" type="text" name="course-topic">
+        <select class="form-select">
+          {% for topic in topics %}
+            <option class="form-control">{{ topic.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
 
-        <div class="mb-3" style="display: flex;">
-          <label class="form-label me-3">Tag</label>
-          <input class="form-control me-3" type="text" name="course-tag">
-          <select class="form-select">
-            {% for tag in tags %}
-              <option class="form-control">{{ tag.name }}</option>
-            {% endfor %}
-          </select>
-        </div>
+      <div class="mb-3" style="display: flex;">
+        <label class="form-label me-3">Tag</label>
+        <input class="form-control me-3" type="text" name="course-tag">
+        <select class="form-select">
+          {% for tag in tags %}
+            <option class="form-control">{{ tag.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
 
-        <div class="mb-3" style="display: flex;">
-          <label class="form-label me-3">Body</label>
-          <textarea class="mytextarea form-control" style="width: 100%;" name="course-body">{{ course.body }}</textarea>
-        </div>
+      <div class="mb-3" style="display: flex;">
+        <label class="form-label me-3">Body</label>
+        <textarea class="mytextarea form-control" style="width: 100%;" name="course-body">{{ course.body }}</textarea>
+      </div>
 
-        <div class="mb-3" style="display: flex;">
-          <div style="width: 100%; display: flex;" class="me-3">
-            <label class="form-label me-3" style="width: 100px;">Start Date</label>
-            <input class="form-control" type="date" name="course-start" value="{{ course.start_date }}">
-          </div>
-          <div style="width: 100%; display: flex;" class="">
-            <label class="form-label me-3" style="width: 100px;">End Date</label>
-            <input class="form-control" type="date" name="course-end" value="{{ course.end_date }}">
-          </div>
+      <div class="mb-3" style="display: flex;">
+        <div style="width: 100%; display: flex;" class="me-3">
+          <label class="form-label me-3" style="width: 100px;">Start Date</label>
+          <input class="form-control" type="date" name="course-start" value="{{ course.start_date }}">
         </div>
-
-        <div class="mb-3">
-          <label class="form-label me-3">Publication</label>
-          {% if course.publication == True %}
-            <input type="checkbox" name="course-public" checked>
-          {% else %}
-            <input type="checkbox" name="course-public">
-          {% endif %}
-        </div>
-        
-        <!-- question part -->
-        <div>
-          <button class="btn btn-outline-primary me-2">Save form</button>
-          <a class="btn btn-secondary" href="{% url 'course' %}">Discard</a>
+        <div style="width: 100%; display: flex;" class="">
+          <label class="form-label me-3" style="width: 100px;">End Date</label>
+          <input class="form-control" type="date" name="course-end" value="{{ course.end_date }}">
         </div>
       </div>
 
-      <div class="white-border p-4 row m-0 mb-3">
-        <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
-          <a class="btn btn-light" style="width: 100%;" href="{% url 'chapter-create' course.id %}" target="_blank" onclick="add_chapter()">Add chapter</a>
-        </div>
-        <div class="col p-3 ms-3" id="cour-chap-side">
-          {% for chapter in contents %}
-            <div class="accordion accordion-flush" style="border-bottom: 1px solid #e4e4e4;" id="cour-chap-{{ forloop.counter }}">
-              <div class="accordion-item">
-                <h2 class="accordion-header">
-                  <a class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapse1-{{ forloop.counter }}"
-                    aria-controls="#flush-collapse1-{{ forloop.counter }}" aria-expanded="false">
-                    <p>{{ forloop.counter }}</p>
-                  </a>
-                </h2>
-                <div class="accordion-collapse collapse" id="flush-collapse1-{{ forloop.counter }}">
-                  <div class="accordion-body" id="accordion-body1-{{ forloop.counter }}">
-                    <div style="display: flex; flex-direction: row;" class="mb-3" id="testing">
-                      <label class="me-3">name</label>
-                      <p class="form-control me-3" name="chap-name-{{ forloop.counter }}">
-                        {{ chapter.name }}
-                      </p>
-                      <a class="btn btn-light me-3 text-nowrap" onclick="del_chapter(this.id)" id="del-chapter-{{ forloop.counter }}" style="width: max-content;">
-                        <i class="fa-solid fa-trash"></i>
-                        <span>Delete chapter</span>
-                      </a>
-                      <a class="btn btn-light text-nowrap" style="width: fit-content;" href="{% url 'chapter-edit' course.id chapter.id %}" target="_blank">
-                        <i class="fa-solid fa-trash"></i>
-                        <span>Edit chapter</span>
-                      </a>
+      <div class="mb-3">
+        <label class="form-label me-3">Publication</label>
+        {% if course.publication == True %}
+          <input type="checkbox" name="course-public" checked>
+        {% else %}
+          <input type="checkbox" name="course-public">
+        {% endif %}
+      </div>
+      
+      <!-- question part -->
+      <div>
+        <button class="btn btn-outline-primary me-2">Save form</button>
+        <a class="btn btn-secondary" href="{% url 'course' %}">Discard</a>
+      </div>
+    </div>
+
+    <div class="white-border p-4 row m-0 mb-3">
+      <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
+        <a class="btn btn-light" style="width: 100%;" href="{% url 'chapter-create' course.id %}" target="_blank" onclick="add_chapter()">Add chapter</a>
+      </div>
+      <div class="col p-3 ms-3" id="cour-chap-side">
+        {% for chapter in contents %}
+          <div class="accordion accordion-flush" style="border-bottom: 1px solid #e4e4e4;" id="cour-chap-{{ forloop.counter }}">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <a class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapse1-{{ forloop.counter }}"
+                  aria-controls="#flush-collapse1-{{ forloop.counter }}" aria-expanded="false">
+                  <p>{{ forloop.counter }}</p>
+                </a>
+              </h2>
+              <div class="accordion-collapse collapse" id="flush-collapse1-{{ forloop.counter }}">
+                <div class="accordion-body" id="accordion-body1-{{ forloop.counter }}">
+                  <div style="display: flex; flex-direction: row;" class="mb-3" id="testing">
+                    <label class="me-3">name</label>
+                    <p class="form-control me-3" name="chap-name-{{ forloop.counter }}">
+                      {{ chapter.name }}
+                    </p>
+                    <a class="btn btn-light me-3 text-nowrap" onclick="del_chapter(this.id)" id="del-chapter-{{ forloop.counter }}" style="width: max-content;">
+                      <i class="fa-solid fa-trash"></i>
+                      <span>Delete chapter</span>
+                    </a>
+                    <a class="btn btn-light text-nowrap" style="width: fit-content;" href="{% url 'chapter-edit' course.id chapter.id %}" target="_blank">
+                      <i class="fa-solid fa-trash"></i>
+                      <span>Edit chapter</span>
+                    </a>
+                  </div>
+                  <div style="display: flex;" class="mb-3">
+                    <label class="me-3">body</label>
+                    <div class="form-control">
+                      {{ chapter.body|safe }}
                     </div>
-                    <div style="display: flex;" class="mb-3">
-                      <label class="me-3">body</label>
-                      <div class="form-control">
-                        {{ chapter.body|safe }}
-                      </div>
-                    </div>
-                    <div style="display: flex;" class="mb-3">
-                      <label class="me-3">Files total:</label>
-                      <p class="text-muted">{{ cont_files.content.count }}</p>
-                    </div>
+                  </div>
+                  <div style="display: flex;" class="mb-3">
+                    <label class="me-3">Files total:</label>
+                    <p class="text-muted">{{ cont_files.content.count }}</p>
                   </div>
                 </div>
               </div>
             </div>
-          {% endfor %}
-        </div>
+          </div>
+        {% endfor %}
       </div>
+    </div>
 
-      <div class="white-border p-4 row m-0 mb-3">
-        <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
-          <a class="btn btn-light" style="width: 100%;" onclick="add_file()">Add file</a>
-        </div>
-        <div class="col p-3 ms-3" id="cour-file-side">
-          {% for file in cour_files %}
-            <div class="accordion accordion-flush" style="border-bottom: 1px solid #e4e4e4;" id="cour-file-{{ forloop.counter }}">
-              <div class="accordion-item">
-                <h2 class="accordion-header">
-                  <a class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapse2-{{ forloop.counter }}"
-                    aria-controls="#flush-collapse2-{{ forloop.counter }}" aria-expanded="false">
-                    <p>{{ forloop.counter }}</p>
-                  </a>
-                </h2>
-                <div class="accordion-collapse collapse" id="flush-collapse2-{{ forloop.counter }}">
-                  <div class="accordion-body" id="accordion-body2-{{ forloop.counter }}">
-                    <div style="display: flex; flex-direction: row;" class="mb-3" id="testing">
-                      <label class="me-3">Description</label>
-                      <input class="form-control me-3" type="text" placeholder="Description here..." name="cour-file-desc-{{ forloop.counter }}"
-                        required value="{{ file.description }}">
-                      <a class="btn btn-light me-3 text-nowrap" onclick="del_cour_file(this.id)" id="del-cour-file-{{ forloop.counter }}" style="width: max-content;">
-                        <i class="fa-solid fa-trash"></i>
-                        <span>Delete file</span>
-                      </a>
-                    </div>
-                    <div style="display: flex; flex-direction: row;" class="mb-3">
-                      <label class="mb-3 me-3">file</label>
-                      <input class="form-control mb-3" style="width: 100%;"
-                        name="cour-file-{{ forloop.counter }}">{{ file.file }}</textarea>
-                    </div>
+    <div class="white-border p-4 row m-0 mb-3">
+      <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
+        <a class="btn btn-light" style="width: 100%;" onclick="add_file()">Add file</a>
+      </div>
+      <div class="col p-3 ms-3" id="cour-file-side">
+        {% for file in cour_files %}
+          <div class="accordion accordion-flush" style="border-bottom: 1px solid #e4e4e4;" id="cour-file-{{ forloop.counter }}">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <a class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapse2-{{ forloop.counter }}"
+                  aria-controls="#flush-collapse2-{{ forloop.counter }}" aria-expanded="false">
+                  <p>{{ forloop.counter }}</p>
+                </a>
+              </h2>
+              <div class="accordion-collapse collapse" id="flush-collapse2-{{ forloop.counter }}">
+                <div class="accordion-body" id="accordion-body2-{{ forloop.counter }}">
+                  <div style="display: flex; flex-direction: row;" class="mb-3" id="testing">
+                    <label class="me-3">Description</label>
+                    <input class="form-control me-3" type="text" placeholder="Description here..." name="cour-file-desc-{{ forloop.counter }}"
+                      required value="{{ file.description }}">
+                    <a class="btn btn-light me-3 text-nowrap" onclick="del_cour_file(this.id)" id="del-cour-file-{{ forloop.counter }}" style="width: max-content;">
+                      <i class="fa-solid fa-trash"></i>
+                      <span>Delete file</span>
+                    </a>
+                  </div>
+                  <div style="display: flex; flex-direction: row;" class="mb-3">
+                    <label class="mb-3 me-3">file</label>
+                    <input class="form-control mb-3" style="width: 100%;"
+                      name="cour-file-{{ forloop.counter }}">{{ file.file }}</textarea>
                   </div>
                 </div>
               </div>
             </div>
-          {% endfor %}
-        </div>
+          </div>
+        {% endfor %}
       </div>
+    </div>
 
-      <div class="white-border p-4 row m-0 mb-3">
-        <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
-          <a class="btn btn-light" style="width: 100%;" onclick="add_quiz()">Add quiz</a>
-        </div>
-        <div class="col p-3 ms-3" id="cour-quiz-side">
-          {% for quiz in course.quizs %}
-
-          {% endfor %}
-        </div>
+    <div class="white-border p-4 row m-0 mb-3">
+      <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
+        <a class="btn btn-light" style="width: 100%;" onclick="add_quiz()">Add quiz</a>
       </div>
+      <div class="col p-3 ms-3" id="cour-quiz-side">
+        {% for quiz in course.quizs %}
 
-    </form>
-
-  </section>
-
-<script>
-  function load_everyting() {
-    tinymce.init({
-      selector: 'textarea',
-      plugins: 'ai tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss',
-      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-      tinycomments_mode: 'embedded',
-      tinycomments_author: 'Author name',
-      mergetags_list: [
-        { value: 'First.Name', title: 'First Name' },
-        { value: 'Email', title: 'Email' },
-      ],
-      ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant"))
-    });
-  }
-
-  function add_chapter(){
-    chapter_side = document.getElementById("cour-chap-side");
-    const q_number = ++chapter_side.children.length;
-
-    accord_div = document.createElement("div");
-    accord_div.className = "accordion accordion-flush";
-    accord_div.setAttribute("style", "border-bottom: 1px solid #e4e4e4;");
-    accord_div.setAttribute("id", "cour-chap-" + q_number);
-
-    item_div = document.createElement("div");
-    item_div.className = "accordion-item";
-
-    accord_head = document.createElement("h2");
-    accord_head.className = "accordion-header";
-
-    accord_btn = document.createElement("a");
-    accord_btn.className = "accordion-button collapsed";
-    accord_btn.setAttribute("data-bs-toggle", "collapse");
-    accord_btn.setAttribute("data-bs-target", "#cour-chap-" + q_number);
-    accord_btn.setAttribute("aria-controls", "#cour-chap-" + q_number);
-
-    accord_p = document.createElement("p");
-    accord_p.innerHTML = q_number;
-
-    accord_btn.appendChild(accord_p);
-    accord_head.appendChild(accord_btn);
-
-    flush_div = document.createElement("div");
-    flush_div.className = "accordion-collapse collapse";
-    flush_div.setAttribute('id', 'cour-chap-' + q_number);
-
-    flush_body = document.createElement("div");
-    flush_body.className = "accordion-body";
-    flush_body.setAttribute("id", "cour-chap-" + q_number);
-
-    q_label = document.createElement("label");
-    q_label.innerHTML = "name";
-    q_label.setAttribute("class", "me-3");
-
-    q_input = document.createElement("p");
-    q_input.className = "form-control me-3";
-    q_input.setAttribute("name", "chap-name-" + q_number);
-
-    del_btn = document.createElement("a");
-    del_btn.className = "btn btn-light";
-    del_btn.setAttribute("onclick", "del_chapter(this.id)");
-    del_btn.setAttribute("id", "del-chapter-" + q_number);
-    del_btn.setAttribute("style", "width: 250px;");
-    
-    del_i = document.createElement("i");
-    del_i.className = "fa-solid fa-trash";
-
-    del_span = document.createElement("span");
-    del_span.innerHTML = " Delete Chapter";
-
-    del_btn.appendChild(del_i);
-    del_btn.appendChild(del_span);
-
-    top_div = document.createElement("div");
-    top_div.setAttribute("style", "display: flex; flex-direction: row;");
-    top_div.setAttribute("class", "mb-3");
-    top_div.appendChild(q_label);
-    top_div.appendChild(q_input);
-    top_div.appendChild(del_btn);
-
-    e_label = document.createElement("label");
-    e_label.innerHTML = "body";
-    e_label.setAttribute("class", "mb-3 me-3");
-
-    e_input = document.createElement("p");
-    e_input.className = "mb-3 form-control";
-    e_input.setAttribute("style", "width: 100%");
-    e_input.setAttribute("name", "chap-body-" + q_number);
-
-    mid_div = document.createElement("div");
-    mid_div.setAttribute("style", "display: flex; flex-direction: row;");
-    mid_div.setAttribute("class", "mb-3");
-    mid_div.appendChild(e_label);
-    mid_div.appendChild(e_input);
-
-    flush_body.appendChild(top_div);
-    flush_body.appendChild(mid_div);
-    flush_div.appendChild(flush_body);
-
-    item_div.appendChild(accord_head);
-    item_div.appendChild(flush_div);
-
-    accord_div.appendChild(item_div);
-    chapter_side.appendChild(accord_div);
-  }
-
-  function del_chapter(id) {
-    console.log("q");
-  }
-
-  function add_file() {
-    chapter_side = document.getElementById("cour-file-side");
-    const q_number = ++chapter_side.children.length;
-
-    accord_div = document.createElement("div");
-    accord_div.className = "accordion accordion-flush";
-    accord_div.setAttribute("style", "border-bottom: 1px solid #e4e4e4;");
-    accord_div.setAttribute("id", "cour-file-" + q_number);
-
-    item_div = document.createElement("div");
-    item_div.className = "accordion-item";
-
-    accord_head = document.createElement("h2");
-    accord_head.className = "accordion-header";
-
-    accord_btn = document.createElement("a");
-    accord_btn.className = "accordion-button collapsed";
-    accord_btn.setAttribute("data-bs-toggle", "collapse");
-    accord_btn.setAttribute("data-bs-target", "#flush-collapse2-" + q_number);
-    accord_btn.setAttribute("aria-controls", "#flush-collapse2-" + q_number);
-
-    accord_p = document.createElement("p");
-    accord_p.innerHTML = q_number;
-
-    accord_btn.appendChild(accord_p);
-    accord_head.appendChild(accord_btn);
-
-    flush_div = document.createElement("div");
-    flush_div.className = "accordion-collapse collapse";
-    flush_div.setAttribute('id', 'flush-collapse2-' + q_number);
-
-    flush_body = document.createElement("div");
-    flush_body.className = "accordion-body";
-    flush_body.setAttribute("id", "accordion-body2-" + q_number);
-
-    q_label = document.createElement("label");
-    q_label.innerHTML = "Description";
-    q_label.setAttribute("class", "me-3");
-
-    q_input = document.createElement("input");
-    q_input.className = "form-control me-3";
-    q_input.setAttribute("type", "text");
-    q_input.setAttribute("placeholder", "Description here...");
-    q_input.setAttribute("name", "cour-file-desc-" + q_number);
-    q_input.setAttribute("required", "");
-
-    del_btn = document.createElement("a");
-    del_btn.className = "btn btn-light";
-    del_btn.setAttribute("onclick", "del_cour_file(this.id)");
-    del_btn.setAttribute("id", "del-cour-file-" + q_number);
-    del_btn.setAttribute("style", "width: 250px;");
-    
-    del_i = document.createElement("i");
-    del_i.className = "fa-solid fa-trash";
-
-    del_span = document.createElement("span");
-    del_span.innerHTML = " Delete file";
-
-    del_btn.appendChild(del_i);
-    del_btn.appendChild(del_span);
-
-    top_div = document.createElement("div");
-    top_div.setAttribute("style", "display: flex; flex-direction: row;");
-    top_div.setAttribute("class", "mb-3");
-    top_div.appendChild(q_label);
-    top_div.appendChild(q_input);
-    top_div.appendChild(del_btn);
-
-    e_label = document.createElement("label");
-    e_label.innerHTML = "File here";
-    e_label.setAttribute("class", "mb-3 me-3 text-nowrap");
-
-    e_input = document.createElement("input");
-    e_input.className = "mb-3 form-control";
-    e_input.setAttribute("type", "file");
-    e_input.setAttribute("style", "width: 100%");
-    e_input.setAttribute("name", "cour-file-" + q_number);
-
-    mid_div = document.createElement("div");
-    mid_div.setAttribute("style", "display: flex; flex-direction: row;");
-    mid_div.setAttribute("class", "mb-3");
-    mid_div.appendChild(e_label);
-    mid_div.appendChild(e_input);
-
-    flush_body.appendChild(top_div);
-    flush_body.appendChild(mid_div);
-    flush_div.appendChild(flush_body);
-
-    item_div.appendChild(accord_head);
-    item_div.appendChild(flush_div);
-
-    accord_div.appendChild(item_div);
-    chapter_side.appendChild(accord_div);
-  }
-
-  function del_file(id) {
-
-  }
-  function add_quiz() {
-  }
-  function del_quiz(id) {
-
-  }
-
-  </script>
+        {% endfor %}
+      </div>
+    </div>
+  </form>
+</section>
 
 {% endblock %}

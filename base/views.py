@@ -20,6 +20,9 @@ def contest(request):
 def contestEach(request):
     return render(request, 'contest-each.html')
 
+def calendar(request):
+    return render(request, 'calendar.html')
+
 def baseCourses(request):
     return render(request, 'home.html')
 

@@ -2,8 +2,9 @@
 {% load static %}
 {% block content %}
 
-<div class="m-3 pe-3 ps-3">
-  {% if curr_user.is_staff %}
+<section class="m-3">
+  <div class="m-3">
+    {% if curr_user.is_staff %}
     <div class="row rows-col-2 ms-0" style="height: fit-content;">
       <!-- profile info side -->
       <section class="white-border col-3">
@@ -539,8 +540,7 @@
       </div>
     </section>
   {% endif %}
-</div>
-
-
+  </div>
+</section>
 
 {% endblock %}
