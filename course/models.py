@@ -26,15 +26,18 @@ class Course(models.Model):
   tag = models.ManyToManyField(Tag, related_name='course_tag', blank=True)
   
   # if all quizs of it is completed 
-  completed = models.BooleanField(default=False)
+  # completion = models.ManyToManyField(Completion)
+
   name = models.CharField(unique=True, max_length=200, null=True)
   body = models.TextField(null=True)
+  pts = models.IntegerField(default=0, null=True, blank=True)
+  exp = models.IntegerField(default=0, null=True, blank=True)
+
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
-  publication = models.BooleanField(default=False)
-
   start_date = models.DateTimeField(null=True, blank=True)
-  end_date = models.DateTimeField(null=True, blank=True)  
+  end_date = models.DateTimeField(null=True, blank=True) 
+  publication = models.BooleanField(default=False) 
 
   def __str__(self):
     if self.name == None:
@@ -72,3 +75,5 @@ class File(models.Model):
       return f" {self.id} empty"
     else:
       return f" {self.id} {self.description}"
+    
+    

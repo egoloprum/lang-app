@@ -472,7 +472,9 @@ if (current_url.split('/').find((element) => element == 'chapter') == 'chapter')
 }
 
 // quiz-each.html
-if (current_url.split('/').find((element) => element == 'quiz') == 'quiz' && current_url.split('/').length == 2) {
+if (current_url.split('/').find((element) => element == 'quiz') == 'quiz' && current_url.split('/').length == 2 && 
+  current_url.split('/')[1] != '') {
+
   function answer_check(id) {
     const answer = document.getElementById(id);
     const answers = document.getElementById("answers-" + id.match(/\d+/)[0]);

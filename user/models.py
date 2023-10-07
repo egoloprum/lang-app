@@ -1,22 +1,31 @@
 from django.db import models
 from django.contrib.auth.models import User
+from quiz.models import Quiz
+from course.models import Course
+from contest.models import Contest
 
 class Badge(models.Model):
+  host = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
   name = models.CharField(max_length=200, null=False)
   description = models.CharField(max_length=500, null=True)
-  picture = models.ImageField(null=False)
+  picture = models.ImageField(null=False, upload_to='badges/')
+  pts = models.IntegerField(default=0, null=True, blank=True)
+  exp = models.IntegerField(default=0, null=True, blank=True)
 
   def __str__(self):
     return self.name
 
 class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
-  badges = models.ManyToManyField(Badge, blank=True)
+  badge = models.ForeignKey(Badge, on_delete=models.CASCADE,null=True , blank=True)
+  points = models.IntegerField(default=0, null=False)
+  experience = models.IntegerField(default=0, null=False)
 
   birthday = models.DateTimeField(null=True, blank=True)
   level = models.SmallIntegerField(null=False, default=1)
   gender = models.CharField(max_length=100, blank=True, null=True)
   country = models.CharField(max_length=100, blank=True, null=True)
+  # active now feature
   active = models.BooleanField(default=False, null=True, blank=True)
   avatar = models.ImageField(blank=True, default="photos/pic.jpg", upload_to="photos/")
 
@@ -25,3 +34,12 @@ class Profile(models.Model):
   def __str__(self):
     return self.user.username
   
+class Completion(models.Model):
+  user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+  quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, blank=True)
+  course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
+  contest = models.ForeignKey(Contest, on_delete=models.CASCADE, null=True, blank=True)
+  completed = models.BooleanField(default=False)  
+
+  def __str__(self):
+    return self.user.username

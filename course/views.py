@@ -191,55 +191,6 @@ def createQuizFromChapter(request, pk):
 def editQuizFromChapter(request, pk):
   pass
 
-# def courseEachEdit(request, pk):
-#    course = Course.objects.get(id=pk)
-#    contents = Content.objects.filter(course=course)
-#    content_name = []
-#    content_body = []
-#    num = Content.objects.filter(course=course).count()
-
-#    if request.method == 'POST':
-
-#       for content in contents:
-#         content_name.append(request.POST.get('content-name-' + str(content.id)))
-#         content_body.append(request.POST.get('content-body-' + str(content.id)))         
-
-#       name = request.POST.get('name')
-#       body = request.POST.get('body')
-#       max_user_num = request.POST.get('max_user_num')
-
-#       if max_user_num:
-#           course.name = name
-#           course.body = body
-#           course.max_user_num = max_user_num
-#           course.save()
-
-#           x = 0
-#           for content in contents:
-#             content.name = content_name[x]
-#             content.body = content_body[x]
-#             content.save()
-#             x += 1
-          
-#           return redirect('/course/each/%d'%course.id)
-
-#       course.name = name
-#       course.body = body
-#       course.save()
-
-#       x = 0
-#       for content in contents:
-#         content.name = content_name[x]
-#         content.body = content_body[x]
-#         content.save()
-#         x += 1
-
-#       return redirect('/course/each/%d'%course.id)
-
-#    context = {'course': course, 'contents': contents}
-
-#    return render(request, 'course-each-edit.html', context)
-
 @login_required(login_url='login')
 def topic(request, pk):
   topic = Topic.objects.get(id=pk)

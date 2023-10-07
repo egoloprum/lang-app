@@ -24,23 +24,15 @@
         <select class="form-select">
           <option selected>Status</option>
           <option>Not Started</option>
-          <option>Attempted</option>
           <option>Solved</option>
         </select>
       </div>
       <div class="me-2" style="width: 100%;">
         <select class="form-select">
           <option selected>Tags</option>
-          <option>Beginner</option>
-          <option>Intermediate</option>
-          <option>Advanced</option>
-        </select>
-      </div>
-      <div class="me-2" style="width: 100%;">
-        <select class="form-select">
-          <option selected>Topics</option>
-          <option>Advice</option>
-          <option>Self Development</option>
+          <option>Easy</option>
+          <option>Medium</option>
+          <option>Hard</option>
         </select>
       </div>
       <div class="me-2" style="width: 100%;">
@@ -75,8 +67,19 @@
         </thead>
         <tbody>
           {% for quiz in quizs %}
+            {% if quiz.publication %}
             <tr>
-              <td>{{ quiz.complete }}</td>
+            {% else %}
+            <tr class="table-danger">
+            {% endif %}
+              <td>
+                {% for comp in completions %}
+                  {% if comp.quiz == quiz %}
+                    Solved
+                    {{ break }}
+                  {% endif %}
+                {% endfor %}
+              </td>
               <td><a href="" data-bs-toggle="modal" data-bs-target="#exampleModal-{{ quiz.id }}">
                 {{ forloop.counter }}. {{ quiz.name }}
                 </a></td>
@@ -98,7 +101,6 @@
               </td>
               <td>{{ quiz.duration|date:"c" }}</td>
             </tr>
-
             <!-- start-modal -->
 
             <div class="modal fade" id="exampleModal-{{ quiz.id }}" tabindex="-1" aria-labelledby="exampleModalLabel-{{ quiz.id }}" aria-hidden="true">

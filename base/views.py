@@ -14,12 +14,6 @@ def daily_challenge(request):
 def store(request):
     return render(request, 'store.html')
 
-def contest(request):
-    return render(request, 'contest.html')
-
-def contestEach(request):
-    return render(request, 'contest-each.html')
-
 def calendar(request):
     return render(request, 'calendar.html')
 

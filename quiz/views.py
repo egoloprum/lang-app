@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import *
+from user.models import Completion
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
@@ -25,8 +26,14 @@ def quiz(request):
         quiz_id = Quiz.objects.get(pk=request.POST.get('quiz-id'))
         quiz_id.delete()
 
-    quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host')
-    context = {'quizs': quizs}
+    completions = Completion.objects.filter(user=request.user, completed=True).select_related('quiz')
+
+    if request.user.is_staff:
+        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host')
+        context = {'quizs': quizs, 'completions': completions}
+    else:
+        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(publication=True)
+        context = {'quizs': quizs, 'completions': completions}
     return render(request, 'quiz.html', context)
 
 @login_required(login_url='login')
@@ -154,9 +161,6 @@ def quizEach(request, pk):
         if request.path != "http://127.0.0.1:8000/quiz/" + str(quiz.id):
             request.path = "http://127.0.0.1:8000/quiz/" + str(quiz.id)
         iter = 1
-
-
-        completed_quiz = Completed_Quiz.objects.create(quiz=quiz, user=request.user)
         
         for x in range(len(questions)):
             while(request.POST.get('answer-id-' + str(iter))):
@@ -164,10 +168,7 @@ def quizEach(request, pk):
 
                 if answer.question == questions[x]:
                     sel_answers[x].append(answer.id)
-                    try:
-                        Selected_Answer.objects.create(selected=answer, user=request.user, quiz=completed_quiz, question=questions[x])
-                    except IntegrityError:
-                        ...
+                    Selected_Answer.objects.create(selected=answer, user=request.user, question=questions[x])
                 else:
                     break
 
@@ -180,6 +181,15 @@ def quizEach(request, pk):
                     points += 1
 
         result = Result.objects.create(quiz=quiz, user=request.user, score=points)
+        try:
+            comp = Completion.objects.get(user=request.user, quiz=quiz)
+        except:
+            comp = Completion.objects.create(user=request.user, quiz=quiz)
+
+        if not comp.completed:
+            comp.completed = True
+            comp.save()
+
         return redirect('quiz-result', quiz.id)
     
     return render(request, 'quiz-each.html', context)
@@ -190,7 +200,6 @@ def quizResult(request, pk):
 
     if request.user.is_staff:
         questions = Question.objects.select_related('quiz').filter(quiz=quiz)
-        completed_quiz = Completed_Quiz.objects.select_related('quiz', 'user').filter(quiz=quiz, user=request.user).last()
         all_results = Result.objects.select_related('quiz', 'user').filter(quiz=quiz)
         results = all_results.filter(user=request.user).aggregate(average_score=Avg('score'))
 
@@ -204,7 +213,7 @@ def quizResult(request, pk):
             # cor_answers.append(cor_ans.filter(question=question, correct=True))
             cor_answers.append(question.answer_question.filter(correct=True))
             try:
-                sel_answers.append(sel_ans.filter(user=request.user, quiz=completed_quiz, question=question))
+                sel_answers.append(sel_ans.filter(user=request.user, question=question))
             except Selected_Answer.DoesNotExist:
                 sel_answers.append(None)
 
@@ -220,7 +229,6 @@ def quizResult(request, pk):
 
     else:
         questions = Question.objects.filter(quiz=quiz).select_related('quiz')
-        completed_quiz = Completed_Quiz.objects.select_related('quiz', 'user').filter(quiz=quiz, user=request.user).last()
         results = Result.objects.filter(quiz=quiz, user=request.user)
         all_results = Result.objects.select_related('quiz', 'user').filter(quiz=quiz, user=request.user).order_by('-created_at')
         average_score = Result.objects.filter(quiz=quiz, user=request.user).aggregate(average_score=Avg('score'))
@@ -233,7 +241,7 @@ def quizResult(request, pk):
             for question in questions:
                 cor_answers.append(question.answer_question.filter(correct=True))
                 try:
-                    sel_answers.append(sel_ans.filter(user=request.user, quiz=completed_quiz, question=question))
+                    sel_answers.append(sel_ans.filter(user=request.user, quiz=quiz, question=question))
                 except Selected_Answer.DoesNotExist:
                     sel_answers.append(None)
 
@@ -249,43 +257,3 @@ def quizResult(request, pk):
         }
 
     return render(request, 'quiz-result.html', context)
-
-# @login_required(login_url='login')
-# def quizResult(request, pk):
-#     quiz = Quiz.objects.get(id=pk)
-#     result = Result.objects.select_related('quiz').filter(quiz=quiz).last
-#     results = Result.objects.select_related('quiz').filter(quiz=quiz).order_by('-id')
-#     questions = Question.objects.select_related('quiz').filter(quiz=quiz)
-#     answers = []
-#     selected_answers = []
-
-#     for question in questions:
-#         for a in Answer.objects.filter(question=question).select_related('question'):
-#             answers.append(a)
-#             try:
-#                 selected_answers.append(Selected_Answer.objects.select_related('answer').filter(answer=a).last)
-#                 # Selected_Answer.objects.get(answer=a).delete()
-#             except ObjectDoesNotExist:
-#                 ...
-
-#     list_answers = dict(zip(answers, selected_answers))
-#     average_score = 0
-
-#     for res in results:
-#         average_score += res.score
-
-#     try:
-#         average_score = average_score / len(results)
-#     except ZeroDivisionError:
-#         average_score = 0
-
-#     if Average_score.objects.filter(quiz=quiz, user=request.user).exists:
-#         Average_score.objects.filter(quiz=quiz, user=request.user).delete()
-
-#     Average_score.objects.create(quiz=quiz, user=request.user, score=average_score)
-
-#     context = {'result': result, 'results': results, 'average_score': average_score,
-#                'quiz': quiz, 'questions': questions, 'answers': list_answers, 'ans': answers}
-
-#     return render(request, 'quiz-result.html', context)
-

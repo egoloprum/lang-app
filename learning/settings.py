@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'user',
     'quiz',
     'follower',
+    'contest',
 
     # 'django.contrib.sites',
     # 'allauth',

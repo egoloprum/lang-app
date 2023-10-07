@@ -3,9 +3,13 @@
 {% block content %}
 
 <section class="m-3">
+  {% for status in complete_status %}
+    {{ status.quiz.name }}
+  {% endfor %}
   <div class="m-3">
     {% if curr_user.is_staff %}
     <div class="row rows-col-2 ms-0" style="height: fit-content;">
+
       <!-- profile info side -->
       <section class="white-border col-3">
         <div class="m-2 mt-3">
@@ -44,7 +48,7 @@
 
         <div class="m-2 mb-3">
           <div class="row mb-2">
-            <img class="col" src="{% static '/images/pic.jpg' %}" style="width: 100px;">
+            <img class="col" src="{{ curr_user.profile.avatar.url }}" style="max-width: 72px; border-radius: 50%;">
             <div class="col">
               <p><b>{{ curr_user.username|title }}</b></p>
               <p>Rank : 00000</p>
@@ -108,6 +112,7 @@
         </div>
       </section>
 
+      <!-- profile right side -->
       <div class="col mb-3 pe-0 ps-0">
         <div class="row m-0 pe-3">
           <!-- Solved Quizes -->
@@ -169,7 +174,7 @@
       </div>
     </div>
 
-    <!-- recent result -->
+    <!-- result data -->
     <section class="p-3 mt-3 white-border text-nowrap">
       <div class="mb-3">
         <h3>Result data</h3>
@@ -200,8 +205,36 @@
       </div>
     </section>
 
+    <!-- completion status -->
+
+    <section class="p-3 mt-3 white-border text-nowrap">
+      <div class="mb-3">
+        <h3>Completion Status</h3>
+      </div>
+      <div class="mb-3">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Quiz</th>
+              <th>Course</th>
+              <th>Contest</th>
+              <th>Challenges</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ complete_quiz.count }} / {{ quiz_count }}</td>
+              <td>{{ complete_course.count }} / {{ course_count }}</td>
+              <td>{{ complete_contest.count }} / {{ contest_count }}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Quiz side -->  
     <div class="mt-3" style="display: flex; justify-content: space-between; width: 100%;">
-      <!-- Quiz side -->  
       <section class="white-border me-2 mb-0 p-3" style="width: 100%;">
         <div class="m-2">
           {% if curr_user == request.user %}
@@ -272,8 +305,8 @@
       </section>
     </div>
 
-    <div class="mt-3" style="display: flex; justify-content: space-between; width: 100%;">
-      <!-- Contest side -->  
+    <!-- Contest side --> 
+    <div class="mt-3" style="display: flex; justify-content: space-between; width: 100%;"> 
       <section class="white-border me-2 mb-0 p-3" style="width: 100%;">
         <div class="m-2">
           {% if curr_user == request.user %}
@@ -507,7 +540,7 @@
       </div>
     </div>
 
-    <!-- recent result -->
+    <!-- result data -->
     <section class="p-3 m-3 white-border text-nowrap">
       <div class="mb-3">
         <h3>Result data</h3>

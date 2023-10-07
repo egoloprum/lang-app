@@ -11,6 +11,7 @@ from django.contrib.auth.password_validation import validate_password
 
 from .models import *
 from course.models import Course
+from contest.models import Contest
 from quiz.models import Quiz, Result, Average_score
 from follower.models import FollowList, FollowRequest
 
@@ -30,6 +31,10 @@ def loginUser(request):
 
         if user:
             login(request, user)
+            try:
+                Profile.objects.get(user=user)
+            except Profile.DoesNotExist:
+                Profile.objects.create(user=user)
             user.profile.active = True
             user.profile.save()
             return redirect('home')
@@ -102,14 +107,30 @@ def profilePath(request, pk):
         profile = Profile.objects.get(user=curr_user)
     except Profile.DoesNotExist:
         profile = Profile.objects.create(user=curr_user)
+
+    quiz_count = Quiz.objects.all().count()
+    course_count = Course.objects.all().count()
+    contest_count = Contest.objects.all().count()
+
+    try:
+        complete_quiz = Completion.objects.filter(user=curr_user, completed=True, quiz=True)
+    except Completion.DoesNotExist:
+        complete_quiz = None
+
+    try:
+        complete_course = Completion.objects.filter(user=curr_user, completed=True, course=True)
+    except Completion.DoesNotExist:
+        complete_course = None
+
+    try:
+        complete_contest = Completion.objects.filter(user=curr_user, completed=True, contest=True)
+    except Completion.DoesNotExist:
+        complete_contest = None
+
     courses = Course.objects.filter(host=pk)
 
     quiz_result = Average_score.objects.filter(user=curr_user)
     results = Result.objects.filter(user=curr_user).select_related('quiz')
-
-    data = [{
-        'id': 1,
-    }]
 
     try:
         follow_list = FollowList.objects.get(user=curr_user)
@@ -156,7 +177,9 @@ def profilePath(request, pk):
                 'quizs': count, 'results': results, 'quiz_result': quiz_result,
                 'followers': followers, 'is_self':is_self, 'is_follower': is_follower,
                 'request_sent': request_sent, 'follow_requests': follow_requests,
-                'pending_follow_request_id': pending_follow_request_id}
+                'pending_follow_request_id': pending_follow_request_id,
+                'complete_quiz': complete_quiz, 'complete_course': complete_course, "complete_contest": complete_contest,
+                'quiz_count': quiz_count, 'course_count': course_count, 'contest_count': contest_count}
 
     return render(request, 'profile.html', context)
 
