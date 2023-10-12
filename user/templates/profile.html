@@ -6,11 +6,10 @@
   <div class="m-3">
   {% if curr_user.is_staff %}
     <div>
-      <div class="row rows-col-2 ms-0" style="height: fit-content;">
-
+      <div class="row rows-col-2 m-0" style="height: 600px;">
         <!-- profile info side -->
-        <section class="white-border col-3">
-          <div class="m-2 mt-3">
+        <section class="white-border col-3" style="height: 600px;">
+          <div class="m-2">
             {% if request.user != curr_user %}
   
               {% if is_follower == False and is_self == False %}
@@ -45,110 +44,65 @@
             <div id="request-result"></div>
           </div>
   
-          <div class="m-2 mb-3">
-            <div class="row mb-2">
-              <img class="col" src="{{ curr_user.profile.avatar.url }}" style="max-width: 72px; border-radius: 50%;">
-              <div class="col">
-                <p><b>{{ curr_user.username|title }}</b></p>
-                <p>Rank : 00000</p>
+          <div class="m-3">
+            <div class="mb-3" style="display: flex; flex-direction: column; align-items: center;">
+              <img src="{{ curr_user.profile.avatar.url }}" style="width: 120px;">
+              <div class="mt-2" style="width: 100%; display: flex; justify-content: space-between;">
+                <p>Username: <b>{{ curr_user.username|title }}</b></p>
+                <p>Rank: 00000</p>
               </div>
             </div>
   
-            <div class="row m-1 mb-2">
+            <div class="mb-3">
               {% if request.user == curr_user %}
-                <a type="button" class="btn btn-outline-success" href="{% url 'profile-update' %}">Edit Profile</a>
+                <a style="width: 100%;" class="btn btn-outline-success" href="{% url 'profile-update' %}">Edit Profile</a>
               {% endif %}
             </div>
   
-            <div class="mb-2 small-font-size">
-                <a class="col" href="{% url 'followers' curr_user.id %}">Followers: {{ curr_user.followers.count }}</a> /
-                <a class="col" href="{% url 'followers' curr_user.id %}">Request {{ follow_requests|length }}</a>
-            </div>
-  
-            <div class="mb-2 small-font-size">
-              <a href="#">Facebook</a><br>
-              <a href="#">Instagram</a><br>
-              <a href="#">LinkedIn</a><br>
-              <a href="#">Medium</a>
-            </div><hr>
-  
-            <div class="mb-2">
-              <label class="form-label"><b>Languages</b></label>
-              <p class="small-font-size">
-                <a href="">English 10 quizes solved</a>
-              </p>
-            </div><hr>
-  
-            <div class="mb-2">
-              <label class="form-label"><b>Skills</b></label>
-              <div class="small-font-size">
-                <li class="profile-skills-list-1"><b>Advanced</b></li>
-                <p class="ms-3">
-                  <a class="me-2" href="">Gerund x1</a>
-                  <a class="me-2" href="">Gerund x1</a>
-                  <a class="me-2" href="">Gerund x1</a>
-                </p>
-              </div>
-              
-              <div class="small-font-size">
-                <li class="profile-skills-list-2"><b>Intermediate</b></li>
-                <p class="ms-3">
-                  <a class="me-2" href="">Gerund x1</a>
-                  <a class="me-2" href="">Gerund x1</a>
-                  <a class="me-2" href="">Gerund x1</a>
-                </p>
-              </div>
-  
-              <div class="small-font-size">
-                <li class="profile-skills-list-3"><b>Beginner</b></li>
-                <p class="ms-3">
-                  <a class="me-2" href="">Gerund x1</a>
-                  <a class="me-2" href="">Gerund x1</a>
-                  <a class="me-2" href="">Gerund x1</a>
-                </p>
-              </div>
+            <div class="mb-2" style="display: flex; justify-content: space-between;">
+                <a href="{% url 'followers' curr_user.id %}">Followers: {{ curr_user.followers.count }}</a>
+                <a href="{% url 'followers' curr_user.id %}">Request: {{ follow_requests|length }}</a>
             </div>
           </div>
         </section>
-  
+
         <!-- profile right side -->
-        <div class="col mb-3 pe-0 ps-0">
-          <div class="row m-0 pe-3">
+        <div class="col mb-3 pe-0 ps-0" style="height: 600px;">
+          <div class="row m-0 pb-3" style="height: 200px;">
             <!-- Solved Quizes -->
-            <section class="white-border col-5 ms-3" style="max-height: 220px;">
+            <section class="white-border col-5 ms-3">
               <div class="m-2 mt-3 small-font-size">
-                <label class="form-label">Solved Quizes</label>
-                <div class="row">
-                  <div class="col-4 ms-2 mb-2">
-                    <p></p>
-                  </div>
-  
-                  <div class="col">
-                    <p class="row">
+                <h5>Solved Quizes</h5>
+                <div class="" style="display: flex;">
+                  <!-- easy -->
+                  <div style="width: 100%; display: flex; align-items: center; flex-direction: column;">
+                    <p>
                       <span class="col">Easy</span> 
-                      <span class="col">1 /100</span>
-                      <span class="col">Beats 15.3%</span>
-                    </p>
-                    <p class="row">
-                      <span class="col">Medium</span> 
-                      <span class="col">2 /200</span>
-                      <span class="col">Beats 25.3%</span>
-                    </p>
-                    <p class="row">
-                      <span class="col">Hard</span> 
-                      <span class="col">3 /300</span>
-                      <span class="col">Beats 35.3%</span>
+                      <span class="col">{{ comp_easy }} / {{ quizs_easy }}</span>
                     </p>
                   </div>
-  
+                  <!-- medium -->
+                  <div style="width: 100%; display: flex; align-items: center; flex-direction: column;">
+                    <p>
+                      <span class="col">Medium</span> 
+                      <span class="col">{{ comp_medium }} / {{ quizs_medium }}</span>
+                    </p>
+                  </div>
+                  <!-- hard -->
+                  <div style="width: 100%; display: flex; align-items: center; flex-direction: column;">
+                    <p>
+                      <span class="col">Hard</span> 
+                      <span class="col">{{ comp_hard }} / {{ quizs_hard }}</span>
+                    </p>
+                  </div>
                 </div>
               </div>
             </section>
         
             <!-- Badges -->
-            <section class="white-border col ms-3" style="max-height: 220px;">
+            <section class="white-border col ms-3">
               <div class="m-2 mt-3">
-                <label class="small-font-size">Badges</label>
+                <h5>Badges</h5>
                 <div class="mb-2">
                   <p>{{ profile.badges.count }}</p>
                 </div>
@@ -167,8 +121,8 @@
             </section>
           </div>
           <!-- graphics -->
-          <div class="white-border m-3 p-3" style="height: 59%;">
-            <p>Graphics</p>
+          <div class="white-border ms-3 p-3" style="max-height: 400px; height: 100%;">
+            <h5>Graphics</h5>
           </div>
         </div>
       </div>
@@ -358,23 +312,13 @@
           <div class="m-2">
             {% if curr_user == request.user %}
               <div class="row me-2 ms-2">
-                <a class="btn btn-outline-primary mb-2" href="{% url 'course-create' %}">Create challenge</a>
+                <a class="btn btn-outline-primary mb-2" href="">Create challenge</a>
               </div>
             {% endif %}
             <div class="small-font-size">
-              <p>{{ courses.count }} Challenges have been created</h3>
+              <p>{{ challenges.count }} Challenges have been created</h3>
             </div>
-            
-            <div class="row small-font-size">
-              {% for course in courses %}
-                <div class="col-4 border m-2">
-                  <label><b>{{ course.name }}</b></label><hr>
-                  <p>{{ course.body|striptags|safe|truncatechars:100 }}</p>
-                </div>
-                {% empty %}
-                  <p>Currently, no challenge has been created by this user.</p>
-              {% endfor %}
-            </div>
+
           </div>
         </section>
       </div>
@@ -454,21 +398,21 @@
                   <div style="width: 100%; display: flex; align-items: center; flex-direction: column;">
                     <p>
                       <span class="col">Easy</span> 
-                      <span class="col">1 /{{quizs_easy }}</span>
+                      <span class="col">{{ comp_easy }} / {{ quizs_easy }}</span>
                     </p>
                   </div>
                   <!-- medium -->
                   <div style="width: 100%; display: flex; align-items: center; flex-direction: column;">
                     <p>
                       <span class="col">Medium</span> 
-                      <span class="col">2 /{{ quizs_medium }}</span>
+                      <span class="col">{{ comp_medium }} / {{ quizs_medium }}</span>
                     </p>
                   </div>
                   <!-- hard -->
                   <div style="width: 100%; display: flex; align-items: center; flex-direction: column;">
                     <p>
                       <span class="col">Hard</span> 
-                      <span class="col">3 / {{ quizs_hard }}</span>
+                      <span class="col">{{ comp_hard }} / {{ quizs_hard }}</span>
                     </p>
                   </div>
                 </div>

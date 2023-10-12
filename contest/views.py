@@ -7,7 +7,7 @@ from quiz.models import Quiz
 # Create your views here.
 
 def contest(request):
-    contests = Contest.objects.all()
+    contests = Contest.objects.select_related('host')
     context = {
         'contests': contests,
     }

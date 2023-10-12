@@ -198,6 +198,23 @@ def profilePath(request, pk):
             if quiz.difficulty == 'Hard':
                 quizs_hard += 1
 
+        comp_easy = 0
+        comp_medium = 0
+        comp_hard = 0
+
+        completions = Completion.objects.select_related()
+        for comp in completions:
+            if comp.quiz.difficulty == 'Easy' and comp.user == curr_user:
+                comp_easy += 1
+            if comp.quiz.difficulty == 'Medium' and comp.user == curr_user:
+                comp_medium += 1
+            if comp.quiz.difficulty == 'Hard' and comp.user == curr_user:
+                comp_hard += 1
+
+        context['comp_easy'] = comp_easy
+        context['comp_medium'] = comp_medium
+        context['comp_hard'] = comp_hard
+
         context['quizs_easy'] = quizs_easy
         context['quizs_medium'] = quizs_medium
         context['quizs_hard'] = quizs_hard
