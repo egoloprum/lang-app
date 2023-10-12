@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+import math
 
 # Create your views here.
 
@@ -10,9 +11,6 @@ def subscribe(request):
 
 def daily_challenge(request):
     return render(request, 'daily-challenge.html')
-
-def store(request):
-    return render(request, 'store.html')
 
 def calendar(request):
     return render(request, 'calendar.html')

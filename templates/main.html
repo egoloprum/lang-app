@@ -14,7 +14,8 @@
     <script src="https://unpkg.com/htmx.org@1.9.4" integrity="sha384-zUfuhFKKZCbHTY6aRR46gxiqszMk5tcHjsVFxnUo8VMus4kHGVdIYVbOYYNlKmHV" crossorigin="anonymous"></script>
     <script src="https://cdn.tiny.cloud/1/y6rs4jiheme39dwzx7l2ra0t6wdxecy7wtd0ofrzhgih3v82/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
   </head>
-  <body>
+  <body style="background: #f1f5f8; background-image: radial-gradient(#bfc0c1 7.2%, transparent 0);
+  background-size: 25px 25px;">
     <div style="height: fit-content">
       {% if request.user.is_authenticated %}
         {% include 'sidebar.html' %}
@@ -24,7 +25,7 @@
         {% include 'navbar.html' %}
       {% endif %}
 
-      <div class="" style="background: var(--color-background); padding:0;">
+      <div class="" style="padding:0; ">
         {% block content %}
         {% endblock %}
       </div>

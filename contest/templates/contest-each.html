@@ -1,0 +1,168 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<section class="m-3">
+  <div class="m-3">
+    <div class="p-3">
+      <h3>{{ contest.name }}</h3>
+    </div>
+
+    <div class="white-border p-3" style="height: 60px; display: flex; align-items: center; background: #fcfcfc;">
+      <p>The contest has ended.</p>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-9">
+        <div class="mb-4">
+          <h4>Welcome to the {{ contest.name }}</h4>
+        </div>
+
+        <div class="mb-4 pb-4">
+          <p>Announcement</p>
+          <p>Users must register to participate. We hope you enjoy this contest!</p>
+        </div><hr>
+
+        <div class="mb-4">
+          <button class="btn btn-light me-2">Virtual Contest</button>
+          <button class="btn btn-light">FAQ about Contest</button>
+        </div>
+
+        <div class="m-0 small-font-size row">
+
+          <!-- problem list table -->
+          <div class="col small-font-size">
+            <table class="table table-bordered white-border">
+              <thead>
+                <tr class="align-middle" style="height: 50px;">
+                  <th class="ps-3">Problem List</th>
+                  <th class="pe-2 ps-2" style="text-align: center; width: 50px;">Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for quiz in quizs %}
+                  <tr class="align-middle" style="height: 50px;">
+                    <td class="ps-3">{{ quiz.name }}</td>
+                    <td class="pe-2 ps-2" style="text-align: center;"></td>
+                  </tr>
+                  {% empty %}
+                  <tr class="align-middle" style="height: 50px;">
+                    <td class="ps-3">No quiz currently exists</td>
+                    <td></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- rank table -->
+          <div class="col small-font-size">
+            <table class="table table-bordered white-border align-middle">
+              <thead>
+                <tr class="align-middle" style="height: 50px;">
+                  <th style="width: 30px;">Rank</th>
+                  <th>Name</th>
+                  <th style="width: 30px;">Score</th>
+                  <th>Finish Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="height: 50px;" class="align-middle">
+                  <td style="text-align: center;">1</td>
+                  <td>Lebron James</td>
+                  <td style="text-align: center;">17</td>
+                  <td class="pe-3">0:06:25</td>
+                </tr>
+                <tr style="height: 50px;" class="align-middle">
+                  <td class="ps-3">2</td>
+                  <td>Lebonny</td>
+                  <td style="text-align: center;">16</td>
+                  <td class="pe-3">0:07:12</td>
+                </tr>
+                <tr style="height: 50px;" class="align-middle">
+                  <td class="ps-3">3</td>
+                  <td>Majes</td>
+                  <td style="text-align: center;">15</td>
+                  <td class="pe-3">0:07:23</td>
+                </tr>
+                <tr style="height: 50px;" class="align-middle">
+                  <td class="ps-3">4</td>
+                  <td>Lespooky</td>
+                  <td style="text-align: center;">15</td>
+                  <td class="pe-3">0:07:47</td>
+                </tr>
+                <tr style="height: 50px;" class="align-middle">
+                  <td class="ps-3">5</td>
+                  <td>LemonJames</td>
+                  <td style="text-align: center;">14</td>
+                  <td class="pe-3">0:08:13</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="mb-2" style="display: flex; align-items: center;">
+          <i class="fa-solid fa-trophy me-2" style="color: #fca417;"></i>
+          <p>Prize</p>
+        </div>
+        <div class="white-border">
+          <div style="height: 50px; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgb(243, 243, 243);">
+            <p class="ms-3">1st</p>
+            <p>
+              <span>5000</span>
+              <i class="fa-solid fa-coins me-3" style="color: #eec333;"></i>
+            </p>
+          </div>
+          <div style="height: 50px; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgb(243, 243, 243);">
+            <p class="ms-3">2nd</p>
+            <p>
+              <span>2500</span>
+              <i class="fa-solid fa-coins me-3" style="color: #eec333;"></i>
+            </p>
+          </div>
+          <div style="height: 50px; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgb(243, 243, 243);">
+            <p class="ms-3">3rd</p>
+            <p>
+              <span>1000</span>
+              <i class="fa-solid fa-coins me-3" style="color: #eec333;"></i>
+            </p>
+          </div>
+          <div style="height: 50px; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgb(243, 243, 243);">
+            <p class="ms-3">4th-50th</p>
+            <p>
+              <span>300</span>
+              <i class="fa-solid fa-coins me-3" style="color: #eec333;"></i>
+            </p>
+          </div>
+          <div style="height: 50px; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgb(243, 243, 243);">
+            <p class="ms-3">51th-100th</p>
+            <p>
+              <span>100</span>
+              <i class="fa-solid fa-coins me-3" style="color: #eec333;"></i>
+            </p>
+          </div>
+          <div style="height: 50px; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgb(243, 243, 243);">
+            <p class="ms-3">Participate</p>
+            <p>
+              <span>5</span>
+              <i class="fa-solid fa-coins me-3" style="color: #eec333;"></i>
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

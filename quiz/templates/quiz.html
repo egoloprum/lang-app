@@ -29,7 +29,7 @@
       </div>
       <div class="me-2" style="width: 100%;">
         <select class="form-select">
-          <option selected>Tags</option>
+          <option selected>Difficulty</option>
           <option>Easy</option>
           <option>Medium</option>
           <option>Hard</option>
@@ -101,13 +101,13 @@
               </td>
               <td>{{ quiz.duration|date:"c" }}</td>
             </tr>
-            <!-- start-modal -->
 
+            <!-- start-modal -->
             <div class="modal fade" id="exampleModal-{{ quiz.id }}" tabindex="-1" aria-labelledby="exampleModalLabel-{{ quiz.id }}" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel-{{ quiz.id }}">Modal title</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel-{{ quiz.id }}">{{ quiz.id }}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body" id="modal-body" style="display: flex; justify-content: space-between;">
@@ -115,7 +115,7 @@
                     <a href="{% url 'quiz-result' quiz.id %}" class="btn btn-outline-success me-1 ms-1" style="width: 100%;">Result</a>
                     {% if request.user == quiz.host %}
                       <a href="{% url 'quiz-edit' quiz.id %}" class="btn btn-outline-warning me-1 ms-1" style="width: 100%;">Edit</a>
-                      <a data-bs-toggle="modal" data-bs-target="#delete-modal" class="btn btn-outline-danger me-1 ms-1" style="width: 100%;">Delete</a>
+                      <a href="{% url 'quiz-delete' quiz.id %}" class="btn btn-outline-danger me-1 ms-1" style="width: 100%;">Delete</a>
                     {% endif %}
                   </div>                  
                   <div class="modal-footer">
@@ -129,7 +129,6 @@
       </table>
     </div>
   </div>
-
 </section>
 
 {% endblock %}

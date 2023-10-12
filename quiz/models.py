@@ -61,25 +61,26 @@ class Answer(models.Model):
         else:
             return f"{self.question.id} / {self.id} / {self.body}"
 
+class Result(models.Model):
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False, related_name='result_quiz')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name='result_user')
+    score = models.FloatField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.pk)
+
 class Selected_Answer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name='sel_answer_user')
     selected = models.ForeignKey(Answer, on_delete=models.CASCADE, null=False, related_name='sel_answer_ans')
     question = models.ForeignKey(Question, on_delete=models.CASCADE, null=False, related_name='sel_answer_ques')
+    result = models.ForeignKey(Result, on_delete=models.CASCADE, null=False, related_name='sel_answer_result')
 
     def __str__(self):
         if self == None:
             return f"{self.id} empty"
         else:
             return f"{self.selected.id} / {self.id}"
-
-class Result(models.Model):
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False, related_name='result_quiz')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name='result_user')
-    score = models.FloatField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return str(self.pk)
 
 class Average_score(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, related_name='average_score_quiz')

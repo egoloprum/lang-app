@@ -36,7 +36,7 @@ class Profile(models.Model):
   
 class Completion(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
-  quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, blank=True)
+  quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, blank=True, related_name='completion_quiz')
   course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
   contest = models.ForeignKey(Contest, on_delete=models.CASCADE, null=True, blank=True)
   completed = models.BooleanField(default=False)  

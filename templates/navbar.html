@@ -10,14 +10,14 @@
       <a class="navbar-link me-3 btn btn-warning" href="{% url 'subscribe' %}">Premium</a>
     </div>
     <div>
-      <a class="navbar-link me-3" href="{% url 'user-path' %}">Users</a>
-      <a class="navbar-link me-3" href=""><i class="fa-regular fa-bell"></i></a>
-      <a class="navbar-link me-3" href="{% url 'daily_challenge' %}"><i class="fa-regular fa-star"></i></a>
+      <a class="me-3" style="text-decoration: none;" href="{% url 'user-path' %}">Users</a>
+      <a class="me-3" style="text-decoration: none;" href=""><i class="fa-regular fa-bell"></i></a>
+      <a class="me-3" style="text-decoration: none;" href="{% url 'daily_challenge' %}"><i class="fa-regular fa-star"></i></a>
   
-      <a class="navbar-link me-3" href="{% url 'profile' request.user.id %}">
+      <a class="me-3" style="text-decoration: none;" href="{% url 'profile' request.user.id %}">
         <i class="fa-regular fa-user"></i>
       </a>
-      <a class="navbar-link me-3" href="{% url 'logout' %}">
+      <a class="me-3" style="text-decoration: none;" href="{% url 'logout' %}">
         <i class="fa-solid fa-arrow-right-from-bracket"></i>
       </a>
     </div>  
@@ -26,32 +26,54 @@
 
 {% else %}
 
-<section class="">
-  <div class="p-3" style="height: 70px; background: #3e9ee7; display: flex; justify-content: space-around; align-items: center;">
+<section>
+  <div class="p-3" style="height: 70px; background: #a89cd4; display: flex; justify-content: space-around; align-items: center;">
     <div style="display: flex; align-items: center;">
       <a href="{% url 'home' %}" class="me-2">
         <img src="{% static 'images/kiwi.png' %}" style="width: 50px;">
       </a>
-      <span style="border-right: 2px solid #ffffff; height: 50px;"></span>
-      <a href="{% url 'home' %}" class="ms-2">English Study</a>
+      <a href="{% url 'home' %}" class="ms-2">
+        <h4 class="font blue-border" style="font-weight: 500; transform: rotate(-2deg);">English Study</h4>
+      </a>
+    </div>
+
+    <div style="background: rgb(127, 255, 42); height: 50px; border-radius: 20px; 
+      display: flex; justify-content: center; align-items: center;">
+      <a href="" style="height: 50px; border-radius: 20px; 
+        display: flex; justify-content: center; align-items: center; width: 100px;">
+        <span>Home</span>
+        <span></span>
+      </a>
+      <a href="" style="height: 50px; border-radius: 20px; 
+        display: flex; justify-content: center; align-items: center; width: 100px;">
+        <span>About</span>
+        <span></span>
+      </a>
+      <a href="" style="height: 50px; border-radius: 20px; 
+      display: flex; justify-content: center; align-items: center; width: 100px;">
+      <span>Portfolio</span>
+      <span></span>
+    </a>
     </div>
     
     <div>
-      <a class="me-2" href="{% url 'login' %}">Log In</a>
+      <a class="me-2" href="{% url 'login' %}">Log In</a>/
       <a href="{% url 'register' %}">Register</a>
     </div>
   </div>
 
   </div>
-  <div class="p-2" style="display: flex; justify-content: space-around; background: linear-gradient(45deg, #48ff7f, #1bfaca);">
-    <a class="navbar-link me-3" href="{% url 'home' %}">Home</a>
-    <a class="navbar-link me-3" href="{% url 'base-courses' %}">Courses</a>
-    <a class="navbar-link me-3" href="{% url 'base-skills' %}">Skills</a>
-    <a class="navbar-link me-3" href="{% url 'base-grammar' %}">Grammar</a>
-    <a class="navbar-link me-3" href="{% url 'base-bus-eng' %}">Business English</a>
-    <a class="navbar-link me-3" href="{% url 'base-gen-eng' %}">General English</a>
-    <a class="navbar-link me-3" href="{% url 'base-eng-lev' %}">English Level</a>
-  </div>
+
 </section>
 
 {% endif %}
+
+<!-- <div class="p-2" style="display: flex; justify-content: space-around; background: linear-gradient(45deg, #48ff7f, #1bfaca);">
+  <a class="navbar-link me-3" href="{% url 'home' %}">Home</a>
+  <a class="navbar-link me-3" href="{% url 'base-courses' %}">Courses</a>
+  <a class="navbar-link me-3" href="{% url 'base-skills' %}">Skills</a>
+  <a class="navbar-link me-3" href="{% url 'base-grammar' %}">Grammar</a>
+  <a class="navbar-link me-3" href="{% url 'base-bus-eng' %}">Business English</a>
+  <a class="navbar-link me-3" href="{% url 'base-gen-eng' %}">General English</a>
+  <a class="navbar-link me-3" href="{% url 'base-eng-lev' %}">English Level</a>
+</div> -->

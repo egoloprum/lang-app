@@ -17,4 +17,8 @@ class Contest(models.Model):
   end_date = models.DateTimeField(null=True, blank=True)
   publication = models.BooleanField(default=False)
 
-
+  def __str__(self):
+    if self.name == None:
+      return (f"New contest {self.id}")
+    else:
+      return (self.name)

@@ -103,34 +103,15 @@ def get_follow_request_or_false(sender, reciever):
 @login_required(login_url='login')
 def profilePath(request, pk):
     curr_user = User.objects.select_related('profile').get(id=pk)
+    context = {}
+
     try:
         profile = Profile.objects.get(user=curr_user)
     except Profile.DoesNotExist:
         profile = Profile.objects.create(user=curr_user)
 
-    quiz_count = Quiz.objects.all().count()
-    course_count = Course.objects.all().count()
-    contest_count = Contest.objects.all().count()
-
-    try:
-        complete_quiz = Completion.objects.filter(user=curr_user, completed=True, quiz=True)
-    except Completion.DoesNotExist:
-        complete_quiz = None
-
-    try:
-        complete_course = Completion.objects.filter(user=curr_user, completed=True, course=True)
-    except Completion.DoesNotExist:
-        complete_course = None
-
-    try:
-        complete_contest = Completion.objects.filter(user=curr_user, completed=True, contest=True)
-    except Completion.DoesNotExist:
-        complete_contest = None
-
-    courses = Course.objects.filter(host=pk)
-
-    quiz_result = Average_score.objects.filter(user=curr_user)
-    results = Result.objects.filter(user=curr_user).select_related('quiz')
+    context['curr_user'] = curr_user
+    context['profile'] = profile
 
     try:
         follow_list = FollowList.objects.get(user=curr_user)
@@ -171,15 +152,79 @@ def profilePath(request, pk):
                 request_sent = -1
 
     follow_requests = FollowRequest.objects.filter(reciever=curr_user, is_active=True)
-    count = Quiz.objects.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user)
 
-    context = {'curr_user': curr_user, 'profile': profile, 'courses': courses,
-                'quizs': count, 'results': results, 'quiz_result': quiz_result,
-                'followers': followers, 'is_self':is_self, 'is_follower': is_follower,
-                'request_sent': request_sent, 'follow_requests': follow_requests,
-                'pending_follow_request_id': pending_follow_request_id,
-                'complete_quiz': complete_quiz, 'complete_course': complete_course, "complete_contest": complete_contest,
-                'quiz_count': quiz_count, 'course_count': course_count, 'contest_count': contest_count}
+    context['follow_requests'] = follow_requests
+    context['followers'] = followers
+    context['is_self'] = is_self
+    context['is_follower'] = is_follower
+    context['request_sent'] = request_sent
+    context['pending_follow_request_id'] = pending_follow_request_id
+
+    quiz_result = Average_score.objects.filter(user=curr_user)
+    results = Result.objects.filter(user=curr_user).select_related('quiz')
+
+    context['results'] = results
+    context['quiz_result'] = quiz_result
+
+    if curr_user.is_staff:
+        quizs = Quiz.objects.select_related()
+        courses = Course.objects.select_related()
+        contests = Contest.objects.select_related()
+
+        quiz_count = quizs.count()
+        course_count = courses.count()
+        contest_count = contests.count()
+
+        quizs = quizs.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user)
+        courses = courses.filter(host=pk)
+
+        context['courses'] = courses
+        context['quizs'] = quizs
+        context['quiz_count'] = quiz_count
+        context['course_count'] = course_count
+        context['contest_count'] = contest_count
+        context['quiz_count'] = quiz_count
+    else:
+        quizs = Quiz.objects.select_related().filter(course=None, contest=None, content=None, publication=True)
+        quizs_easy = 0
+        quizs_medium = 0
+        quizs_hard = 0
+
+        for quiz in quizs:
+            if quiz.difficulty == 'Easy':
+                quizs_easy += 1
+            if quiz.difficulty == 'Medium':
+                quizs_medium += 1
+            if quiz.difficulty == 'Hard':
+                quizs_hard += 1
+
+        context['quizs_easy'] = quizs_easy
+        context['quizs_medium'] = quizs_medium
+        context['quizs_hard'] = quizs_hard
+        context['quizs'] = quizs
+
+    completions = Completion.objects.select_related()
+
+    try:
+        complete_quiz = completions.filter(user=curr_user, completed=True, quiz=True)
+    except Completion.DoesNotExist:
+        complete_quiz = None
+
+    print(complete_quiz)
+
+    try:
+        complete_course = completions.filter(user=curr_user, completed=True, course=True)
+    except Completion.DoesNotExist:
+        complete_course = None
+
+    try:
+        complete_contest = completions.filter(user=curr_user, completed=True, contest=True)
+    except Completion.DoesNotExist:
+        complete_contest = None
+    
+    context['complete_quiz'] = complete_quiz
+    context['complete_course'] = complete_course
+    context['complete_contest'] = complete_contest
 
     return render(request, 'profile.html', context)
 

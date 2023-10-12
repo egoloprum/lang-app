@@ -1,0 +1,109 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<section class="m-3">
+  <div class="m-3">
+    <form method="POST" action="">
+      {% csrf_token %}
+  
+      <div class="white-border p-4 mb-4">
+        <div class="mb-3">
+          <h4>Contest Edit Form</h4>
+          <p onclick="load_everyting()">click here to load form !!!</p>
+        </div>
+  
+          <!-- contest part -->
+        <div class="mb-3" style="display: flex;">
+          <label class="form-label me-3">Name</label>
+          <input class="form-control" type="text" name="contest-name" placeholder="Name" value="{{ contest.name }}" required>
+        </div>
+  
+        <div class="mb-3" style="display: flex;">
+          <label class="form-label me-3">Body</label>
+          <textarea class="mytextarea form-control" style="width: 100%;" name="contest-body">{{ contest.body }}</textarea>
+        </div>
+
+        <div class="mb-3" style="display: flex;">
+          <div style="width: 100%; display: flex; align-items: center;" class="me-3">
+            <label class="form-label me-3" style="width: 100px;">Points</label>
+            <input class="form-control" type="number" name="contest-pts" value="{{ contest.pts }}">
+          </div>
+          <div style="width: 100%; display: flex; align-items: center;" class="">
+            <label class="form-label me-3" style="width: 100px;">Experience</label>
+            <input class="form-control" type="number" name="contest-exp" value="{{ contest.exp }}">
+          </div>
+        </div>
+  
+        <div class="mb-3" style="display: flex;">
+          <div style="width: 100%; display: flex; align-items: center;" class="me-3">
+            <label class="form-label me-3" style="width: 100px;">Start Date</label>
+            <input class="form-control" type="date" name="contest-start" value="{{ contest.start_date }}">
+          </div>
+          <div style="width: 100%; display: flex; align-items: center;" class="">
+            <label class="form-label me-3" style="width: 100px;">End Date</label>
+            <input class="form-control" type="date" name="contest-end" value="{{ contest.end_date }}">
+          </div>
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label me-3">Publication</label>
+          {% if contest.publication == True %}
+            <input type="checkbox" name="contest-public" checked>
+          {% else %}
+            <input type="checkbox" name="contest-public">
+          {% endif %}
+        </div>
+        
+        <div>
+          <button class="btn btn-outline-primary me-2">Save form</button>
+          <a class="btn btn-secondary" href="{% url 'profile' request.user.id %}">Discard</a>
+        </div>
+      </div>
+  
+      <div class="white-border p-4 row m-0 mb-3">
+        <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
+          <a class="btn btn-light" style="width: 100%;" id="{{ contest.id }}" onclick="contest_add_quiz(this.id)">Add quiz</a>
+          <div id="contest-success"></div>
+        </div>
+        <div class="col p-3 ms-3" id="contest-quiz-side">
+          {% for quiz in quizs %}
+            <div class="accordion accordion-flush" id="quiz-{{ forloop.counter }}">
+              <div class="accordion-item" style="border-bottom: 1px solid #e4e4e4;">
+                <h2 class="accordion-header">
+                  <a class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapse-{{ forloop.counter }}"
+                    aria-controls="#flush-collapse-{{ forloop.counter }}" aria-expanded="true">
+                    <p>{{ forloop.counter }}</p>
+                  </a>
+                </h2>
+    
+                <div class="accordion-collapse collapse" id="flush-collapse-{{ forloop.counter }}">
+                  <div class="accordion-body" style="display: flex; align-items: center;" id="accordion-body-{{ forloop.counter }}">
+                    <div class="me-2" style="display: flex; align-items: center; width: 100%;">
+                      <label class="form-label" style="margin-top: auto; margin-bottom: auto;">Quiz</label>
+                      <p class="form-control ms-2">{{ quiz.name }}</p>
+                    </div>
+    
+                    <div class="ms-2" style="display: flex; align-items: center; width: 100%;">
+                      <label class="form-label" style="margin-top: auto; margin-bottom: auto;">Question</label>
+                      <p class="form-control ms-2">{{ quiz.question|length }}</p>
+                    </div>
+
+                    <div class="ms-2" id="delete-btn-{{ forloop.counter }}" style="display: flex; align-items: center; justify-content: end;">
+                      <a class="btn btn-light ms-2 text-nowrap" id="{{ forloop.counter }}-{{ quiz.id }}" 
+                        onclick="contest_delete_quiz(this.id)">Delete quiz</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% empty %}
+            <p>No quizes have been created</p>
+          {% endfor %}
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+{% endblock %}

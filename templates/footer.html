@@ -1,3 +1,5 @@
+{% if request.user.is_authenticated %}
+
 <footer class="m-3 p-3 mt-0 pt-0 mb-0 pb-0">
   <div class="white-border p-3" style="height: 50px; height: 50px; display: flex; justify-content: space-between;">
     <p>
@@ -11,3 +13,22 @@
     </p>
   </div>
 </footer>
+
+{% else %}
+
+<footer>
+  <div class="white-border p-3" style="background: #a89cd4; height: 50px; height: 50px; display: flex; justify-content: space-between;">
+    <p>
+      <span>@ 2023 Made With</span> 
+      <i class="fa-regular fa-heart" style="color: red;"></i>
+      <span>By English Study</span>
+    </p>
+    <p>
+      <a href="" class="me-2">License</a>
+      <a href="" class="ms-2">Documentation</a>
+    </p>
+  </div>
+</footer>
+
+
+{% endif %}

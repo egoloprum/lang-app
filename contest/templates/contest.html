@@ -2,14 +2,13 @@
 
 {% block content %}
 
-<section class="">
-  <div class="">
+<section class="m-3 mt-0">
+  <div class="m-3 mt-0">
 
     <!-- top part -->
-
-    <div class="mb-3 p-4" style="background: rgb(245, 108, 108);">
-      <div class="mb-3" style="display: flex; justify-content: center;">
-        <h3><b>Moana</b> Contest</h3>
+    <div class="mb-3 p-4 pb-2" style="background: rgb(245, 108, 108);">
+      <div class="mb-2" style="display: flex; justify-content: center;">
+        <h3><b>English Study</b> Contest</h3>
       </div>
 
       <div class="mb-3" style="display: flex; justify-content: center;">
@@ -36,70 +35,40 @@
     </div>
 
     <!-- bottom part -->
-
-    <div class="row pb-4" style="margin-left: 150px; margin-right: 150px;">
-      <div class="col-8 me-2 border for-loop">
+    <div class="row" style="margin-left: 100px; margin-right: 100px;">
+      <div class="col-8 p-2 border white-border">
         <div class="p-2">
+          <button class="btn btn-light me-4">All Contests</button>
           <button class="btn btn-light me-4">Past Contests</button>
           <button class="btn btn-light">My Contests</button>
         </div>
 
         <!-- contests -->
 
-        <div class="p-2">
-          <div style="display: flex; justify-content: space-between;">
-            <div style="width: 125px; height: 65px; border-radius: 10px; background: black;"></div>
-            <div class="ms-3" style="margin: auto;">
-              <p style="margin: 0;"><b><a href="{% url 'contest-each' %}">Weekly Contest 359</a></b></p>
-              <p class="small-font-size">Aug 20, 2023 5:30 AM GMT +3</p>
-            </div>
-            <div style="margin-top: auto; margin-bottom: auto;">
-              <button class="btn btn-sm btn-light">Virtual</button>
-            </div>
-          </div>
-        </div>
-        
-        <div class="p-2">
-          <div style="display: flex; justify-content: space-between;">
-            <div style="width: 125px; height: 65px; border-radius: 10px; background: black;"></div>
-            <div class="ms-3" style="margin: auto;">
-              <p style="margin: 0;"><b>Weekly Contest 358</b></p>
-              <p class="small-font-size">Aug 13, 2023 5:30 AM GMT +3</p>
-            </div>
-            <div style="margin-top: auto; margin-bottom: auto;">
-              <button class="btn btn-sm btn-light">Virtual</button>
+        {% for contest in contests reversed %}
+          <div class="p-2">
+            <div style="display: flex; justify-content: space-between;">
+              <div style="width: 125px; height: 65px; border-radius: 10px; background: black;"></div>
+              <div class="ms-3" style="margin: auto;">
+                <p style="margin: 0;"><b><a href="{% url 'contest-each' contest.id %}">{{ contest.name }}</a></b></p>
+                <p class="small-font-size">{{ contest.created_at }}</p>
+              </div>
+              {% if request.user == contest.host %}
+              <div>
+                {% if not contest.publication %}
+                <a href="{% url 'contest-edit' contest.id %}" class="btn btn-light" style="background: rgb(245, 108, 108);">edit</a>
+                {% else %}
+                <a href="{% url 'contest-edit' contest.id %}" class="btn btn-light">edit</a>
+                {% endif %}
+              </div>
+              {% endif %}
             </div>
           </div>
-        </div>
-        
-        <div class="p-2">
-          <div style="display: flex; justify-content: space-between;">
-            <div style="width: 125px; height: 65px; border-radius: 10px; background: black;"></div>
-            <div class="ms-3" style="margin: auto;">
-              <p style="margin: 0;"><b>Weekly Contest 357</b></p>
-              <p class="small-font-size">Aug 6, 2023 5:30 AM GMT +3</p>
-            </div>
-            <div style="margin-top: auto; margin-bottom: auto;">
-              <button class="btn btn-sm btn-light">Virtual</button>
-            </div>
-          </div>
-        </div>
-        
-        <div class="p-2">
-          <div style="display: flex; justify-content: space-between;">
-            <div style="width: 125px; height: 65px; border-radius: 10px; background: black;"></div>
-            <div class="ms-3" style="margin: auto;">
-              <p><b>Weekly Contest 356</b></p>
-              <p class="small-font-size">Jul 30, 2023 5:30 AM GMT +3</p>
-            </div>
-            <div style="margin-top: auto; margin-bottom: auto;">
-              <button class="btn btn-sm btn-light">Virtual</button>
-            </div>
-          </div>
-        </div>
+        {% endfor %}
       </div>
 
-      <div class="col ms-2 border for-loop">
+      <!-- ranks user -->
+      <div class="col p-2 ms-2 border white-border">
         <div class="p-2">
           <p class="btn">Global Ranking</p>
         </div>
