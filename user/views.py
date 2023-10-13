@@ -166,26 +166,27 @@ def profilePath(request, pk):
     context['results'] = results
     context['quiz_result'] = quiz_result
 
+    quizs = Quiz.objects.select_related()
+    courses = Course.objects.select_related()
+    contests = Contest.objects.select_related()
+
+    quiz_count = quizs.filter(course=None, contest=None, content=None, publication=True).count()
+    course_count = courses.count()
+    contest_count = contests.count()
+
+    context['quiz_count'] = quiz_count
+    context['course_count'] = course_count
+    context['contest_count'] = contest_count
+
     if curr_user.is_staff:
-        quizs = Quiz.objects.select_related()
-        courses = Course.objects.select_related()
-        contests = Contest.objects.select_related()
-
-        quiz_count = quizs.count()
-        course_count = courses.count()
-        contest_count = contests.count()
-
-        quizs = quizs.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user)
+        quizs = quizs.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user, contest=None)
         courses = courses.filter(host=pk)
 
         context['courses'] = courses
         context['quizs'] = quizs
-        context['quiz_count'] = quiz_count
-        context['course_count'] = course_count
-        context['contest_count'] = contest_count
-        context['quiz_count'] = quiz_count
+
     else:
-        quizs = Quiz.objects.select_related().filter(course=None, contest=None, content=None, publication=True)
+        quizs = quizs.filter(course=None, contest=None, content=None, publication=True)
         quizs_easy = 0
         quizs_medium = 0
         quizs_hard = 0
@@ -223,19 +224,17 @@ def profilePath(request, pk):
     completions = Completion.objects.select_related()
 
     try:
-        complete_quiz = completions.filter(user=curr_user, completed=True, quiz=True)
+        complete_quiz = completions.filter(user=curr_user, completed=True, course=None, contest=None)
     except Completion.DoesNotExist:
         complete_quiz = None
 
-    print(complete_quiz)
-
     try:
-        complete_course = completions.filter(user=curr_user, completed=True, course=True)
+        complete_course = completions.filter(user=curr_user, completed=True, quiz=None, contest=None)
     except Completion.DoesNotExist:
         complete_course = None
 
     try:
-        complete_contest = completions.filter(user=curr_user, completed=True, contest=True)
+        complete_contest = completions.filter(user=curr_user, completed=True, quiz=None, course=None)
     except Completion.DoesNotExist:
         complete_contest = None
     
@@ -358,3 +357,10 @@ def userPath(request):
 def profileResult(request, pk):
     context = {}
     return render(request, 'profile-result.html', context)
+
+def badges(request):
+    badges = Badge.objects.select_related()
+    context = {
+        'badges': badges,
+    }
+    return render(request, 'badges.html', context)

@@ -102,7 +102,7 @@
             <!-- Badges -->
             <section class="white-border col ms-3">
               <div class="m-2 mt-3">
-                <h5>Badges</h5>
+                <h5><a href="{% url 'badges' %}">Badges</a></h5>
                 <div class="mb-2">
                   <p>{{ profile.badges.count }}</p>
                 </div>
@@ -185,49 +185,48 @@
         </div>
       </section>
   
-      <!-- Quiz side -->  
+      <!-- Quiz and Course side -->  
       <div class="mt-3" style="display: flex; justify-content: space-between; width: 100%;">
+        <!-- quiz side -->
         <section class="white-border me-2 mb-0 p-3" style="width: 100%;">
           <div class="m-2">
             {% if curr_user == request.user %}
-              <div class="row me-1 ms-1">
-                <a class="btn btn-outline-primary mb-2" href="{% url 'quiz-create' %}">Add Quiz</a>
+              <div class="mb-2">
+                <a class="btn btn-outline-primary mb-2" style="width: 100%;" href="{% url 'quiz-create' %}">Add Quiz</a>
               </div> 
             {% endif %}
-  
-            <div class="small-font-size">
-              <p>{{ quizs.count }} Quizes have been created</p>
-            </div>
             
-            <div class="small-font-size">
-              <table class="table table-striped">
-                <thead>
+            <table class="table table-bordered small-font-size">
+              <thead>
+                <tr>
+                  <th>Public</th>
+                  <th>Name</th>
+                  <th>Questions</th>
+                  <th>Difficulty</th>
+                  <th>Minimum</th>
+                  <th>Duration</th>
+                  <th>Points</th>
+                  <th>Experience</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for quiz in quizs %}
                   <tr>
-                    <th scope="col">Status</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Questions</th>
-                    <th scope="col">Difficulty</th>
-                    <th scope="col">Acceptance</th>
-                    <th scope="col">Duration</th>
+                    <td>{{ quiz.publication }}</td>
+                    <td><a href="{% url 'profile-result' quiz.id %}">{{ quiz.name }}</a></td>
+                    <td>{{ quiz.child_count }}</td>
+                    <td class="difficulty-color" value="{{ quiz.difficulty }}">{{ quiz.difficulty }}</td>
+                    <td>{{ quiz.required_score }} %</td>
+                    <td>{{ quiz.duration|date:"c" }}</td>
+                    <td>{{ quiz.pts }}</td>
+                    <td>{{ quiz.exp }}</td>
                   </tr>
-                </thead>
-  
-                <tbody>
-                  {% for quiz in quizs %}
-                    <tr>
-                      <th scope="row"></th>
-                      <td>
-                        {{ forloop.counter }}. <a href="{% url 'profile-result' quiz.id %}">{{ quiz.name }}</a>
-                      </td>
-                      <td>{{ quiz.child_count }}</td>
-                      <td class="difficulty-color" value="{{ quiz.difficulty }}">{{ quiz.difficulty }}</td>
-                      <td>{{ quiz.required_score }} %</td>
-                      <td>{{ quiz.duration|date:"c" }}</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
+                  {% empty %}
+                  <tr><td>No quiz has been created</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
         </section>
   
@@ -235,89 +234,129 @@
         <section class="white-border ms-2 mb-0 p-3" style="width: 100%;">
           <div class="m-2">
             {% if curr_user == request.user %}
-              <div class="row me-2 ms-2">
-                <a class="btn btn-outline-primary mb-2" href="{% url 'course-create' %}">Create Course</a>
+              <div class="mb-2">
+                <a class="btn btn-outline-primary mb-2" style="width: 100%;" href="{% url 'course-create' %}">Create Course</a>
               </div>
             {% endif %}
-            <div class="small-font-size">
-              <p>{{ courses.count }} Courses have been created</h3>
-            </div>
             
-            <div class="row small-font-size">
-              {% for course in courses %}
-                <div class="col-4 border m-2">
-                  <label><b>{{ course.name }}</b></label><hr>
-                  <p>{{ course.body|striptags|safe|truncatechars:100 }}</p>
-                </div>
+            <table class="table table-bordered small-font-size">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">Public</th>
+                  <th>Name</th>
+                  <th style="width: 50px;">Contents</th>
+                  <th>Users</th>
+                  <th>Topics</th>
+                  <th>Tags</th>
+                  <th>Created</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for course in courses %}
+                  <tr>
+                    <td>{{ course.publication }}</td>
+                    <td>{{ course.name }}</td>
+                    <td>{{ course.contents|length }}</td>
+                    <td>{{ course.users|length }}</td>
+                    <td>{{ course.topics|length }}</td>
+                    <td>{{ course.tags|length }}</td>
+                    <td>{{ course.created_at }}</td>
+                  </tr>
                 {% empty %}
-                  <p>Currently, no course has been created by this user.</p>
+                  <tr><td>Currently, no course has been created by this user.</td></tr>
               {% endfor %}
-            </div>
+              </tbody>
+            </table>
           </div>
         </section>
       </div>
   
-      <!-- Contest side --> 
-      <div class="mt-3" style="display: flex; justify-content: space-between; width: 100%;"> 
+      <!-- Contest and Challenge side --> 
+      <div class="mt-3" style="display: flex; justify-content: space-between; width: 100%;">
+        <!-- Contest side -->
         <section class="white-border me-2 mb-0 p-3" style="width: 100%;">
           <div class="m-2">
             {% if curr_user == request.user %}
-              <div class="row me-1 ms-1">
-                <a class="btn btn-outline-primary mb-2" href="{% url 'contest-create' %}">Add Contest</a>
+              <div class="mb-2">
+                <a class="btn btn-outline-primary mb-2" style="width: 100%;" href="{% url 'contest-create' %}">Add Contest</a>
               </div> 
             {% endif %}
-  
-            <div class="small-font-size">
-              <p>{{ contests.count }} Contest have been created</p>
-            </div>
             
-            <div class="small-font-size">
-              <table class="table table-bordered">
-                <thead>
+            <table class="table table-bordered small-font-size">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Points</th>
+                  <th>Experience</th>
+                  <th>Created</th>
+                  <th>Started</th>
+                  <th>Ended</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for contest in contests %}
                   <tr>
-                    <th>Title</th>
-                    <th>Points</th>
-                    <th>Experience</th>
-                    <th>Created</th>
-                    <th>Started</th>
-                    <th>Ended</th>
+                    <td>
+                      {{ forloop.counter }}. <a href="{% url 'profile-result' quiz.id %}">{{ contest.name }}</a>
+                    </td>
+                    <td>{{ contest.pts }}</td>
+                    <td>{{ contest.exp }}</td>
+                    <td>{{ contest.created_at }}</td>
+                    <td>{{ contest.start_date }}</td>
+                    <td>{{ contest.end_date }}</td>
                   </tr>
-                </thead>
-  
-                <tbody>
-                  {% for contest in contests %}
-                    <tr>
-                      <td>
-                        {{ forloop.counter }}. <a href="{% url 'profile-result' quiz.id %}">{{ contest.name }}</a>
-                      </td>
-                      <td>{{ contest.pts }}</td>
-                      <td>{{ contest.exp }}</td>
-                      <td>{{ contest.created_at }}</td>
-                      <td>{{ contest.start_date }}</td>
-                      <td>{{ contest.end_date }}</td>
-                    </tr>
-                  {% empty %}
-                    <tr>
-                      <td>No contest has been created</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
+                {% empty %}
+                  <tr>
+                    <td>No contest has been created</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
           </div>
         </section>
   
-        <!-- Daily challenge -->
+        <!-- Challenge side -->
         <section class="white-border ms-2 mb-0 p-3" style="width: 100%;">
           <div class="m-2">
             {% if curr_user == request.user %}
-              <div class="row me-2 ms-2">
-                <a class="btn btn-outline-primary mb-2" href="">Create challenge</a>
+              <div class="mb-2">
+                <a class="btn btn-outline-primary mb-2" style="width: 100%;" href="{% url 'contest-create' %}">Add Contest</a>
               </div>
             {% endif %}
-            <div class="small-font-size">
-              <p>{{ challenges.count }} Challenges have been created</h3>
-            </div>
+            
+            <table class="table table-bordered small-font-size">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Points</th>
+                  <th>Experience</th>
+                  <th>Created</th>
+                  <th>Started</th>
+                  <th>Ended</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for contest in contests %}
+                  <tr>
+                    <td>
+                      {{ forloop.counter }}. <a href="{% url 'profile-result' quiz.id %}">{{ contest.name }}</a>
+                    </td>
+                    <td>{{ contest.pts }}</td>
+                    <td>{{ contest.exp }}</td>
+                    <td>{{ contest.created_at }}</td>
+                    <td>{{ contest.start_date }}</td>
+                    <td>{{ contest.end_date }}</td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td>No Challenge has been created</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
 
           </div>
         </section>
@@ -422,7 +461,7 @@
             <!-- Badges -->
             <section class="white-border col ms-3">
               <div class="m-2 mt-3">
-                <h5>Badges</h5>
+                <h5><a href="{% url 'badges' %}">Badges</a></h5>
                 <div class="mb-2">
                   <p>{{ profile.badges.count }}</p>
                 </div>
@@ -479,11 +518,37 @@
           </table>
         </div>
       </section>
+
+      <!-- completion status -->
+      <section class="p-3 mt-3 white-border text-nowrap">
+        <div class="mb-3">
+          <h5>Completion Status</h5>
+        </div>
+        <div class="mb-3">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Quiz</th>
+                <th>Course</th>
+                <th>Contest</th>
+                <th>Challenges</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ complete_quiz.count }} / {{ quiz_count }}</td>
+                <td>{{ complete_course.count }} / {{ course_count }}</td>
+                <td>{{ complete_contest.count }} / {{ contest_count }}</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
 
   {% endif %}
   </div>
 </section>
-
 
 {% endblock %}

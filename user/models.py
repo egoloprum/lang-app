@@ -5,10 +5,10 @@ from course.models import Course
 from contest.models import Contest
 
 class Badge(models.Model):
-  host = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+  host = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
   name = models.CharField(max_length=200, null=False)
-  description = models.CharField(max_length=500, null=True)
-  picture = models.ImageField(null=False, upload_to='badges/')
+  description = models.CharField(max_length=500, null=True, blank=True)
+  picture = models.ImageField(null=True, blank=True, upload_to='badges/')
   pts = models.IntegerField(default=0, null=True, blank=True)
   exp = models.IntegerField(default=0, null=True, blank=True)
 
