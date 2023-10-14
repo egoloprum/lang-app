@@ -166,11 +166,11 @@ def profilePath(request, pk):
     context['results'] = results
     context['quiz_result'] = quiz_result
 
-    quizs = Quiz.objects.select_related()
+    quizs = Quiz.objects.select_related().filter(course=None, contest=None, content=None)
     courses = Course.objects.select_related()
     contests = Contest.objects.select_related()
 
-    quiz_count = quizs.filter(course=None, contest=None, content=None, publication=True).count()
+    quiz_count = quizs.filter(publication=True).count
     course_count = courses.count()
     contest_count = contests.count()
 
@@ -179,8 +179,12 @@ def profilePath(request, pk):
     context['contest_count'] = contest_count
 
     if curr_user.is_staff:
-        quizs = quizs.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user, contest=None)
-        courses = courses.filter(host=pk)
+        if curr_user == request.user:
+            quizs = quizs.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user)
+            courses = courses.filter(host=pk)
+        else:
+            quizs = quizs.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user, publication=True)
+            courses = courses.filter(host=pk, publication=True)
 
         context['courses'] = courses
         context['quizs'] = quizs

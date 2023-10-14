@@ -217,40 +217,23 @@ def quizResult(request, pk):
     context['questions'] = questions
 
     if request.user.is_staff:
-        all_results = Result.objects.select_related('quiz', 'user').filter(quiz=quiz)
-        results = all_results.filter(user=request.user).aggregate(average_score=Avg('score'))
+        all_results = Result.objects.select_related('quiz', 'user').filter(quiz=quiz).order_by('-created_at')
+        average_score = all_results.aggregate(average_score=Avg('score'))
 
-        cor_answers = []
-        sel_answers = []
-
-        # cor_ans = Answer.objects.select_related('question')
-        sel_ans = Selected_Answer.objects.select_related('question', 'selected')
-
-        for question in questions:
-            # cor_answers.append(cor_ans.filter(question=question, correct=True))
-            cor_answers.append(question.answer_question.filter(correct=True))
-            try:
-                sel_answers.append(sel_ans.filter(user=request.user, question=question))
-            except Selected_Answer.DoesNotExist:
-                sel_answers.append(None)
-
-        answers = list(zip(sel_answers, cor_answers, questions))
-
-        context['results'] = results
+        context['average_score'] = average_score
         context['all_results'] = all_results
-        context['answers'] = answers
 
     else:
-        results = Result.objects.filter(quiz=quiz, user=request.user)
-        all_results = Result.objects.select_related('quiz', 'user').filter(quiz=quiz, user=request.user).order_by('-created_at')
-        average_score = Result.objects.filter(quiz=quiz, user=request.user).aggregate(average_score=Avg('score'))
+        results = Result.objects.filter(quiz=quiz, user=request.user).select_related('quiz', 'user')
+        all_results = results.order_by('-created_at')
+        average_score = results.aggregate(average_score=Avg('score'))
 
         context['results'] = results
         context['all_results'] = all_results
         context['average_score'] = average_score
 
     if request.META.get('HTTP_REFERER').replace("http://127.0.0.1:8000", "") == request.path.replace("/result", ""):
-        result = all_results.last()
+        result = Result.objects.filter(user=request.user).last()
         cor_answers = []
         sel_answers = []
         sel_ans = Selected_Answer.objects.filter(result=result).select_related('result', 'user', 'selected', 'question')

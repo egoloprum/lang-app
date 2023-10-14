@@ -25,7 +25,7 @@
           <label class="me-3">Minimum score</label>
           <p class="form-control">{{ quiz.required_score }}%</p>
           <label class="me-3 ms-3">Average score</label>
-          <p class="form-control">{{ results.average_score|floatformat:-2 }}</p>
+          <p class="form-control">{{ average_score.average_score|floatformat:-2 }}</p>
         </div>
         <div class="mb-3" style="display: flex; align-items: center;">
           <label class="me-3">Attempts</label>
@@ -33,7 +33,7 @@
         </div>
         <div class="mb-3" style="display: flex; align-items: center;">
           <label class="me-3">Created at</label>
-          <p class="form-control">{{ quiz.created_at }}</p>
+          <p class="form-control">{{ quiz.created_at|date:"M-j-Y || G:i" }}</p>
           <label class="me-3 ms-3">Duration</label>
           <p class="form-control">{{ quiz.duration }}</p>
         </div>
@@ -59,7 +59,7 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ all_result.user.username }}</td>
                 <td>{{ all_result.score }}</td>
-                <td>{{ all_result.created_at }}</td>
+                <td>{{ all_result.created_at|date:"M-j-Y || G:i" }}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -120,7 +120,7 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ all_result.user.username }}</td>
                 <td>{{ all_result.score }}</td>
-                <td>{{ all_result.created_at }}</td>
+                <td>{{ all_result.created_at|date:"M/j/Y~G:i" }}</td>
               </tr>
               {% empty %}
                 This user has not taken any test.
@@ -151,12 +151,12 @@
                   <p>{{ questions.body }}</p>
                 </div>
 
-                <label class="mb-2" style="font-weight: 600; color: #045894;">Your answer</label>
+                <label class="mb-2" style="font-weight: 600; color: #385AF1;">Your answer</label>
                 {% for sel_answer in sel_answers %}
                 <div>
-                  <p class="mb-2" style="width: 500px; height: 50px; display: flex; border: 2px solid #045894;
-                    border-radius: 10px;  font-weight: 600; color: #045894;
-                    align-items: center; border-color: #045894;">
+                  <p class="mb-2" style="width: 500px; height: 50px; display: flex; border: 2px solid #385AF1;
+                    border-radius: 10px;  font-weight: 600; color: #385AF1;
+                    align-items: center;">
                     <span class="ms-3">{{ sel_answer.selected.body }}</span>
                   </p>
                 </div>
