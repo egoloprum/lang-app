@@ -1,0 +1,8 @@
+git add .
+git commit -m "commit"
+git branch -M main
+git remote add origin https://github.com/egoloprum/lang-app.git
+git push -u origin main
+
+git checkout -b TRPS
+git push origin TRPS

@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from quiz.models import Quiz
 from course.models import Course
-from contest.models import Contest
 
 class Badge(models.Model):
   host = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -38,7 +37,6 @@ class Completion(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
   quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, blank=True, related_name='completion_quiz')
   course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
-  contest = models.ForeignKey(Contest, on_delete=models.CASCADE, null=True, blank=True)
   completed = models.BooleanField(default=False)  
 
   def __str__(self):

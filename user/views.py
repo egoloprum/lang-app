@@ -11,7 +11,6 @@ from django.contrib.auth.password_validation import validate_password
 
 from .models import *
 from course.models import Course
-from contest.models import Contest
 from quiz.models import Quiz, Result, Average_score
 from follower.models import FollowList, FollowRequest
 
@@ -166,17 +165,14 @@ def profilePath(request, pk):
     context['results'] = results
     context['quiz_result'] = quiz_result
 
-    quizs = Quiz.objects.select_related().filter(course=None, contest=None, content=None)
+    quizs = Quiz.objects.select_related().filter(course=None, content=None)
     courses = Course.objects.select_related()
-    contests = Contest.objects.select_related()
 
     quiz_count = quizs.filter(publication=True).count
     course_count = courses.count()
-    contest_count = contests.count()
 
     context['quiz_count'] = quiz_count
     context['course_count'] = course_count
-    context['contest_count'] = contest_count
 
     if curr_user.is_staff:
         if curr_user == request.user:
@@ -190,7 +186,7 @@ def profilePath(request, pk):
         context['quizs'] = quizs
 
     else:
-        quizs = quizs.filter(course=None, contest=None, content=None, publication=True)
+        quizs = quizs.filter(course=None, content=None, publication=True)
         quizs_easy = 0
         quizs_medium = 0
         quizs_hard = 0
@@ -228,23 +224,17 @@ def profilePath(request, pk):
     completions = Completion.objects.select_related()
 
     try:
-        complete_quiz = completions.filter(user=curr_user, completed=True, course=None, contest=None)
+        complete_quiz = completions.filter(user=curr_user, completed=True, course=None)
     except Completion.DoesNotExist:
         complete_quiz = None
 
     try:
-        complete_course = completions.filter(user=curr_user, completed=True, quiz=None, contest=None)
+        complete_course = completions.filter(user=curr_user, completed=True, quiz=None)
     except Completion.DoesNotExist:
         complete_course = None
-
-    try:
-        complete_contest = completions.filter(user=curr_user, completed=True, quiz=None, course=None)
-    except Completion.DoesNotExist:
-        complete_contest = None
     
     context['complete_quiz'] = complete_quiz
     context['complete_course'] = complete_course
-    context['complete_contest'] = complete_contest
 
     return render(request, 'profile.html', context)
 

@@ -29,10 +29,10 @@ def quiz(request):
     completions = Completion.objects.filter(user=request.user, completed=True).select_related('quiz')
 
     if request.user.is_staff:
-        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(contest=None)
+        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host')
         context = {'quizs': quizs, 'completions': completions}
     else:
-        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(publication=True, contest=None)
+        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(publication=True)
         context = {'quizs': quizs, 'completions': completions}
     return render(request, 'quiz.html', context)
 
