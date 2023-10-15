@@ -20,10 +20,10 @@ class Tag(models.Model):
       return f" {self.id} {self.name}"
   
 class Course(models.Model):
-  host = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
-  user = models.ManyToManyField(User, related_name='course_user', blank=True)
+  host = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name='course_host')
+  user = models.ManyToManyField(User, blank=True, related_name='course_user')
   topic = models.ForeignKey(Topic, on_delete=models.CASCADE, null=True, related_name='course_topic')
-  tag = models.ManyToManyField(Tag, related_name='course_tag', blank=True)
+  tag = models.ManyToManyField(Tag, blank=True, related_name='course_tag')
   
   # if all quizs of it is completed 
   # completion = models.ManyToManyField(Completion)
@@ -67,8 +67,8 @@ class Content(models.Model):
 class File(models.Model):
   file = models.FileField(null=False, upload_to='files/')
   description = models.CharField(max_length=200, null=False)
-  course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
-  content = models.ForeignKey(Content, on_delete=models.CASCADE, null=True, blank=True)
+  course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True, related_name='file_course')
+  content = models.ForeignKey(Content, on_delete=models.CASCADE, null=True, blank=True, related_name='file_content')
 
   def __str__(self):
     if self.description == None:

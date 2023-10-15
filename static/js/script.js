@@ -58,7 +58,8 @@ if (current_url.split('/').find((element) => element == 'course') == 'course') {
       ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant"))
     });
   }
-  function add_chapter(){
+  function add_chapter(id){
+    const course_id = parseInt(id);
     chapter_side = document.getElementById("cour-chap-side");
     const q_number = ++chapter_side.children.length;
 
@@ -76,8 +77,8 @@ if (current_url.split('/').find((element) => element == 'course') == 'course') {
     accord_btn = document.createElement("a");
     accord_btn.className = "accordion-button collapsed";
     accord_btn.setAttribute("data-bs-toggle", "collapse");
-    accord_btn.setAttribute("data-bs-target", "#cour-chap-" + q_number);
-    accord_btn.setAttribute("aria-controls", "#cour-chap-" + q_number);
+    accord_btn.setAttribute("data-bs-target", "#flush-collapse1-" + q_number);
+    accord_btn.setAttribute("aria-controls", "#flush-collapse1-" + q_number);
 
     accord_p = document.createElement("p");
     accord_p.innerHTML = q_number;
@@ -87,11 +88,11 @@ if (current_url.split('/').find((element) => element == 'course') == 'course') {
 
     flush_div = document.createElement("div");
     flush_div.className = "accordion-collapse collapse";
-    flush_div.setAttribute('id', 'cour-chap-' + q_number);
+    flush_div.setAttribute('id', 'flush-collapse1-' + q_number);
 
     flush_body = document.createElement("div");
     flush_body.className = "accordion-body";
-    flush_body.setAttribute("id", "cour-chap-" + q_number);
+    flush_body.setAttribute("id", "accordion-body1-" + q_number);
 
     q_label = document.createElement("label");
     q_label.innerHTML = "name";
@@ -99,13 +100,12 @@ if (current_url.split('/').find((element) => element == 'course') == 'course') {
 
     q_input = document.createElement("p");
     q_input.className = "form-control me-3";
-    q_input.setAttribute("name", "chap-name-" + q_number);
 
-    del_btn = document.createElement("a");
-    del_btn.className = "btn btn-light";
+    let del_btn = document.createElement("a");
+    del_btn.className = "btn btn-light text-nowrap me-3";
     del_btn.setAttribute("onclick", "del_chapter(this.id)");
-    del_btn.setAttribute("id", "del-chapter-" + q_number);
-    del_btn.setAttribute("style", "width: 250px;");
+    del_btn.setAttribute("id", "del-chapter-" + q_number + '');
+    del_btn.setAttribute("style", "width: max-content;");
     
     del_i = document.createElement("i");
     del_i.className = "fa-solid fa-trash";
@@ -116,30 +116,73 @@ if (current_url.split('/').find((element) => element == 'course') == 'course') {
     del_btn.appendChild(del_i);
     del_btn.appendChild(del_span);
 
-    top_div = document.createElement("div");
+    let edit_btn = document.createElement("a");
+    edit_btn.className = "btn btn-light text-nowrap";
+    edit_btn.setAttribute("onclick", "edit_chapter(this.id)");
+    edit_btn.setAttribute("id", "edit-chapter-" + '');
+    edit_btn.setAttribute("style", "width: max-content;");
+    
+    edit_i = document.createElement("i");
+    edit_i.className = "fa-solid fa-trash";
+
+    edit_span = document.createElement("span");
+    edit_span.innerHTML = "Edit Chapter";
+
+    edit_btn.appendChild(edit_i);
+    edit_btn.appendChild(edit_span);
+
+    let top_div = document.createElement("div");
     top_div.setAttribute("style", "display: flex; flex-direction: row;");
     top_div.setAttribute("class", "mb-3");
     top_div.appendChild(q_label);
     top_div.appendChild(q_input);
     top_div.appendChild(del_btn);
+    top_div.appendChild(edit_btn);
 
-    e_label = document.createElement("label");
+    let e_label = document.createElement("label");
     e_label.innerHTML = "body";
-    e_label.setAttribute("class", "mb-3 me-3");
+    e_label.setAttribute("class", "me-3");
 
-    e_input = document.createElement("p");
-    e_input.className = "mb-3 form-control";
-    e_input.setAttribute("style", "width: 100%");
-    e_input.setAttribute("name", "chap-body-" + q_number);
+    let e_input = document.createElement("p");
+    e_input.className = "form-control";
+    e_input.innerHTML = "None";
 
-    mid_div = document.createElement("div");
-    mid_div.setAttribute("style", "display: flex; flex-direction: row;");
+    let mid_div = document.createElement("div");
+    mid_div.setAttribute("style", "display: flex;");
     mid_div.setAttribute("class", "mb-3");
     mid_div.appendChild(e_label);
     mid_div.appendChild(e_input);
 
+    let w_label = document.createElement("label");
+    w_label.innerHTML = "Quizes total:";
+    w_label.setAttribute("class", "me-3");
+
+    let w_input = document.createElement("p");
+    w_input.className = "text-muted";
+
+    let quizss_div = document.createElement("div");
+    quizss_div.setAttribute("style", "display: flex;");
+    quizss_div.setAttribute("class", "mb-3");
+    quizss_div.appendChild(w_label);
+    quizss_div.appendChild(w_input);
+
+    let r_label = document.createElement("label");
+    r_label.innerHTML = "Files total:";
+    r_label.setAttribute("class", "me-3");
+
+    let r_input = document.createElement("p");
+    r_input.className = "text-muted";
+    
+    let btm_div = document.createElement("div");
+    btm_div.setAttribute("style", "display: flex;");
+    btm_div.setAttribute("class", "mb-3");
+    btm_div.appendChild(e_label);
+    btm_div.appendChild(e_input);
+
     flush_body.appendChild(top_div);
     flush_body.appendChild(mid_div);
+    flush_body.appendChild(quizss_div);
+    flush_body.appendChild(btm_div);
     flush_div.appendChild(flush_body);
 
     item_div.appendChild(accord_head);
@@ -147,9 +190,45 @@ if (current_url.split('/').find((element) => element == 'course') == 'course') {
 
     accord_div.appendChild(item_div);
     chapter_side.appendChild(accord_div);
+
+    htmx.ajax('GET', '/course/' + course_id + '/edit/chapter/create', {target:'#success-chapter', swap:'innerHTML'}).then(() => {
+      let chapter_id = document.getElementById('success-chapter');
+      chapter_id = chapter_id.innerHTML;
+      chapter_id = parseInt(chapter_id);
+      edit_btn.setAttribute("href", "/course/" + course_id + "/edit/chapter/" + chapter_id + '/edit');
+      edit_btn.setAttribute("target", "_blank");
+      del_btn.setAttribute("id", "del-chapter-" + q_number + "-" + chapter_id);
+    });
+
   }
   function del_chapter(id) {
-    console.log(id);
+    const number = id.split("-");
+    const q_number = parseInt(number[2]);
+    const chap_id = parseInt(number[3]);
+
+    const chapter_div = document.getElementById('cour-chap-' + q_number);
+    chapter_div.remove();
+
+    htmx.ajax('GET', '/course/edit/chapter/' + chap_id + '/delete', '#success-chapter');
+
+    const chapters = document.getElementById('cour-chap-side');
+
+    for (let i = 0; i < chapters.children.length; i++) {
+      let j = i + 1;
+      chapters.children[i].setAttribute('id', 'cour-chap-' + j);
+      chapters.children[i].children[0].children[0].children[0].setAttribute('data-bs-target', '#flush-collapse1-' + j);
+      chapters.children[i].children[0].children[0].children[0].setAttribute('aria-controls', '#flush-collapse1-' + j);
+      chapters.children[i].children[0].children[0].children[0].children[0].innerHTML = j;
+
+      chapters.children[i].children[0].children[1].setAttribute('id', 'flush-collapse1-' + j);
+      chapters.children[i].children[0].children[1].children[0].setAttribute('id', 'accordion-body1-' + j);
+
+      let chapter_id = chapters.children[i].children[0].children[1].children[0].children[0].children[2].id.split("-")[3];
+      chapter_id = parseInt(chapter_id);
+      chapters.children[i].children[0].children[1].children[0].children[0].children[2].setAttribute('id', 'del-chapter-' + j + '-' + chapter_id);
+      
+    }
+
   }
   function add_file() {
     chapter_side = document.getElementById("cour-file-side");
@@ -248,11 +327,143 @@ if (current_url.split('/').find((element) => element == 'course') == 'course') {
   function del_file(id) {
     console.log(id);
   }
-  function add_quiz() {
-    console.log('add quiz');
+  function add_quiz(id) {
+    quiz_side = document.getElementById("cour-quiz-side");
+    const q_number = ++quiz_side.children.length;
+    const course_id = parseInt(id);
+
+    accord_div = document.createElement("div");
+    accord_div.className = "accordion accordion-flush";
+    accord_div.setAttribute("style", "border-bottom: 1px solid #e4e4e4;");
+    accord_div.setAttribute("id", "cour-quiz-" + q_number);
+
+    item_div = document.createElement("div");
+    item_div.className = "accordion-item";
+
+    accord_head = document.createElement("h2");
+    accord_head.className = "accordion-header";
+
+    accord_btn = document.createElement("a");
+    accord_btn.className = "accordion-button collapsed";
+    accord_btn.setAttribute("data-bs-toggle", "collapse");
+    accord_btn.setAttribute("data-bs-target", "#flush-collapse3-" + q_number);
+    accord_btn.setAttribute("aria-controls", "#flush-collapse3-" + q_number);
+
+    accord_p = document.createElement("p");
+    accord_p.innerHTML = q_number;
+
+    accord_btn.appendChild(accord_p);
+    accord_head.appendChild(accord_btn);
+
+    flush_div = document.createElement("div");
+    flush_div.className = "accordion-collapse collapse";
+    flush_div.setAttribute('id', 'flush-collapse3-' + q_number);
+
+    flush_body = document.createElement("div");
+    flush_body.className = "accordion-body";
+    flush_body.setAttribute("id", "accordion-body3-" + q_number);
+
+    q_label = document.createElement("label");
+    q_label.innerHTML = "name";
+    q_label.setAttribute("class", "me-3");
+
+    q_input = document.createElement("p");
+    q_input.className = "form-control me-3";
+
+    del_btn = document.createElement("a");
+    del_btn.className = "btn btn-light me-3 text-nowrap";
+    del_btn.setAttribute("onclick", "del_quiz(this.id)");
+    del_btn.setAttribute("style", "width: max-content;");
+    
+    del_i = document.createElement("i");
+    del_i.className = "fa-solid fa-trash";
+
+    del_span = document.createElement("span");
+    del_span.innerHTML = " Delete quiz";
+
+    del_btn.appendChild(del_i);
+    del_btn.appendChild(del_span);
+
+    edit_btn = document.createElement("a");
+    edit_btn.className = "btn btn-light text-nowrap";
+    edit_btn.setAttribute("target", "_blank");
+    edit_btn.setAttribute("style", "width: max-content;");
+    
+    edit_i = document.createElement("i");
+    edit_i.className = "fa-solid fa-trash";
+
+    edit_span = document.createElement("span");
+    edit_span.innerHTML = " Edit quiz";
+
+    edit_btn.appendChild(edit_i);
+    edit_btn.appendChild(edit_span);
+
+    top_div = document.createElement("div");
+    top_div.setAttribute("style", "display: flex; flex-direction: row;");
+    top_div.setAttribute("class", "mb-3");
+    top_div.appendChild(q_label);
+    top_div.appendChild(q_input);
+    top_div.appendChild(del_btn);
+    top_div.appendChild(edit_btn);
+
+    e_label = document.createElement("label");
+    e_label.innerHTML = "Number of Questions";
+    e_label.setAttribute("class", "me-3");
+
+    e_input = document.createElement("p");
+    e_input.className = "form-control";
+
+    mid_div = document.createElement("div");
+    mid_div.setAttribute("style", "display: flex;");
+    mid_div.setAttribute("class", "mb-3");
+    mid_div.appendChild(e_label);
+    mid_div.appendChild(e_input);
+
+    flush_body.appendChild(top_div);
+    flush_body.appendChild(mid_div);
+    flush_div.appendChild(flush_body);
+
+    item_div.appendChild(accord_head);
+    item_div.appendChild(flush_div);
+
+    accord_div.appendChild(item_div);
+    quiz_side.appendChild(accord_div);
+
+    htmx.ajax('GET', '/course/' + course_id + '/edit/quiz/create', {target:'#success-quiz', swap:'innerHTML'}).then(() => {
+      let quiz_id = document.getElementById('success-quiz');
+      quiz_id = quiz_id.innerHTML;
+      quiz_id = parseInt(quiz_id);
+      edit_btn.setAttribute("href", "/quiz/each/" + quiz_id + '/edit');
+      del_btn.setAttribute("id", "del-quiz-" + q_number + "-" + quiz_id);
+    });
+
   }
   function del_quiz(id) {
-    console.log('id');
+    const number = id.split("-");
+    const div_id = parseInt(number[2]);
+    const quiz_id = parseInt(number[3]);
+    console.log(div_id);
+    let remove_div = document.getElementById("cour-quiz-" + div_id);
+    remove_div.remove();
+    htmx.ajax('GET', '/course/edit/quiz/' + quiz_id + '/delete', '#success-quiz');
+
+    let quiz_div = document.getElementById('cour-quiz-side');
+
+    for (let i = 0; i < quiz_div.children.length; i++) {
+      let j = i + 1;
+      quiz_div.children[i].id = 'cour-quiz-' + j;
+      quiz_div.children[i].children[0].children[0].children[0].setAttribute('data-bs-target', '#flush-collapse3-' + j);
+      quiz_div.children[i].children[0].children[0].children[0].setAttribute('aria-controls', '#flush-collapse3-' + j);
+      quiz_div.children[i].children[0].children[0].children[0].children[0].innerHTML = j;
+
+      quiz_div.children[i].children[0].children[1].setAttribute('id', 'flush-collapse3-' + j);
+      quiz_div.children[i].children[0].children[1].children[0].setAttribute('id', 'accordion-body3-' + j);
+
+      let each_quiz_id = quiz_div.children[i].children[0].children[1].children[0].children[0].children[2].id;
+      each_quiz_id = parseInt(each_quiz_id.split('-')[3]);
+      quiz_div.children[i].children[0].children[1].children[0].children[0].children[2].setAttribute('id', 'del-quiz-' + j + '-' + each_quiz_id);
+    }
+
   }
 }
 
@@ -272,6 +483,146 @@ if (current_url.split('/').find((element) => element == 'chapter') == 'chapter')
       ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant"))
     });
   }
+
+  function add_chap_quiz(id) {
+    quiz_side = document.getElementById("chap-quiz-side");
+    const q_number = ++quiz_side.children.length;
+    const content_id = parseInt(id);
+
+    accord_div = document.createElement("div");
+    accord_div.className = "accordion accordion-flush";
+    accord_div.setAttribute("style", "border-bottom: 1px solid #e4e4e4;");
+    accord_div.setAttribute("id", "chap-quiz-" + q_number);
+
+    item_div = document.createElement("div");
+    item_div.className = "accordion-item";
+
+    accord_head = document.createElement("h2");
+    accord_head.className = "accordion-header";
+
+    accord_btn = document.createElement("a");
+    accord_btn.className = "accordion-button collapsed";
+    accord_btn.setAttribute("data-bs-toggle", "collapse");
+    accord_btn.setAttribute("data-bs-target", "#flush-collapse1-" + q_number);
+    accord_btn.setAttribute("aria-controls", "#flush-collapse1-" + q_number);
+
+    accord_p = document.createElement("p");
+    accord_p.innerHTML = q_number;
+
+    accord_btn.appendChild(accord_p);
+    accord_head.appendChild(accord_btn);
+
+    flush_div = document.createElement("div");
+    flush_div.className = "accordion-collapse collapse";
+    flush_div.setAttribute('id', 'flush-collapse1-' + q_number);
+
+    flush_body = document.createElement("div");
+    flush_body.className = "accordion-body";
+    flush_body.setAttribute("id", "accordion-body1-" + q_number);
+
+    q_label = document.createElement("label");
+    q_label.innerHTML = "name";
+    q_label.setAttribute("class", "me-3");
+
+    q_input = document.createElement("p");
+    q_input.className = "form-control me-3";
+
+    del_btn = document.createElement("a");
+    del_btn.className = "btn btn-light me-3 text-nowrap";
+    del_btn.setAttribute("onclick", "del_chap_quiz(this.id)");
+    del_btn.setAttribute("style", "width: max-content;");
+    
+    del_i = document.createElement("i");
+    del_i.className = "fa-solid fa-trash";
+
+    del_span = document.createElement("span");
+    del_span.innerHTML = " Delete quiz";
+
+    del_btn.appendChild(del_i);
+    del_btn.appendChild(del_span);
+
+    edit_btn = document.createElement("a");
+    edit_btn.className = "btn btn-light text-nowrap";
+    edit_btn.setAttribute("target", "_blank");
+    edit_btn.setAttribute("style", "width: max-content;");
+    
+    edit_i = document.createElement("i");
+    edit_i.className = "fa-solid fa-trash";
+
+    edit_span = document.createElement("span");
+    edit_span.innerHTML = " Edit quiz";
+
+    edit_btn.appendChild(edit_i);
+    edit_btn.appendChild(edit_span);
+
+    top_div = document.createElement("div");
+    top_div.setAttribute("style", "display: flex; flex-direction: row;");
+    top_div.setAttribute("class", "mb-3");
+    top_div.appendChild(q_label);
+    top_div.appendChild(q_input);
+    top_div.appendChild(del_btn);
+    top_div.appendChild(edit_btn);
+
+    e_label = document.createElement("label");
+    e_label.innerHTML = "Number of Questions";
+    e_label.setAttribute("class", "me-3");
+
+    e_input = document.createElement("p");
+    e_input.className = "form-control";
+
+    mid_div = document.createElement("div");
+    mid_div.setAttribute("style", "display: flex;");
+    mid_div.setAttribute("class", "mb-3");
+    mid_div.appendChild(e_label);
+    mid_div.appendChild(e_input);
+
+    flush_body.appendChild(top_div);
+    flush_body.appendChild(mid_div);
+    flush_div.appendChild(flush_body);
+
+    item_div.appendChild(accord_head);
+    item_div.appendChild(flush_div);
+
+    accord_div.appendChild(item_div);
+    quiz_side.appendChild(accord_div);
+
+    htmx.ajax('GET', '/course/chapter/' + content_id + '/edit/quiz/create', {target:'#chapter-quiz', swap:'innerHTML'}).then(() => {
+      let quiz_id = document.getElementById('chapter-quiz');
+      quiz_id = quiz_id.innerHTML;
+      quiz_id = parseInt(quiz_id);
+      edit_btn.setAttribute("href", "/quiz/each/" + quiz_id + '/edit');
+      del_btn.setAttribute("id", "del-quiz-" + q_number + "-" + quiz_id);
+    });
+
+  }
+
+  function del_chap_quiz(id) {
+    const number = id.split("-");
+    const div_id = parseInt(number[2]);
+    const quiz_id = parseInt(number[3]);
+    console.log(div_id);
+    let remove_div = document.getElementById("chap-quiz-" + div_id);
+    remove_div.remove();
+    htmx.ajax('GET', '/course/chapter/edit/quiz/' + quiz_id + '/delete', '#chapter-quiz');
+
+    let quiz_div = document.getElementById('chap-quiz-side');
+
+    for (let i = 0; i < quiz_div.children.length; i++) {
+      let j = i + 1;
+      quiz_div.children[i].id = 'chap-quiz-' + j;
+      quiz_div.children[i].children[0].children[0].children[0].setAttribute('data-bs-target', '#flush-collapse1-' + j);
+      quiz_div.children[i].children[0].children[0].children[0].setAttribute('aria-controls', '#flush-collapse1-' + j);
+      quiz_div.children[i].children[0].children[0].children[0].children[0].innerHTML = j;
+
+      quiz_div.children[i].children[0].children[1].setAttribute('id', 'flush-collapse1-' + j);
+      quiz_div.children[i].children[0].children[1].children[0].setAttribute('id', 'accordion-body1-' + j);
+
+      let each_quiz_id = quiz_div.children[i].children[0].children[1].children[0].children[0].children[2].id;
+      each_quiz_id = parseInt(each_quiz_id.split('-')[3]);
+      quiz_div.children[i].children[0].children[1].children[0].children[0].children[2].setAttribute('id', 'del-quiz-' + j + '-' + each_quiz_id);
+    }
+  }
+
   function add_chap_video() {
     chapter_side = document.getElementById("chap-video-side");
     const q_number = ++chapter_side.children.length;

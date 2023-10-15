@@ -29,7 +29,7 @@ def quiz(request):
     completions = Completion.objects.filter(user=request.user, completed=True).select_related('quiz')
 
     if request.user.is_staff:
-        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host')
+        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(content=None, course=None)
         context = {'quizs': quizs, 'completions': completions}
     else:
         quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(publication=True)
@@ -47,7 +47,7 @@ def quizDelete(request, pk):
     quiz = Quiz.objects.get(id=pk)
     try:
         quiz.delete()
-        return redirect('quiz')
+        return redirect(request.META.get('HTTP_REFERER'))
     except Exception:
         return HttpResponse('Something is wrong')
 

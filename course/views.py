@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 
 from django.db import IntegrityError
 from .models import *
+from quiz.models import Quiz
 
 @login_required(login_url='login')
 def createCourse(request):
@@ -30,8 +31,10 @@ def course(request):
 
 @login_required(login_url='login')
 def editCourse(request, pk):
-  course = Course.objects.get(id=pk)
-  contents = Content.objects.filter(course=course)
+  course = Course.objects.select_related('host').get(id=pk)
+  quizs = Quiz.objects.select_related('course').filter(course=course).annotate(questions_count=models.Count('question_quiz'))
+  contents = Content.objects.select_related('course').filter(course=course)
+  contents = contents.annotate(quizs_count=models.Count('quiz_content'), files_count=models.Count('file_content'))
   topics = Topic.objects.all()
   tags = Tag.objects.all()
 
@@ -62,15 +65,16 @@ def editCourse(request, pk):
     course.save()
     return redirect('course')
 
-  course_files = File.objects.filter(course=course)
+  course_files = File.objects.filter(course=course).select_related('course')
   content_files = []
 
   for content in contents:
-    for file in File.objects.filter(content=content):
+    for file in File.objects.filter(content=content).select_related('content'):
       content_files.append(file)
 
   context = {
     'course': course,
+    'quizs': quizs,
     'contents': contents,
     'topics': topics,
     'tags': tags,
@@ -92,44 +96,6 @@ def eachCourse(request, pk):
   }
   return render(request, 'course-each.html', context)
 
-# def createCourse(request):
-#     host = request.user
-#     all_topic = Topic.objects.all()
-#     course_form = CourseForm()
-
-#     if request.method == "POST":
-#         topic_html = request.POST.get('topic')
-#         name = request.POST.get('name')
-#         body = request.POST.get('body')
-#         max_user_num = request.POST.get('max_user_num')
-
-#         if Topic.objects.filter(name=topic_html):
-#           topic = Topic.objects.get(name=topic_html)
-#         else:
-#           topic = Topic.objects.create(name=topic_html)
-
-#         # topic, created = Topic.objects.get_or_create(name=topic_html)
-#         if topic:
-#           if max_user_num:
-#             Course.objects.create(topic=topic, name=name, body=body, host=host, max_user_num=max_user_num)
-#             return redirect('course')
-
-#           try:
-#             Course.objects.create(topic=topic, name=name, body=body, host=host)
-#           except IntegrityError:
-#              messages.error(request, "This name is already in use")
-#              return redirect('create-course')
-          
-#           return redirect('course')
-        
-#         else:
-#           topic = Topic.objects.create(name=topic_html)
-#           Course.objects.get_or_create(topic=topic, name=name, body=body, host=host)
-#           return redirect('course')
-
-#     context = {'topics': all_topic, 'form': course_form}
-#     return render(request, 'create-course.html', context)
-
 @login_required(login_url='login')
 def eachChapter(request, pk):
    content = Content.objects.get(id=pk)
@@ -142,17 +108,32 @@ def eachChapter(request, pk):
 @login_required(login_url='login')
 def createChapter(request, pk):
   course = Course.objects.get(id=pk)
-  content = Content.objects.create(course=course)
-  return redirect('chapter-edit', course.id, content.id)
+  try:
+    content = Content.objects.create(course=course)
+    return HttpResponse(content.id)
+  except Content.DoesNotExist:
+    return HttpResponse('Something is wrong')
+  
+@login_required(login_url='login')
+def deleteChapter(request, pk):
+  content = Content.objects.get(id=pk)
+  try:
+    content.delete()
+    return HttpResponse('Chapter successfully deleted')
+  except Exception:
+    return HttpResponse('Something is wrong')
 
 @login_required(login_url='login')
 def editChapter(request, id, pk):
+  print(id, pk)
   content = Content.objects.get(id=id)
   course = Course.objects.get(id=pk)
+  quizs = Quiz.objects.filter(content=content).annotate(questions_count=models.Count('question_quiz'))
 
   context = {
     'content': content,
     'course': course,
+    'quizs': quizs,
   }
 
   if request.method == "POST":
@@ -177,19 +158,39 @@ def editChapter(request, id, pk):
 
 @login_required(login_url='login')
 def createQuizFromCourse(request, pk):
-  pass
-
+  course = Course.objects.get(id=pk)
+  try:
+    quiz = Quiz.objects.create(host=request.user, course=course)
+    return HttpResponse(quiz.id)
+  except Quiz.DoesNotExist:
+    return HttpResponse('Something is wrong')
+  
 @login_required(login_url='login')
-def editQuizFromCourse(request, pk):
-  pass
+def deleteQuizFromCourse(request, pk):
+  quiz = Quiz.objects.get(id=pk)
+  try:
+    quiz.delete()
+    return HttpResponse('Quiz successfully deleted')
+  except Quiz.DoesNotExist:
+    return HttpResponse('Something is wrong')
 
 @login_required(login_url='login')
 def createQuizFromChapter(request, pk):
-  pass
+  content = Content.objects.get(id=pk)
+  try:
+    quiz = Quiz.objects.create(content=content, host=request.user)
+    return HttpResponse(quiz.id)
+  except Quiz.DoesNotExist:
+    return HttpResponse("Something is wrong")
 
 @login_required(login_url='login')
-def editQuizFromChapter(request, pk):
-  pass
+def deleteQuizFromChapter(request, pk):
+  quiz = Quiz.objects.get(id=pk)
+  try:
+    quiz.delete()
+    return HttpResponse('Quiz successfully deleted')
+  except Exception:
+    return HttpResponse('Something is wrong')
 
 @login_required(login_url='login')
 def topic(request, pk):

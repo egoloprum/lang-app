@@ -8,7 +8,7 @@
 
     <div class="white-border p-4 mb-4">
       <div class="mb-3">
-        <h4>Chapter Create Form</h4>
+        <h4>Chapter edit Form ({{ content.id }} from course {{ content.course.id }})</h4>
         <p onclick="load_everyting()">click here to load form !!!</p>
       </div>
 
@@ -40,9 +40,49 @@
 
     <div class="white-border p-4 row m-0 mb-3">
       <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
-        <a class="btn btn-light" style="width: 100%;" onclick="add_chap_quiz()">Add quiz</a>
+        <a class="btn btn-light" style="width: 100%;" id="{{ content.id }}" onclick="add_chap_quiz(this.id)">Add quiz</a>
+        <div id="chapter-quiz">
+
+        </div>
       </div>
       <div class="col p-3 ms-3" id="chap-quiz-side">
+        {% for quiz in quizs %}
+        <div class="accordion accordion-flush" style="border-bottom: 1px solid #e4e4e4;" id="chap-quiz-{{ forloop.counter }}">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <a class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapse1-{{ forloop.counter }}"
+                aria-controls="#flush-collapse1-{{ forloop.counter }}" aria-expanded="false">
+                <p>{{ forloop.counter }}</p>
+              </a>
+            </h2>
+            <div class="accordion-collapse collapse" id="flush-collapse1-{{ forloop.counter }}">
+              <div class="accordion-body" id="accordion-body1-{{ forloop.counter }}">
+                <div style="display: flex; flex-direction: row;" class="mb-3">
+                  <label class="me-3">name</label>
+                  <p class="form-control me-3">
+                    {{ quiz.name }}
+                  </p>
+                  <a class="btn btn-light me-3 text-nowrap" id="del-quiz-{{ forloop.counter }}-{{ quiz.id }}"
+                    onclick="del_chap_quiz(this.id)" style="width: max-content;">
+                    <i class="fa-solid fa-trash"></i>
+                    <span>Delete quiz</span>
+                  </a>
+                  <a class="btn btn-light text-nowrap" style="width: fit-content;" href="{% url 'quiz-edit' quiz.id %}" target="_blank">
+                    <i class="fa-solid fa-trash"></i>
+                    <span>Edit quiz</span>
+                  </a>
+                </div>
+                <div style="display: flex;" class="mb-3">
+                  <label class="me-3">Number of Questions</label>
+                  <p class="form-control">
+                    {{ quiz.questions_count }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
       </div>
     </div>
 
