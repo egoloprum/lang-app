@@ -1055,108 +1055,225 @@ if (current_url.split('/').find((element) => element == 'quiz') == 'quiz' && cur
     question_side.appendChild(accord_div);
 
     const quiz_id = parseInt(id.split("-")[1]);
-    htmx.ajax('GET', '/quiz/' + quiz_id + '/add-question', {target:'#question_id-' + q_number, swap:'innerHTML'}).then(() => {
-      question_id = document.getElementById("question_id-" + q_number);
-      question_id = question_id.innerHTML;
-      question_id = parseInt(question_id);
+    try {
+      htmx.ajax('GET', '/quiz/' + quiz_id + '/add-question', {target:'#question_id-' + q_number, swap:'innerHTML'}).then(() => {
+        question_id = document.getElementById("question_id-" + q_number);
+        question_id = question_id.innerHTML;
+        question_id = parseInt(question_id);
+  
+        q_hidden = document.getElementById("question-id-" + q_number);
+        q_hidden.value = question_id;
+        ans_btn = document.getElementById("add-answer-" + q_number);
+        ans_btn.setAttribute("id", "add-answer-" + q_number + "-" + question_id);
+        del_btn = document.getElementById("del-question-" + q_number);
+        del_btn.setAttribute("id", "del-question-" + q_number + "-" + question_id);
+  
+        let toast = document.getElementById("toast");
+        toast.setAttribute("style", "border: 2px solid #46f440;");
+        toast.children[0].children[0].setAttribute("style", "background-color: #46f440;");
+        let current_pos = window.scrollY + 25;
+        toast.setAttribute("style", `display: block; top: ${current_pos}px;`);
+        let text1 = document.getElementById("text-1");
+        text1.innerHTML = "Success";
+        let text2 = document.getElementById("text-2");
+        text2.innerHTML = "Question has been successfully created";
+        let timer1;
+        toast.className = "custom-toast active";
+      
+        timer1 = setTimeout(() => {
+            toast.className = "custom-toast";
+            toast.setAttribute("style", "display: none;");
+        }, 1500); //1s = 1000 milliseconds
 
-      q_hidden = document.getElementById("question-id-" + q_number);
-      q_hidden.value = question_id;
-      ans_btn = document.getElementById("add-answer-" + q_number);
-      ans_btn.setAttribute("id", "add-answer-" + q_number + "-" + question_id);
-      del_btn = document.getElementById("del-question-" + q_number);
-      del_btn.setAttribute("id", "del-question-" + q_number + "-" + question_id);
-    });
+      });
+    }
+    catch (error) {
+      let toast = document.getElementById("toast");
+      toast.setAttribute("style", "border: 2px solid red;");
+      toast.children[0].children[0].setAttribute("style", "background-color: red;");
+      let current_pos = window.scrollY + 25;
+      toast.setAttribute("style", `display: block; top: ${current_pos}px;`);
+      let text1 = document.getElementById("text-1");
+      text1.innerHTML = "Error";
+      let text2 = document.getElementById("text-2");
+      text2.innerHTML = "Question is not successfully created";
+      let timer1;
+      toast.className = "custom-toast active";
+    
+      timer1 = setTimeout(() => {
+          toast.className = "custom-toast";
+          toast.setAttribute("style", "display: none;");
+      }, 1500); //1s = 1000 milliseconds
+
+      question_side.removeChild(question_side.lastChild);
+      console.log(error);
+    }
+
   }
 
   function add_answer(id) {
     const q_number = id.match(/\d+/)[0];
-    answer_ul = document.getElementById('answer-ul-' + q_number);
-    a_number = ++document.getElementsByClassName("answer-div").length;
+    let answer_ul = document.getElementById('answer-ul-' + q_number);
+    let a_number = ++document.getElementsByClassName("answer-div").length;
 
-    answer_div = document.createElement("div");
+    let answer_div = document.createElement("div");
     answer_div.className = "m-2 me-0 answer-div";
     answer_div.setAttribute("style", "display: flex; align-items: center;");
     answer_div.setAttribute("id", "answer-" + q_number + "-" + a_number);
 
-    r_input = document.createElement("input");
-    r_input.className = "me-3";
-    r_input.setAttribute("type", "checkbox");
-    r_input.setAttribute("name", "answer-cor-" + q_number + "-" + a_number);
+    let cor_input = document.createElement("input");
+    cor_input.className = "me-3";
+    cor_input.setAttribute("type", "checkbox");
+    cor_input.setAttribute("name", "answer-cor-" + q_number + "-" + a_number);
 
-    ans_id = document.createElement("input");
-    ans_id.setAttribute("type", "hidden");
-    ans_id.setAttribute("id", "answer-id-" + q_number + "-" + a_number);
-    ans_id.setAttribute("name", "answer-id-" + q_number + "-" + a_number);
+    let hidden_input = document.createElement("input");
+    hidden_input.setAttribute("type", "hidden");
+    hidden_input.setAttribute("id", "answer-id-" + q_number + "-" + a_number);
+    hidden_input.setAttribute("name", "answer-id-" + q_number + "-" + a_number);
 
-    t_input = document.createElement("input");
-    t_input.className = "form-control";
-    t_input.setAttribute("type", "text");
-    t_input.setAttribute("name", "answer-body-" + q_number + "-" + a_number);
-    t_input.setAttribute("required", "");
+    let answer_input = document.createElement("input");
+    answer_input.className = "form-control";
+    answer_input.setAttribute("type", "text");
+    answer_input.setAttribute("name", "answer-body-" + q_number + "-" + a_number);
+    answer_input.setAttribute("required", "");
 
-    ans_a = document.createElement("a");
-    ans_a.setAttribute("id", "answer-del-" + q_number + "-" + a_number);
-    ans_a.setAttribute("onclick", "del_answer(this.id)");
+    let delete_btn = document.createElement("a");
+    delete_btn.setAttribute("id", "answer-del-" + q_number + "-" + a_number);
+    delete_btn.setAttribute("onclick", "del_answer(this.id)");
 
-    ans_i = document.createElement("i");
-    ans_i.className = "fa-solid fa-x ms-3";
-    ans_i.setAttribute("style", "cursor: pointer;");
+    let delete_btn_icon = document.createElement("i");
+    delete_btn_icon.className = "fa-solid fa-x ms-3";
+    delete_btn_icon.setAttribute("style", "cursor: pointer;");
 
     answer_id_backend = document.createElement("p");
     answer_id_backend.setAttribute("id", "answer_id-" + q_number + "-" + a_number);
     answer_id_backend.setAttribute("style", "display: none;");
 
-    ans_a.appendChild(ans_i);
-    answer_div.appendChild(r_input);
-    answer_div.appendChild(ans_id);
-    answer_div.appendChild(t_input);
-    answer_div.appendChild(ans_a);
+    delete_btn.appendChild(delete_btn_icon);
+
+    answer_div.appendChild(cor_input);
+    answer_div.appendChild(hidden_input);
+    answer_div.appendChild(answer_input);
+    answer_div.appendChild(delete_btn);
     answer_div.appendChild(answer_id_backend);
     answer_ul.appendChild(answer_div);
 
     const question_id = parseInt(id.split("-")[3]);
+    try {
     htmx.ajax('GET', '/quiz/' + question_id + '/add-answer', {target:'#answer_id-' + q_number + "-" + a_number, swap:'innerHTML'}).then(() => {
-      answer_id = document.getElementById("answer_id-" + q_number + "-" + a_number);
+      let answer_btn = document.getElementById(id);
+      answer_btn.setAttribute("style", "pointer-events: none;");
+
+      let timer2;
+      timer2 = setTimeout(() => {
+        answer_btn.setAttribute("style", "pointer-events: all;");
+      }, 1000);
+      
+      let answer_id = document.getElementById("answer_id-" + q_number + "-" + a_number);
       answer_id = answer_id.innerHTML;
       answer_id = parseInt(answer_id);
-      answer_del = document.getElementById("answer-del-" + q_number + '-' + a_number);
-      hidden_input = document.getElementById("answer-id-" + q_number + '-' + a_number);
-      hidden_input.value = answer_id;
 
-      questions = document.getElementsByClassName("accordion accordion-flush");
-      let answer_number = 1;
+      if(answer_id == "NaN") {
+        answer_ul.removeChild(answer_ul.lastChild);
+      }
+      else {
+        hidden_input.setAttribute("value", answer_id);  
+        questions = document.getElementsByClassName("accordion accordion-flush");
+        let answer_number = 1;
+  
+        for (let i = 0; i < questions.length; i++) {
+          let question_number = i + 1;
+          let answers = document.getElementById("answer-ul-" + question_number);
+          for (let k = 0; k < answers.children.length; k++) {
+            let pk = question_number + "-" + answer_number;
+            answers.children[k].setAttribute("id", "answer-" + pk);
+            answers.children[k].setAttribute("name", "answer-" + pk);
+            answers.children[k].children[0].setAttribute("name", "answer-cor-" + pk);
+            answers.children[k].children[1].setAttribute("id", "answer-id-" + pk);
+            answers.children[k].children[1].setAttribute("name", "answer-id-" + pk);
+            answers.children[k].children[2].setAttribute("name", "answer-body-" + pk);
 
-      for (let i = 0; i < questions.length; i++) {
-        let question_number = i + 1;
-        let answers = document.getElementById("answer-ul-" + question_number);
-        for (let k = 0; k < answers.children.length; k++) {
-          let pk = question_number + "-" + answer_number;
-          answers.children[k].setAttribute("id", "answer-" + pk);
-          answers.children[k].setAttribute("name", "answer-" + pk);
-          answers.children[k].children[0].setAttribute("name", "answer-cor-" + pk);
-          answers.children[k].children[1].setAttribute("id", "answer-id-" + pk);
-          answers.children[k].children[1].setAttribute("name", "answer-id-" + pk);
-          answers.children[k].children[2].setAttribute("name", "answer-body-" + pk);
-          if (typeof answers.children[k].children[4]?.innerHTML != 'undefined') {
-            hidden_id = answers.children[k].children[4].innerHTML;
-            hidden_id = parseInt(hidden_id);
-            answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + hidden_id);
-            answers.children[k].children[4].setAttribute("id", "answer_id-" + pk);
+            if (typeof answers.children[k].children[4]?.innerHTML != 'undefined') {
+              hidden_id = answers.children[k].children[4].innerHTML;
+              hidden_id = parseInt(hidden_id);
+              answers.children[k].children[1].setAttribute("value", hidden_id);
+              answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + hidden_id);
+              answers.children[k].children[4].setAttribute("id", "answer_id-" + pk);
+            }
+            const answer_del_id = parseInt(answers.children[k].children[3].id.split("-")[4]);
+            answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + answer_del_id);          
+            answer_number++;
           }
-          const answer_del_id = parseInt(answers.children[k].children[3].id.split("-")[4]);
-          answers.children[k].children[3].setAttribute("id", "answer-del-" + pk + '-' + answer_del_id);          
-          answer_number++;
         }
+  
+        let toast = document.getElementById("toast");
+        toast.setAttribute("style", "border: 2px solid #46f440;");
+        toast.children[0].children[0].setAttribute("style", "background-color: #46f440;");
+        let text1 = document.getElementById("text-1");
+        text1.innerHTML = "Success";
+        let text2 = document.getElementById("text-2");
+        text2.innerHTML = "Answer has been successfully created";
+        let timer1;
+        toast.className = "custom-toast active";
+        let current_pos = window.scrollY + 25;
+        console.log(current_pos);
+        toast.setAttribute("style", `display: block; top: ${current_pos}px;`);
+      
+        timer1 = setTimeout(() => {
+            toast.className = "custom-toast";
+            toast.setAttribute("style", "display: none;");
+        }, 1000); //1s = 1000 milliseconds
       }
     });
+    }
+    catch (error) {
+      answer_ul.removeChild(answer_ul.lastChild);
+      console.log("deleted last child");
+    }
   }
 
   function del_answer(id) {
     const number = id.match(/(\d+)-(\d+)/)[0];
     answer_div = document.getElementById("answer-" + number);
-    answer_div.remove();
-    htmx.ajax('GET', '/quiz/' + parseInt(id.split("-")[4]) + '/delete-answer', '#success');
+
+    try {
+      htmx.ajax('GET', '/quiz/' + parseInt(id.split("-")[4]) + '/delete-answer', '#success');
+      answer_div.remove();
+      let toast = document.getElementById("toast");
+      toast.setAttribute("style", "border: 2px solid #46f440;");
+      toast.children[0].children[0].setAttribute("style", "background-color: #46f440;");
+      let current_pos = window.scrollY + 25;
+      toast.setAttribute("style", `display: block; top: ${current_pos}px;`);
+      let text1 = document.getElementById("text-1");
+      text1.innerHTML = "Success";
+      let text2 = document.getElementById("text-2");
+      text2.innerHTML = "Answer has been successfully deleted";
+      let timer1;
+      toast.className = "custom-toast active";
+    
+      timer1 = setTimeout(() => {
+          toast.className = "custom-toast";
+          toast.setAttribute("style", "display: none;");
+      }, 1500); //1s = 1000 milliseconds
+    }
+    catch (error) {
+      let toast = document.getElementById("toast");
+      toast.setAttribute("style", "border: 2px solid red;");
+      toast.children[0].children[0].setAttribute("style", "background-color: red;");
+      let current_pos = window.scrollY + 25;
+      toast.setAttribute("style", `display: block; top: ${current_pos}px;`);
+      let text1 = document.getElementById("text-1");
+      text1.innerHTML = "Error";
+      let text2 = document.getElementById("text-2");
+      text2.innerHTML = "Answer is not deleted successfully";
+      let timer1;
+      toast.className = "custom-toast active";
+    
+      timer1 = setTimeout(() => {
+          toast.className = "custom-toast";
+          toast.setAttribute("style", "display: none;");
+      }, 1500); //1s = 1000 milliseconds
+    }
 
     questions = document.getElementsByClassName("accordion accordion-flush");
     let answer_number = 1;
@@ -1188,8 +1305,45 @@ if (current_url.split('/').find((element) => element == 'quiz') == 'quiz' && cur
   function del_question(id) {
     const q_number = id.match(/\d+/)[0];
     question_div = document.getElementById("question-" + q_number);
-    question_div.remove();
-    htmx.ajax('GET', '/quiz/' + parseInt(id.split("-")[3]) + '/delete-question', '#success');
+    try {
+      htmx.ajax('GET', '/quiz/' + parseInt(id.split("-")[3]) + '/delete-question', '#success');
+      question_div.remove();
+      let toast = document.getElementById("toast");
+      toast.setAttribute("style", "border: 2px solid #46f440;");
+      toast.children[0].children[0].setAttribute("style", "background-color: #46f440;");
+      let current_pos = window.scrollY + 25;
+      toast.setAttribute("style", `display: block; top: ${current_pos}px;`);
+      let text1 = document.getElementById("text-1");
+      text1.innerHTML = "Success";
+      let text2 = document.getElementById("text-2");
+      text2.innerHTML = "Question has been successfully deleted";
+      let timer1;
+      toast.className = "custom-toast active";
+    
+      timer1 = setTimeout(() => {
+          toast.className = "custom-toast";
+          toast.setAttribute("style", "display: none;");
+      }, 1500); //1s = 1000 milliseconds
+    }
+
+    catch (error) {
+      let toast = document.getElementById("toast");
+      toast.setAttribute("style", "border: 2px solid red;");
+      toast.children[0].children[0].setAttribute("style", "background-color: red;");
+      let current_pos = window.scrollY + 25;
+      toast.setAttribute("style", `display: block; top: ${current_pos}px;`);
+      let text1 = document.getElementById("text-1");
+      text1.innerHTML = "Error";
+      let text2 = document.getElementById("text-2");
+      text2.innerHTML = "Question is not successfully deleted";
+      let timer1;
+      toast.className = "custom-toast active";
+    
+      timer1 = setTimeout(() => {
+          toast.className = "custom-toast";
+          toast.setAttribute("style", "display: none;");
+      }, 1500); //1s = 1000 milliseconds
+    }
 
     questions = document.getElementsByClassName("accordion accordion-flush");
     let answer_number = 1;

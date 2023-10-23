@@ -11,9 +11,7 @@
     </div>
     <div>
       <a class="me-3" style="text-decoration: none;" href="{% url 'user-path' %}">Users</a>
-      <a class="me-3" style="text-decoration: none;" href=""><i class="fa-regular fa-bell"></i></a>
-      <a class="me-3" style="text-decoration: none;" href="{% url 'daily_challenge' %}"><i class="fa-regular fa-star"></i></a>
-  
+      <a class="me-3" style="text-decoration: none;" href=""><i class="fa-regular fa-bell"></i></a>  
       <a class="me-3" style="text-decoration: none;" href="{% url 'profile' request.user.id %}">
         <i class="fa-regular fa-user"></i>
       </a>
@@ -67,13 +65,3 @@
 </section>
 
 {% endif %}
-
-<!-- <div class="p-2" style="display: flex; justify-content: space-around; background: linear-gradient(45deg, #48ff7f, #1bfaca);">
-  <a class="navbar-link me-3" href="{% url 'home' %}">Home</a>
-  <a class="navbar-link me-3" href="{% url 'base-courses' %}">Courses</a>
-  <a class="navbar-link me-3" href="{% url 'base-skills' %}">Skills</a>
-  <a class="navbar-link me-3" href="{% url 'base-grammar' %}">Grammar</a>
-  <a class="navbar-link me-3" href="{% url 'base-bus-eng' %}">Business English</a>
-  <a class="navbar-link me-3" href="{% url 'base-gen-eng' %}">General English</a>
-  <a class="navbar-link me-3" href="{% url 'base-eng-lev' %}">English Level</a>
-</div> -->

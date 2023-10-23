@@ -3,79 +3,108 @@
 {% block content %}
 
 <section class="m-3">
-  <div style="background: rgb(107, 255, 99); width: 100%; height: 300px; display: flex; align-items: end;">
-    <h3 class="m-3">{{ course.name }}</h3>
-  </div>
+  <div class="m-3">
+    <div class="row m-0">
 
-  <div class="row">
+      <!-- left side div -->
+      <div class="col-2 me-3 white-border" style="height: fit-content;">
+        <div class="m-1 mt-3 mb-2">
+          <h5>Overview</h5>
+          <div class="small-font-size ms-3">
+            {% if course.body|safe == 'None' %}
+              <p><a href="{% url 'course-each' course.id %}">There is no introduction here.</a></p>
+            {% else %}
+              <p class="text-muted"><a href="{% url 'course-each' course.id %}">{{ course.body|safe|truncatewords_html:5 }}</a></p>
+            {% endif %}
+          </div>
+        </div>
 
-    <div class="col-3 m-3 for-loop" style="height: fit-content;">
-      <div class="m-2">
-        <h4>Overview</h4>
-        <p class="text-muted small-font-size">{{ course.body|safe|truncatewords_html:5 }}</p>
+        <div class="m-1 mt-2 mb-2">
+          <h5>Chapters</h5>
+          <div class="small-font-size ms-3">
+            {% for con in contents %}
+              <p><a href="{% url 'content-each' con.id %}">{{ con.name }}</a></p>
+            {% empty %}
+              <p>There is no chapter here.</p>
+            {% endfor %}
+          </div>
+        </div>
+  
+        <div class="m-1 mt-2 mb-2">
+          <h5>Tests</h5>
+          <div class="small-font-size ms-3">
+            {% for quiz in quizs %}
+
+            {% empty %}
+              <p>There is no test here.</p>
+            {% endfor %}
+          </div>
+        </div>
+  
+        <div class="m-1 mt-2 mb-2">
+          <h5>Discuss</h5>
+          <div class="small-font-size ms-3">
+            {% if discuss.exists %}
+
+            {% else %}
+              <p>There is no discuss here.</p>
+            {% endif %}
+          </div>
+        </div>
       </div>
-      <div class="m-2">
-        <h4>Chapters</h4>
-        <ul>
-          {% for content in contents %}
-            <li><a href="{% url 'content-each' content.id %}">{{ content.name }}</a></li>
-          {% endfor %}
-        </ul>
-      </div>
-
-      <div class="m-2">
-        <h4>Quizes</h4>
-      </div>
-
-      <div class="m-2">
-        <h4>Discuss</h4>
+  
+      <!-- right side div -->
+      <div class="col white-border">
+        <!-- Introduction div -->
+        <div class="m-3 mb-5">
+            <h3>Introduction</h3>
+            {% if course.body|safe == 'None' %}
+              <p class="text-muted">There is no introduction here.</p>
+            {% else %}
+              <p class="text-muted">{{ course.body|safe }}</p>
+            {% endif %}
+        </div>
+  
+        <!-- chapters div -->
+        <div class="m-3 border">
+          <div style="border-bottom: 1px solid rgba(0,0,0,0.2)">
+            <h5 class="m-2 p-2">Chapters</h5>
+          </div>
+          <div class="" style="display: grid; grid-template-columns: auto auto;">
+            {% for content in contents %}
+              <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
+                <p class="m-2 p-2"><a href="{% url 'content-each' content.id %}">{{ content.name }}</a></p>
+              </div>
+              {% empty %}
+              <div class="" style="border: 1px solid rgba(0,0,0,0.2); width: max-content;">
+                <p class="m-2 p-2">There is no chapter here.</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+  
+        <!-- files div -->
+        <div class="m-3 border">
+          <div style="border-bottom: 1px solid rgba(0,0,0,0.2)">
+            <h5 class="m-2 p-2">Files</h5>
+          </div>
+          <div class="" style="display: grid; grid-template-columns: auto auto;">
+            {% for file in files %}
+              <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
+                <p class="m-2 p-2">{{ file.description }}</p>
+                <p class="m-2 p-2"><a href="{{ file.url }}" download>download</a></p>
+              </div>
+              {% empty %}
+              <div class="" style="border: 1px solid rgba(0,0,0,0.2); width: max-content;">
+                <p class="m-2 p-2">There is no file here.</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="col m-3 for-loop">
-      <div class="m-3">
-        <h3>Introduction</h3>
-      </div>
-
-      <div class="m-3 mb-5">
-        <p class="text-muted">{{ course.body|safe }}</p>
-      </div>
-
-      <div class="m-3 border">
-        <div style="border-bottom: 1px solid rgba(0,0,0,0.2)">
-          <h4 class="m-2 p-2">Chapters</h4>
-        </div>
-        
-        <div class="" style="display: grid; grid-template-columns: auto auto;">
-          {% for content in contents %}
-            <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
-              <p class="m-2 p-2"><a href="{% url 'content-each' content.id %}">{{ content.name }}</a></p>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-
-      <div class="m-3 border">
-        <div style="border-bottom: 1px solid rgba(0,0,0,0.2)">
-          <h4 class="m-2 p-2">Files</h4>
-        </div>
-        
-        <div class="" style="display: grid; grid-template-columns: auto auto;">
-          {% for file in files %}
-            <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
-              <p class="m-2 p-2">{{ file.description }}</p>
-              <p class="m-2 p-2"><a href="{{ file.url }}" download>download</a></p>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-
-      <div class="m-3">
-        <a class="btn btn-light" style="width: 100%;" href="{% url 'course-edit' course.id %}">Edit Course</a>
-      </div>
-
-    </div>
   </div>
+
 </section>
 
 {% endblock %}

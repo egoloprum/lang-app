@@ -1,11 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 
-from django.db import IntegrityError
 from .models import *
 from quiz.models import Quiz
 
@@ -13,20 +9,30 @@ from quiz.models import Quiz
 def createCourse(request):
   host = request.user
   course = Course.objects.create(host=host)
+  course.name = f"New Course {course.id}"
+  course.save()
   return redirect('course-edit', course.id)
 
 @login_required(login_url='login')
 def course(request):
   topics = Topic.objects.all()
-  courses = Course.objects.all()
+  courses = Course.objects.select_related('host').order_by('-created_at')
 
   if request.method == 'POST':
-    course_id = request.POST.get('course-delete')
-    course = courses.get(id=course_id)
-    course.delete()
-    return redirect('course')   
+    status = None if request.POST.get('course-status') == '' else request.POST.get('course-status')
+    tag = None if request.POST.get('course-tags') == '' else request.POST.get('course-tags')
+    topic = None if request.POST.get('course-topics') == '' else request.POST.get('course-topics')
+    date = None if request.POST.get('course-date') == '' else request.POST.get('course-date')
+    search = None if request.POST.get('course-search') == '' else request.POST.get('course-search')
 
-  context = {'topics': topics, 'courses': courses}
+    return redirect('course')
+
+  if request.user.is_staff:
+    context = {'topics': topics, 'courses': courses}
+  else:
+    courses = courses.filter(publication=True)
+    context = {'topics': topics, 'courses': courses}
+
   return render(request, 'course.html', context)
 
 @login_required(login_url='login')
@@ -99,7 +105,7 @@ def eachCourse(request, pk):
 @login_required(login_url='login')
 def eachChapter(request, pk):
    content = Content.objects.get(id=pk)
-   course = Course.objects.get(id=content.course.id)
+   course = Course.objects.select_related('host').get(id=content.course.id)
    contents = Content.objects.filter(course=course)
 
    context = {'content': content, 'course': course, 'contents': contents}
@@ -110,6 +116,8 @@ def createChapter(request, pk):
   course = Course.objects.get(id=pk)
   try:
     content = Content.objects.create(course=course)
+    content.name = "New chapter"
+    content.save()
     return HttpResponse(content.id)
   except Content.DoesNotExist:
     return HttpResponse('Something is wrong')

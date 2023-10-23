@@ -186,3 +186,51 @@ header .current-date{
   background: #fff;
 }
 
+/* toast notification */
+
+.custom-toast{
+  position: absolute;
+  align-items: start;
+  top: 25px;
+  right: 30px;
+  border-radius: 12px;
+  background: #fff;
+  padding: 20px 35px 20px 25px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transform: translateX(calc(100% + 30px));
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+}
+
+.custom-toast.active{
+    transform: translateX(0%);
+}
+.custom-toast .toast-content{
+    display: flex;
+    align-items: center;
+    position: sticky;
+}
+.toast-content .check{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+    width: 35px;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 50%;
+}
+.toast-content .message{
+    display: flex;
+    flex-direction: column;
+    margin: 0 20px;
+}
+.message .text{
+    font-size: 14px;
+    font-weight: 400;;
+    color: #666666;
+}
+.message .text.text-1{
+    font-weight: 600;
+    color: #333;
+}

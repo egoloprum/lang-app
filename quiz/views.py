@@ -65,6 +65,8 @@ def quizEdit(request, pk):
         quiz_duration = None if request.POST.get('quiz-duration') == "" else request.POST.get('quiz-duration')
         quiz_required_score = None if request.POST.get('quiz-score') == "" else request.POST.get('quiz-score')
         quiz_difficulty = None if request.POST.get('quiz-diff') == "" else request.POST.get('quiz-diff')
+        quiz_pts = None if request.POST.get('quiz-pts') == "" else request.POST.get('quiz-pts')
+        quiz_exp = None if request.POST.get('quiz-exp') == "" else request.POST.get('quiz-exp')
         quiz_public = True if request.POST.get('quiz-public') == 'on' else False
         quiz_start = None if request.POST.get('quiz-duration') == "" else request.POST.get('quiz-start')
         quiz_end = None if request.POST.get('quiz-duration') == "" else request.POST.get('quiz-end')
@@ -73,6 +75,8 @@ def quizEdit(request, pk):
         quiz.duration = quiz_duration
         quiz.difficulty = quiz_difficulty
         quiz.required_score = quiz_required_score
+        quiz.pts = quiz_pts
+        quiz.exp = quiz_exp
         quiz.publication = quiz_public
         quiz.start_date = quiz_start
         quiz.end_date = quiz_end
