@@ -36,14 +36,8 @@ class Migration(migrations.Migration):
                 ('start_date', models.DateTimeField(blank=True, null=True)),
                 ('end_date', models.DateTimeField(blank=True, null=True)),
                 ('publication', models.BooleanField(default=False)),
+                ('tag', models.CharField(max_length=50)),
                 ('host', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Tag',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200, unique=True)),
             ],
         ),
         migrations.CreateModel(
@@ -62,11 +56,6 @@ class Migration(migrations.Migration):
                 ('content', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='course.content')),
                 ('course', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='course.course')),
             ],
-        ),
-        migrations.AddField(
-            model_name='course',
-            name='tag',
-            field=models.ManyToManyField(blank=True, related_name='course_tag', to='course.tag'),
         ),
         migrations.AddField(
             model_name='course',

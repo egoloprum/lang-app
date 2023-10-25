@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
   path('', views.course, name='course'),
   path('each/<str:pk>', views.eachCourse, name='course-each'),
+  path('each/<str:pk>/result', views.resultCourse, name='course-result'),
   path('<str:pk>/content', views.eachChapter, name='content-each'),
 
   path('create', views.createCourse, name='course-create'),

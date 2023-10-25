@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.db.models import Q
 
 from .models import *
 from quiz.models import Quiz
+from user.models import Completion
 
 @login_required(login_url='login')
 def createCourse(request):
@@ -17,21 +19,27 @@ def createCourse(request):
 def course(request):
   topics = Topic.objects.all()
   courses = Course.objects.select_related('host').order_by('-created_at')
+  course_progresses = []
 
-  if request.method == 'POST':
-    status = None if request.POST.get('course-status') == '' else request.POST.get('course-status')
-    tag = None if request.POST.get('course-tags') == '' else request.POST.get('course-tags')
-    topic = None if request.POST.get('course-topics') == '' else request.POST.get('course-topics')
-    date = None if request.POST.get('course-date') == '' else request.POST.get('course-date')
-    search = None if request.POST.get('course-search') == '' else request.POST.get('course-search')
+  status = request.GET.get('course-status') if request.GET.get('course-status') != None else ''
+  tag = request.GET.get('course-tags') if request.GET.get('course-tags') != None else ''
+  topic = request.GET.get('course-topics') if request.GET.get('course-topics') != None else ''
+  date = request.GET.get('course-date') if request.GET.get('course-date') != None else ''
+  name = request.GET.get('course-search') if request.GET.get('course-search') != None else ''
 
-    return redirect('course')
+  courses = courses.filter(Q(name__icontains=name) | Q(tag__icontains=tag))
+
+  for course in courses:
+    progress = Progress.objects.get_or_create(course=course, user=request.user)
+    course_progresses.append(progress)
+
+  course_progresses = zip(courses, course_progresses)
 
   if request.user.is_staff:
-    context = {'topics': topics, 'courses': courses}
+    context = {'topics': topics, 'course_progresses': course_progresses}
   else:
     courses = courses.filter(publication=True)
-    context = {'topics': topics, 'courses': courses}
+    context = {'topics': topics, 'course_progresses': course_progresses}
 
   return render(request, 'course.html', context)
 
@@ -42,16 +50,17 @@ def editCourse(request, pk):
   contents = Content.objects.select_related('course').filter(course=course)
   contents = contents.annotate(quizs_count=models.Count('quiz_content'), files_count=models.Count('file_content'))
   topics = Topic.objects.all()
-  tags = Tag.objects.all()
 
   if request.method == 'POST':
-    name = request.POST.get('course-name')
-    topic = request.POST.get('course-topic')
-    tag = request.POST.get('course-tag')
-    body = request.POST.get('course-body')
-    start = request.POST.get('course-start')
-    end = request.POST.get('course-end')
+    name = None if request.POST.get('course-name') == '' else request.POST.get('course-name')
+    topic = None if request.POST.get('course-topic') == '' else request.POST.get('course-topic')
+    tag = None if request.POST.get('course-tag') == '' else request.POST.get('course-tag')
+    body = None if request.POST.get('course-body') == '' else request.POST.get('course-body')
+    start = None if request.POST.get('course-start') == '' else request.POST.get('course-start')
+    end = None if request.POST.get('course-end') == '' else request.POST.get('course-end')
     public = True if request.POST.get('course-public') == 'on' else False
+
+    print(start)
 
     course.name = name
     course.body = body
@@ -83,7 +92,6 @@ def editCourse(request, pk):
     'quizs': quizs,
     'contents': contents,
     'topics': topics,
-    'tags': tags,
     'cour_files': course_files,
     'cont_files': content_files,
   }
@@ -91,25 +99,71 @@ def editCourse(request, pk):
   return render(request, 'course-edit.html', context)
 
 @login_required(login_url='login')
+def resultCourse(request, pk):
+  course = Course.objects.get(id=pk)
+  course_users = course.user.all()
+  context = {
+    'course': course,
+    'course_users': course_users,
+  }
+  return render(request, 'course-result.html', context)
+
+@login_required(login_url='login')
 def eachCourse(request, pk):
   course = Course.objects.get(id=pk)
+  course.user.add(request.user)
   contents = Content.objects.filter(course=course)
+  quizs = Quiz.objects.select_related('course').filter(course=course)
+
+  completion_quizs = []
+  for quiz in quizs:
+    try:
+      completion = Completion.objects.get(quiz=quiz, user=request.user)
+    except Completion.DoesNotExist:
+      completion = Completion.objects.create(quiz=quiz, user=request.user)
+
+    completion_quizs.append(completion)
+
+  completion_quizs = zip(quizs, completion_quizs)  
+
   files = File.objects.filter(course=course)
   context = {
     'course': course,
     'contents': contents,
+    'completion_quizs': completion_quizs,
     'files': files,
   }
   return render(request, 'course-each.html', context)
 
 @login_required(login_url='login')
 def eachChapter(request, pk):
-   content = Content.objects.get(id=pk)
-   course = Course.objects.select_related('host').get(id=content.course.id)
-   contents = Content.objects.filter(course=course)
+  content = Content.objects.select_related('course')
 
-   context = {'content': content, 'course': course, 'contents': contents}
-   return render(request, 'content-each.html', context)   
+  this_content = content.get(id=pk)
+  course = Course.objects.select_related('host').get(id=this_content.course.id)
+  contents = content.filter(course=course)
+
+  quizs = Quiz.objects.select_related('content').filter(content=this_content)
+
+  completion_quizs = []
+  for quiz in quizs:
+    try:
+      completion = Completion.objects.get(quiz=quiz, user=request.user)
+    except Completion.DoesNotExist:
+      completion = Completion.objects.create(quiz=quiz, user=request.user)
+
+    completion_quizs.append(completion)
+
+  completion_quizs = zip(quizs, completion_quizs) 
+
+  context = {
+    'content': this_content, 
+    'course': course, 
+    'contents': contents,
+    'completion_quizs': completion_quizs,
+  }
+  
+  return render(request, 'content-each.html', context)   
 
 @login_required(login_url='login')
 def createChapter(request, pk):

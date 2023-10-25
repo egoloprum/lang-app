@@ -9,6 +9,11 @@
       <!-- left side div -->
       <div class="col-2 me-3 white-border" style="height: fit-content;">
         <div class="m-1 mt-3 mb-2">
+          <h4>{{ course.name }}</h4>
+        </div>
+
+        <!-- overview -->
+        <div class="m-1 mt-3 mb-2">
           <h5>Overview</h5>
           <div class="small-font-size ms-3">
             {% if course.body|safe == 'None' %}
@@ -19,28 +24,76 @@
           </div>
         </div>
 
+        <!-- chapters -->
         <div class="m-1 mt-2 mb-2">
           <h5>Chapters</h5>
           <div class="small-font-size ms-3">
             {% for con in contents %}
-              <p><a href="{% url 'content-each' con.id %}">{{ con.name }}</a></p>
+              <p><a href="{% url 'content-each' con.id %}">Chapter {{ forloop.counter }}</a></p>
             {% empty %}
               <p>There is no chapter here.</p>
             {% endfor %}
           </div>
         </div>
   
+        <!-- quizs -->
         <div class="m-1 mt-2 mb-2">
           <h5>Tests</h5>
           <div class="small-font-size ms-3">
-            {% for quiz in quizs %}
+            {% for quiz, completion in completion_quizs %}
+              <p style="display: flex; flex-direction: row; align-items: center;">
+                <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal-{{ quiz.id }}">Course test {{ forloop.counter }}</a>
+                {% if completion.completed %}
+                  <span class="ms-2" style="background: green; width: 10px; height: 10px; border-radius: 50%;"></span>
+                {% else %}
+                  <span class="ms-2" style="background: yellow; width: 10px; height: 10px; border-radius: 50%;"></span>
+                {% endif %}
+              </p>
 
+              <!-- quiz modal -->
+              <div class="modal fade" id="exampleModal-{{ quiz.id }}" tabindex="-1" aria-labelledby="exampleModalLabel-{{ quiz.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content rounded-3 shadow">
+                    <div class="modal-body p-4 text-center" id="modal-body">
+                      <div style="display: flex; align-items: center; justify-content: end;">
+                        <h5 class="pe-3">Please choose your action</h5>
+                        <a class="btn-close mb-2 ms-5" type="button" aria-label="close" 
+                        data-bs-dismiss="modal"></a>
+                      </div>
+                      <p>You can always change your mind.</p>
+                    </div>
+                    <div class="modal-footer flex-nowrap p-0">
+                      {% if request.user == quiz.host %}
+                        <a class="btn btn-lg btn-link fs-6 text-decoration-none text-nowrap col py-3 m-0 rounded-0 border-end" 
+                          href="{% url 'quiz-each' quiz.id %}">
+                          <strong>Start test</strong>
+                        </a>
+                        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+                          href="{% url 'quiz-result' quiz.id %}" style="color: green;">Result</a>
+                        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+                        href="{% url 'quiz-edit' quiz.id %}" style="color: rgb(221, 232, 23);">Edit</a>
+                        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+                        href="{% url 'quiz-delete' quiz.id %}" style="color: red;">Delete</a>
+                      {% else %}
+                        <a class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" 
+                          href="{% url 'quiz-each' quiz.id %}">
+                          <strong>Start test</strong>
+                        </a>
+                        <a class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"
+                          href="{% url 'quiz-result' quiz.id %}">Result</a>
+                      {% endif %}
+  
+                    </div>                  
+                  </div>
+                </div>
+              </div>
             {% empty %}
               <p>There is no test here.</p>
             {% endfor %}
           </div>
         </div>
   
+        <!-- discuss -->
         <div class="m-1 mt-2 mb-2">
           <h5>Discuss</h5>
           <div class="small-font-size ms-3">

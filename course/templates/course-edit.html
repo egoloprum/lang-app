@@ -46,11 +46,12 @@
       <div class="mb-3" style="display: flex;">
         <div style="width: 100%; display: flex;" class="me-3">
           <label class="form-label me-3" style="width: 100px;">Start Date</label>
-          <input class="form-control" type="date" name="course-start" value="{{ course.start_date }}">
+          <input class="form-control" type="date" name="course-start" value="{{ course.start_date|date:'Y-m-d' }}">
         </div>
+
         <div style="width: 100%; display: flex;" class="">
           <label class="form-label me-3" style="width: 100px;">End Date</label>
-          <input class="form-control" type="date" name="course-end" value="{{ course.end_date }}">
+          <input class="form-control" type="date" name="course-end" value="{{ course.end_date|date:'Y-m-d' }}">
         </div>
       </div>
 
@@ -69,12 +70,11 @@
       </div>
     </div>
 
+    <!-- chapter part -->
     <div class="white-border p-4 row m-0 mb-3">
       <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
         <a class="btn btn-light" style="width: 100%;" id="{{ course.id }}" onclick="add_chapter(this.id)">Add chapter</a>
-        <div id="success-chapter">
-
-        </div>
+        <div id="success-chapter" style="display: none;"></div>
       </div>
       <div class="col p-3 ms-3" id="cour-chap-side">
         {% for chapter in contents %}
@@ -123,6 +123,7 @@
       </div>
     </div>
 
+    <!-- files part -->
     <div class="white-border p-4 row m-0 mb-3">
       <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
         <a class="btn btn-light" style="width: 100%;" onclick="add_file()">Add file</a>
@@ -161,11 +162,12 @@
       </div>
     </div>
 
+    <!-- quiz part -->
     <div class="white-border p-4 row m-0 mb-3">
       <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
         <a class="btn btn-light" style="width: 100%;" id="{{ course.id }}"
           onclick="add_quiz(this.id)">Add quiz</a>
-        <div id="success-quiz"></div>
+        <div id="success-quiz" style="display: none;"></div>
       </div>
       <div class="col p-3 ms-3" id="cour-quiz-side">
         {% for quiz in quizs %}
@@ -209,5 +211,15 @@
     </div>
   </form>
 </section>
+
+<div class="custom-toast" id="toast" style="display: none;">
+  <div class="toast-content">
+      <i class="fa fa-solid fa-check check"></i>
+      <div class="message">
+          <span class="text text-1" id="text-1">Success</span>
+          <span class="text text-2" id="text-2">Your changes has been saved</span>
+      </div>
+  </div>
+</div>
 
 {% endblock %}
