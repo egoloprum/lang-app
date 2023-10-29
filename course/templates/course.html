@@ -60,7 +60,7 @@
             <p class=""><b>{{ course.name }}</b></p>
             <p class="small-font-size text-muted mb-3">{{ course.created_at|naturaltime }}</p>
             <div class="mb-4 small-font-size">     
-              {% if course.body|safe == 'None' %}
+              {% if course.body == None or course.body == '' or course.body == 'None' %}
                 <p>There is no introduction yet.</p>
               {% else %}
                 <p>{{ course.body|safe|truncatewords_html:10  }}</p>
@@ -82,7 +82,6 @@
 
             <div class="mb-2 small-font-size" style="display: flex; justify-content: space-between;">
               <p>Progress</p>
-
               <p>{% for prog in progress %}
                 {{ prog.value }}
               {% endfor %} %</p>
@@ -111,10 +110,10 @@
                 data-bs-target="#exampleModal-{{ course.id }}" style="width: 100%;">Here to start</a>
               {% endif %}
             </div>
-
           </div>
         </div>
 
+        <!-- modal -->
         <div class="modal fade" id="exampleModal-{{ course.id }}" tabindex="-1" 
           aria-labelledby="exampleModalLabel-{{ course.id }}" aria-hidden="true">
           <div class="modal-dialog">
@@ -145,7 +144,7 @@
                     <strong>Start test</strong>
                   </a>
                   <a class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"
-                    href="">Result</a>
+                    href="{% url 'course-result' course.id %}" style="color: green;">Result</a>
                 {% endif %}
 
               </div>                  

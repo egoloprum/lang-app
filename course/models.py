@@ -62,10 +62,11 @@ class Content(models.Model):
       return f" {self.id} {self.name}"
 
 class File(models.Model):
-  file = models.FileField(null=False, upload_to='files/')
-  description = models.CharField(max_length=200, null=False)
   course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True, related_name='file_course')
   content = models.ForeignKey(Content, on_delete=models.CASCADE, null=True, blank=True, related_name='file_content')
+  
+  file = models.FileField(null=False, upload_to='files/')
+  description = models.CharField(max_length=200, null=False)
 
   def __str__(self):
     if self.description == None:

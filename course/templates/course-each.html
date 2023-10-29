@@ -44,9 +44,9 @@
               <p style="display: flex; flex-direction: row; align-items: center;">
                 <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal-{{ quiz.id }}">Course test {{ forloop.counter }}</a>
                 {% if completion.completed %}
-                  <span class="ms-2" style="background: green; width: 10px; height: 10px; border-radius: 50%;"></span>
+                  <span class="ms-2 badge bg-success rounded-pill">#</span>
                 {% else %}
-                  <span class="ms-2" style="background: yellow; width: 10px; height: 10px; border-radius: 50%;"></span>
+                  <span class="ms-2 badge bg-warning rounded-pill">#</span>
                 {% endif %}
               </p>
 

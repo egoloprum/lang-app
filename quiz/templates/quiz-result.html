@@ -1,5 +1,5 @@
 {% extends 'main.html' %}
-
+{% load humanize %}
 {% block content %}
 
 <section class="m-3">
@@ -25,7 +25,11 @@
           <label class="me-3">Minimum score</label>
           <p class="form-control">{{ quiz.required_score }}%</p>
           <label class="me-3 ms-3">Average score</label>
-          <p class="form-control">{{ average_score.average_score|floatformat:-2 }}</p>
+          {% if average_score.exists %}
+            <p class="form-control">{{ average_score.average_score|floatformat:-2 }}</p>
+          {% else %}
+            <p class="form-control">0</p>
+          {% endif %}
         </div>
         <div class="mb-3" style="display: flex; align-items: center;">
           <label class="me-3">Attempts</label>
@@ -33,7 +37,7 @@
         </div>
         <div class="mb-3" style="display: flex; align-items: center;">
           <label class="me-3">Created at</label>
-          <p class="form-control">{{ quiz.created_at|date:"M-j-Y || G:i" }}</p>
+          <p class="form-control">{{ quiz.created_at|date:"M-j-Y | G:i" }}</p>
           <label class="me-3 ms-3">Duration</label>
           <p class="form-control">{{ quiz.duration }}</p>
         </div>
@@ -59,7 +63,7 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ all_result.user.username }}</td>
                 <td>{{ all_result.score }}</td>
-                <td>{{ all_result.created_at|date:"M-j-Y || G:i" }}</td>
+                <td>{{ all_result.created_at|naturaltime }}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -120,7 +124,7 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ all_result.user.username }}</td>
                 <td>{{ all_result.score }}</td>
-                <td>{{ all_result.created_at|date:"M/j/Y~G:i" }}</td>
+                <td>{{ all_result.created_at|naturaltime }}</td>
               </tr>
               {% empty %}
                 This user has not taken any test.
@@ -137,7 +141,7 @@
       </div>
     {% endif %}
 
-    {% if request.META.HTTP_REFERER|cut:"http://127.0.0.1:8000" == request.path|cut:"/result" %}
+    {% if request.META.HTTP_REFERER|cut:"http://127.0.0.1:8000" == request.path|cut:"/result"|cut:"/each" %}
       <div class="p-3 mt-3 white-border text-nowrap">
         <div>
           <div class="mb-3">
@@ -151,31 +155,33 @@
                   <p>{{ questions.body }}</p>
                 </div>
 
-                <label class="mb-2" style="font-weight: 600; color: #385AF1;">Your answer</label>
-                {% for sel_answer in sel_answers %}
-                <div>
-                  <p class="mb-2" style="width: 500px; height: 50px; display: flex; border: 2px solid #385AF1;
-                    border-radius: 10px;  font-weight: 600; color: #385AF1;
-                    align-items: center;">
-                    <span class="ms-3">{{ sel_answer.selected.body }}</span>
-                  </p>
-                </div>
-                {% empty %}
-                  <div>
-                    <p>No answer is selected</p>
-                  </div>
-                {% endfor %}
-
-                <label class="mb-2" style="font-weight: 600; color: #04948d;">Correct answer</label>
-                {% for cor_answer in cor_answers %}
-                  <div>
-                    <p class="mb-2" style="width: 500px; height: 50px; display: flex; border: 2px solid #04948d;
-                      border-radius: 10px;  font-weight: 600; color: #04948d;
-                      align-items: center; border-color: #04948d;">
-                      <span class="ms-3">{{ cor_answer.body }}</span>
+                <label style="font-weight: 600; color: #385AF1;">Your answer</label>
+                <div class="list-group m-2" style="max-width: 500px;">
+                  {% for sel_answer in sel_answers %}
+                    <p class="list-group-item d-flex gap-2 border-primary">
+                      <input class="form-check-input flex-shrink-0" type="checkbox" checked disabled>
+                      <span>{{ sel_answer.selected.body }}</span>
                     </p>
-                  </div>
-                {% endfor %}
+                  {% empty %}
+                    <div>
+                      <p>No answer is selected</p>
+                    </div>
+                  {% endfor %}
+                </div>
+
+                <label style="font-weight: 600; color: #04948d;">Correct answer</label>
+                <div class="list-group m-2" style="max-width: 500px;">                
+                  {% for cor_answer in cor_answers %}
+                  <p class="list-group-item d-flex gap-2 border-success">
+                    <input class="form-check-input flex-shrink-0" type="radio" checked disabled>
+                    <span>{{ cor_answer.body }}</span>
+                  </p>
+                    {% empty %}
+                    <div>
+                      <p>No correct answer</p>
+                    </div>
+                  {% endfor %}
+                </div>
               </div><hr>
             {% endfor %}
           </div>
@@ -184,5 +190,21 @@
     {% endif %}
   </div>
 </section>
+
+<!-- <div>
+  <p class="mb-2" style="width: 500px; height: 50px; display: flex; border: 2px solid #385AF1;
+    border-radius: 10px;  font-weight: 600; color: #385AF1;
+    align-items: center;">
+    <span class="ms-3">{{ sel_answer.selected.body }}</span>
+  </p>
+</div>
+
+<div>
+  <p class="mb-2" style="width: 500px; height: 50px; display: flex; border: 2px solid #04948d;
+    border-radius: 10px;  font-weight: 600; color: #04948d;
+    align-items: center; border-color: #04948d;">
+    <span class="ms-3">{{ cor_answer.body }}</span>
+  </p>
+</div> -->
 
 {% endblock %}

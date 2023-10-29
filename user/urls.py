@@ -8,6 +8,7 @@ urlpatterns = [
   path('logout', views.logoutUser, name='logout'),
   path('forgot', views.forgotPass, name='forgot'),
 
+  path('dashboard/<str:pk>', views.dashboardPath, name='dashboard'),
   path('profile/<str:pk>/', views.profilePath, name='profile'),
 
   path('profile-update', views.profileUpdate, name='profile-update'),
@@ -16,7 +17,6 @@ urlpatterns = [
   path('profile-update/notifications', views.profileUpdate, name='profile-update-notif'),
   path('profile-update/pricing', views.profileUpdate, name='profile-update-pricing'),
 
-  path('profile-result/<str:pk>/', views.profileResult, name='profile-result'),
   path('delete', views.deleteUser, name='delete'), 
 
   path('user-path', views.userPath, name='user-path'),

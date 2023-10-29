@@ -14,7 +14,7 @@ class Quiz(models.Model):
 
     name = models.CharField(max_length=200, null=True, blank=True)
     duration = models.TimeField(help_text="duration of the quiz in minutes", null=True, blank=True)
-    required_score = models.IntegerField(help_text="required score in %", null=True, blank=True)
+    required_score = models.IntegerField(help_text="required score in %", default=60, null=True, blank=True)
     difficulty = models.CharField(max_length=50, null=True, blank=True)
     publication = models.BooleanField(default=False)
 
@@ -62,6 +62,9 @@ class Answer(models.Model):
 class Result(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False, related_name='result_quiz')
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name='result_user')
+
+    has_course = models.BooleanField(null=True, blank=True)
+    has_content = models.BooleanField(null=True, blank=True)
     score = models.FloatField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

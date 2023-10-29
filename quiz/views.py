@@ -32,7 +32,7 @@ def quiz(request):
         quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(content=None, course=None)
         context = {'quizs': quizs, 'completions': completions}
     else:
-        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(publication=True)
+        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(publication=True, content=None, course=None)
         context = {'quizs': quizs, 'completions': completions}
     return render(request, 'quiz.html', context)
 
@@ -63,7 +63,7 @@ def quizEdit(request, pk):
     if request.method == 'POST':
         quiz_name = request.POST.get('quiz-name')
         quiz_duration = None if request.POST.get('quiz-duration') == "" else request.POST.get('quiz-duration')
-        quiz_required_score = None if request.POST.get('quiz-score') == "" else request.POST.get('quiz-score')
+        quiz_required_score = 60 if request.POST.get('quiz-score') == "" else request.POST.get('quiz-score')
         quiz_difficulty = None if request.POST.get('quiz-diff') == "" else request.POST.get('quiz-diff')
         quiz_pts = None if request.POST.get('quiz-pts') == "" else request.POST.get('quiz-pts')
         quiz_exp = None if request.POST.get('quiz-exp') == "" else request.POST.get('quiz-exp')
@@ -175,7 +175,14 @@ def quizEach(request, pk):
             request.path = "http://127.0.0.1:8000/quiz/" + str(quiz.id)
         iter = 1
 
-        result = Result.objects.create(quiz=quiz, user=request.user)
+        if quiz.content:
+            result = Result.objects.create(quiz=quiz, user=request.user, has_content=True)
+
+        if quiz.course:
+            result = Result.objects.create(quiz=quiz, user=request.user, has_course=True)
+
+        if not quiz.content and not quiz.course:
+            result = Result.objects.create(quiz=quiz, user=request.user)
 
         for x in range(len(questions)):
             while(request.POST.get('answer-id-' + str(iter))):
@@ -236,7 +243,8 @@ def quizResult(request, pk):
         context['all_results'] = all_results
         context['average_score'] = average_score
 
-    if request.META.get('HTTP_REFERER').replace("http://127.0.0.1:8000", "") == request.path.replace("/result", ""):
+    if request.META.get('HTTP_REFERER').replace("http://127.0.0.1:8000", "") == request.path.replace("/result", "").replace("/each", ""):
+        print("work right")
         result = Result.objects.filter(user=request.user).last()
         cor_answers = []
         sel_answers = []

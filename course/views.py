@@ -29,16 +29,21 @@ def course(request):
 
   courses = courses.filter(Q(name__icontains=name) | Q(tag__icontains=tag))
 
-  for course in courses:
-    progress = Progress.objects.get_or_create(course=course, user=request.user)
-    course_progresses.append(progress)
-
-  course_progresses = zip(courses, course_progresses)
-
   if request.user.is_staff:
+    for course in courses:
+      progress = Progress.objects.get_or_create(course=course, user=request.user)
+      course_progresses.append(progress)
+
+    course_progresses = zip(courses, course_progresses)
     context = {'topics': topics, 'course_progresses': course_progresses}
+    
   else:
     courses = courses.filter(publication=True)
+    for course in courses:
+      progress = Progress.objects.get_or_create(course=course, user=request.user)
+      course_progresses.append(progress)
+
+    course_progresses = zip(courses, course_progresses)
     context = {'topics': topics, 'course_progresses': course_progresses}
 
   return render(request, 'course.html', context)
@@ -100,11 +105,22 @@ def editCourse(request, pk):
 
 @login_required(login_url='login')
 def resultCourse(request, pk):
-  course = Course.objects.get(id=pk)
+  course = Course.objects.select_related('host', 'topic').get(id=pk)
+  contents = Content.objects.select_related('course').filter(course=course)
+  files = File.objects.select_related('course').filter(course=course)
+  quizs = Quiz.objects.select_related('course').filter(course=course)
   course_users = course.user.all()
+  progresses = Progress.objects.select_related('course', 'user').filter(course=course)
+
+  course_users = list(zip(course_users, progresses))
+
   context = {
     'course': course,
     'course_users': course_users,
+    'contents': contents,
+    'files': files,
+    'quizs': quizs,
+    'progresses': progresses,
   }
   return render(request, 'course-result.html', context)
 

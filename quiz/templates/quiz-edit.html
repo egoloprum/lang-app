@@ -61,9 +61,9 @@
       <div class="mb-3">
         <label class="form-label me-3">Publication</label>
         {% if quiz.publication == True %}
-          <input type="checkbox" name="quiz-public" checked>
+          <input class="form-check-input" type="checkbox" name="quiz-public" checked>
         {% else %}
-          <input type="checkbox" name="quiz-public">
+          <input class="form-check-input" type="checkbox" name="quiz-public">
         {% endif %}
       </div>
       
@@ -125,10 +125,10 @@
                         id="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" 
                         name="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
                         {% if answer.correct %}
-                          <input class="me-3" type="checkbox" checked
+                          <input class="me-3 form-check-input" type="checkbox" checked
                             name="answer-cor-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
                         {% else %}
-                          <input class="me-3" type="checkbox" 
+                          <input class="me-3 form-check-input" type="checkbox" 
                             name="answer-cor-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
                         {% endif %}
                         <input type="hidden" value="{{ answer.id }}" id="answer-id-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"

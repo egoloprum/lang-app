@@ -100,6 +100,86 @@ def get_follow_request_or_false(sender, reciever):
         return False
 
 @login_required(login_url='login')
+def dashboardPath(request, pk):
+    curr_user = User.objects.get(id=pk)
+    context = {}
+    context['curr_user'] = curr_user
+
+    quizs = Quiz.objects.select_related().filter(course=None, content=None)
+    courses = Course.objects.select_related()
+
+    if curr_user.is_staff:
+        quizs = quizs.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user)
+        courses = courses.filter(host=pk)
+
+        context['quizs'] = quizs
+        context['courses'] = courses
+    
+    else:
+        quiz_result = Average_score.objects.filter(user=curr_user)
+        results = Result.objects.filter(user=curr_user).select_related('quiz')
+
+        context['results'] = results
+        context['quiz_result'] = quiz_result
+
+        quiz_count = quizs.filter(publication=True).count()
+        course_count = courses.filter(publication=True).count()
+
+        context['quiz_count'] = quiz_count
+        context['course_count'] = course_count
+
+        quizs_easy = 0
+        quizs_medium = 0
+        quizs_hard = 0
+
+        for quiz in quizs:
+            if quiz.difficulty == 'Easy':
+                quizs_easy += 1
+            if quiz.difficulty == 'Medium':
+                quizs_medium += 1
+            if quiz.difficulty == 'Hard':
+                quizs_hard += 1
+
+        comp_easy = 0
+        comp_medium = 0
+        comp_hard = 0
+
+        completions = Completion.objects.select_related()
+        for comp in completions:
+            if comp.quiz.difficulty == 'Easy' and comp.user == curr_user:
+                comp_easy += 1
+            if comp.quiz.difficulty == 'Medium' and comp.user == curr_user:
+                comp_medium += 1
+            if comp.quiz.difficulty == 'Hard' and comp.user == curr_user:
+                comp_hard += 1
+
+        context['comp_easy'] = comp_easy
+        context['comp_medium'] = comp_medium
+        context['comp_hard'] = comp_hard
+
+        context['quizs_easy'] = quizs_easy
+        context['quizs_medium'] = quizs_medium
+        context['quizs_hard'] = quizs_hard
+        context['quizs'] = quizs
+
+        completions = Completion.objects.select_related()
+
+        try:
+            complete_quiz = completions.filter(user=curr_user, completed=True, course=None)
+        except Completion.DoesNotExist:
+            complete_quiz = None
+
+        try:
+            complete_course = completions.filter(user=curr_user, completed=True, quiz=None)
+        except Completion.DoesNotExist:
+            complete_course = None
+        
+        context['complete_quiz'] = complete_quiz
+        context['complete_course'] = complete_course
+
+    return render(request, 'dashboard.html', context)
+
+@login_required(login_url='login')
 def profilePath(request, pk):
     curr_user = User.objects.select_related('profile').get(id=pk)
     context = {}
@@ -159,83 +239,6 @@ def profilePath(request, pk):
     context['request_sent'] = request_sent
     context['pending_follow_request_id'] = pending_follow_request_id
 
-    quiz_result = Average_score.objects.filter(user=curr_user)
-    results = Result.objects.filter(user=curr_user).select_related('quiz')
-
-    context['results'] = results
-    context['quiz_result'] = quiz_result
-
-    quizs = Quiz.objects.select_related().filter(course=None, content=None)
-    courses = Course.objects.select_related()
-
-    quiz_count = quizs.filter(publication=True).count
-    course_count = courses.count()
-
-    context['quiz_count'] = quiz_count
-    context['course_count'] = course_count
-
-    if curr_user.is_staff:
-        if curr_user == request.user:
-            quizs = quizs.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user)
-            courses = courses.filter(host=pk)
-        else:
-            quizs = quizs.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user, publication=True)
-            courses = courses.filter(host=pk, publication=True)
-
-        context['courses'] = courses
-        context['quizs'] = quizs
-
-    else:
-        quizs = quizs.filter(course=None, content=None, publication=True)
-        quizs_easy = 0
-        quizs_medium = 0
-        quizs_hard = 0
-
-        for quiz in quizs:
-            if quiz.difficulty == 'Easy':
-                quizs_easy += 1
-            if quiz.difficulty == 'Medium':
-                quizs_medium += 1
-            if quiz.difficulty == 'Hard':
-                quizs_hard += 1
-
-        comp_easy = 0
-        comp_medium = 0
-        comp_hard = 0
-
-        completions = Completion.objects.select_related()
-        for comp in completions:
-            if comp.quiz.difficulty == 'Easy' and comp.user == curr_user:
-                comp_easy += 1
-            if comp.quiz.difficulty == 'Medium' and comp.user == curr_user:
-                comp_medium += 1
-            if comp.quiz.difficulty == 'Hard' and comp.user == curr_user:
-                comp_hard += 1
-
-        context['comp_easy'] = comp_easy
-        context['comp_medium'] = comp_medium
-        context['comp_hard'] = comp_hard
-
-        context['quizs_easy'] = quizs_easy
-        context['quizs_medium'] = quizs_medium
-        context['quizs_hard'] = quizs_hard
-        context['quizs'] = quizs
-
-    completions = Completion.objects.select_related()
-
-    try:
-        complete_quiz = completions.filter(user=curr_user, completed=True, course=None)
-    except Completion.DoesNotExist:
-        complete_quiz = None
-
-    try:
-        complete_course = completions.filter(user=curr_user, completed=True, quiz=None)
-    except Completion.DoesNotExist:
-        complete_course = None
-    
-    context['complete_quiz'] = complete_quiz
-    context['complete_course'] = complete_course
-
     return render(request, 'profile.html', context)
 
 @login_required(login_url='login')
@@ -257,7 +260,7 @@ def deleteUser(request):
 
 @login_required(login_url='login')
 def profileUpdate(request):
-    user = User.objects.get(id=request.user.id)
+    user = User.objects.select_related('profile').get(id=request.user.id)
     context = {'user': user}
 
     if request.method == "POST":
@@ -346,11 +349,6 @@ def userPath(request):
     context = {'users': users}
 
     return render(request, 'user-path.html', context)
-
-@login_required(login_url='login')
-def profileResult(request, pk):
-    context = {}
-    return render(request, 'profile-result.html', context)
 
 def badges(request):
     badges = Badge.objects.select_related()

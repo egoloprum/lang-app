@@ -4,7 +4,144 @@
 
   <section class="m-3">
     <div class="m-3">
-      {{ course_users.count }}
+      {% if request.user.is_staff %}
+        <!-- course info side -->
+        <div class="white-border p-3">
+          <h5>Staff course result</h5>
+          <!-- name host -->
+          <div class="row m-0 mb-3">
+            <div class="form-floating col">
+              <p class="form-control">{{ course.name }}</p>
+              <label class="ms-3">Name</label>
+            </div>
+            <div class="form-floating col">
+              <p class="form-control">{{ course.host }}</p>
+              <label class="ms-3">Host</label>
+            </div>
+          </div>
+          <!-- topic tag -->
+          <div class="row m-0 mb-3">
+            <div class="form-floating col">
+              <p class="form-control">{% if course.topic.name == None %}----{% else %}{{ course.topic.name }}{% endif %}</p>
+              <label class="ms-3">Topic</label>
+            </div>
+            <div class="form-floating col">
+              <p class="form-control">{% if course.tag == None %}----{% else %}{{ course.tag }}{% endif %}</p>
+              <label class="ms-3">Tag</label>
+            </div>
+          </div>
+          <!-- pts exp -->
+          <div class="row m-0 mb-3">
+            <div class="form-floating col">
+              <p class="form-control">{% if course.pts == None %}{% else %}{{ course.pts }}{% endif %}</p>
+              <label class="ms-3">Points</label>
+            </div>
+            <div class="form-floating col">
+              <p class="form-control">{% if course.exp == None %}{% else %}{{ course.exp }}{% endif %}</p>
+              <label class="ms-3">Experience</label>
+            </div>
+          </div>
+          <!-- created updated -->
+          <div class="row m-0 mb-3">
+            <div class="form-floating col">
+              <p class="form-control">{% if course.created_at == None %}{% else %}{{ course.created_at }}{% endif %}</p>
+              <label class="ms-3">Created at</label>
+            </div>
+            <div class="form-floating col">
+              <p class="form-control">{% if course.updated_at == None %}{% else %}{{ course.updated_at }}{% endif %}</p>
+              <label class="ms-3">Updated at</label>
+            </div>
+          </div>
+          <!-- start end  -->
+          <div class="row m-0 mb-3">
+            <div class="form-floating col">
+              <p class="form-control">{% if course.start_date == None %}{% else %}{{ course.start_date }}{% endif %}</p>
+              <label class="ms-3">Start date</label>
+            </div>
+            <div class="form-floating col">
+              <p class="form-control">{% if course.end_date == None %}{% else %}{{ course.end_date }}{% endif %}</p>
+              <label class="ms-3">End date</label>
+            </div>
+          </div>
+          <!-- contents files  -->
+          <div class="row m-0 mb-3">
+            <div class="form-floating col dropdown">
+              <p class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if contents.count == None %}{% else %}{{ contents.count }}{% endif %}</p>
+              <ul class="dropdown-menu">
+                {% for content in contents %}
+                  <li><span class="dropdown-item">Content {{ forloop.counter }}</span></li>
+                {% endfor %}
+              </ul>
+              <label class="ms-3">Contents</label>
+            </div>
+            <div class="form-floating col dropdown">
+              <p class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if files.count == None %}{% else %}{{ files.count }}{% endif %}</p>
+              <ul class="dropdown-menu">
+                {% for file in files %}
+                  <li><span class="dropdown-item">File {{ forloop.counter }}</span></li>
+                {% endfor %}
+              </ul>
+              <label class="ms-3">Files</label>
+            </div>
+          </div>
+          <!-- quizs users -->
+          <div class="row m-0 mb-3">
+            <div class="form-floating col dropdown">
+              <p class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if quizs.count == None %}{% else %}{{ quizs.count }}{% endif %}</p>
+              <ul class="dropdown-menu">
+                {% for quiz in quizs %}
+                  <li><span class="dropdown-item">Quiz {{ forloop.counter }}</span></li>
+                {% endfor %}
+              </ul>
+              <label class="ms-3">Quizes</label>
+            </div>
+
+            <div class="form-floating col dropdown">
+              <p class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if course_users.count == None %}{% else %}{{ course_users.count }}{% endif %}</p>
+              <ul class="dropdown-menu">
+                {% for user, progress in course_users %}
+                  <li><span class="dropdown-item">{{ user.username }}</span></li>
+                {% endfor %}
+              </ul>
+              <label class="ms-3">Users</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="white-border p-3 mt-3">
+          <h5>Users process</h5>
+          <table class="table table-bordered mt-3">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Process</th>
+                <th>User level</th>
+                <th>User exp</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user, progress in course_users %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ progress.value }} %</td>
+                <td>{{ user.profile.level }}</td>
+                <td>{{ user.profile.experience }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+      <div class="white-border p-3">
+        <p>You are not allowed here.</p>
+      </div>
+      {% endif %}
     </div>
   </section>
 
