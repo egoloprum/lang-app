@@ -21,3 +21,5 @@ class FollowRequestAdmin(admin.ModelAdmin):
 
 admin.site.register(FollowList, FollowListAdmin)
 admin.site.register(FollowRequest, FollowRequestAdmin)
+admin.site.register(ChatRoom)
+admin.site.register(Message)

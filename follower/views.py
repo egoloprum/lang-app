@@ -6,8 +6,6 @@ from django.contrib.auth.models import User
 from .models import *
 
 
-# Create your views here.
-
 @login_required(login_url='login')
 def followerList(request, pk):
     curr_user = User.objects.get(id=pk)
@@ -114,3 +112,26 @@ def decline_follow(request, pk):
 
     return redirect(request.META.get('HTTP_REFERER'))
     # return redirect('/user/profile/%d/'%removee.id)
+
+@login_required(login_url='login')
+def chatRoom(request):
+    chatrooms = ChatRoom.objects.select_related('host')
+    context = {
+        'chatrooms': chatrooms,
+    }
+
+    return render(request, 'chatroom.html', context)
+
+@login_required(login_url='login')
+def eachChat(request, pk):
+    chatroom = ChatRoom.objects.get(id=pk)
+    chatroom.user.add(request.user)
+
+    messages = Message.objects.select_related('user').filter(room=chatroom)
+
+    context = {
+        'chatroom': chatroom,
+        'messages': messages,
+    }
+
+    return render(request, 'chat-each.html', context)

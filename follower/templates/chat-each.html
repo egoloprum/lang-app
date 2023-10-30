@@ -1,0 +1,146 @@
+{% load humanize %}
+<!-- hx-ext="ws" ws-connect="/ws/follower/chats/{{ chatroom.id }}/" -->
+<section class="m-3">
+  <div class="m-3">
+
+    <div class="white-border p-3" style="max-height: 500px; height: 500px; display: flex;
+      flex-direction: column; justify-content: space-between;">
+      <div>
+        <p>{{ chatroom.name }}</p>
+        <div class="m-3" id="messages"
+          style="height: 350px; overflow-y: scroll;">
+          {% for message in messages %}
+            {% if message.user == request.user %}
+            <div style="display: flex; justify-content: flex-end;">
+              <div class="p-3 form-floating" style="width: 90%;">
+                <p class="form-control">{{ message.body }}</p>
+                <label style="color: blue;">{{ message.user }}</label>
+                <p class="small-font-size">{{ message.created_at|naturaltime }}</p>
+              </div>
+            </div>
+            {% else %}
+            <div style="display: flex; justify-content: flex-start;">
+              <div class="p-3 form-floating" style="width: 90%;">
+                <p class="form-control">{{ message.body }}</p>
+                <label style="color: red;">{{ message.user }}</label>
+                <p class="small-font-size">{{ message.created_at|naturaltime }}</p>
+              </div>
+            </div>
+            {% endif %}
+          {% empty %}
+            <div class="p-3">
+              <p>No messages yet.</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <form method="POST" action="." class="d-flex gap-3">
+        <textarea class="form-control " style="height: 50px;" id="chat-message-input"
+          name="chat-message" placeholder="message here..."  required></textarea>
+        <button class="btn btn-light" id="chat-message-submit">Send</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+{% block script %}
+
+{{ chatroom.id|json_script:"json-roomname" }}
+{{ request.user.username|json_script:"json-username" }}
+
+
+<script>
+  var roomName = JSON.parse(document.getElementById('json-roomname').textContent);
+  var userName = JSON.parse(document.getElementById('json-username').textContent);
+
+  var chatSocket = new WebSocket(
+    'ws://'
+    + window.location.host
+    + '/ws/'
+    + 'follower/'
+    + 'chats/'
+    + roomName
+    + '/'
+    );
+
+  chatSocket.onopen = function (e) {
+    console.log('Socket connected');
+  }
+
+  chatSocket.onmessage = function(e) {
+    alert(e.data);
+  }
+
+  chatSocket.onmessage = function(e) {
+    console.log('Message recieved');
+    const data = JSON.parse(e.data);
+
+    if (data.message) {
+      let message = document.createElement("div");
+      message.setAttribute("style", "display: flex; justify-content: flex-end;");
+
+      let message_form = document.createElement("div");
+      message_form.setAttribute("style", "width: 90%;");
+      message_form.className = "p-3 form-floating";
+
+      let message_body = document.createElement("p");
+      message_body.className = "form-control";
+      message_body.innerHTML = data.message;
+
+      let message_user = document.createElement("label");
+      message_user.setAttribute("style", "color: blue;");
+      message_user.innerHTML = data.username;
+
+      let message_time = document.createElement("p");
+      message_time.className = "small-font-size";
+      message_time.innerHTML = "just now";
+
+      message_form.append(message_body);
+      message_form.append(message_user);
+      message_form.append(message_time);
+      message.append(message_form);
+
+    document.getElementById('messages').append(message);
+    } 
+    else {
+      alert('The message was empty!');
+    }
+
+    scrollToBottom();
+  };
+
+  chatSocket.onclose = function(e) {
+    console.log('Socked disconnected');
+  }
+  
+  document.querySelector('#chat-message-submit').onclick = function(e) {
+    e.preventDefault();
+
+    const messageInputDom = document.querySelector('#chat-message-input');
+    const message = messageInputDom.value;
+
+    const data = {
+      'message': message,
+      'username': userName,
+      'room': roomName,
+    }
+
+    console.log(data);
+    chatSocket.send(JSON.stringify(data));
+
+    messageInputDom.value = '';
+
+    return false
+  };
+
+  function scrollToBottom() {
+        let objDiv = document.getElementById("messages");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    }
+
+    // Add this below the function to trigger the scroll on load.
+  scrollToBottom();
+
+</script>
+
+{% endblock %}

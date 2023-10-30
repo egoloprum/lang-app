@@ -11,4 +11,6 @@ urlpatterns = [
   # FROM RECIEVER SIDE
   path('<str:pk>/cancel_request', views.cancel_request, name='cancel-request'),
 
+  path('chats', views.chatRoom, name='chatroom'),
+  path('chats/<str:pk>', views.eachChat, name='chat-each'),
 ]

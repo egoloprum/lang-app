@@ -35,6 +35,13 @@
       <i class="fa-solid fa-calendar me-2"></i>
       <span class="sidebar-tags">Calendar</span>
     </a>
+    {% if not request.user.is_staff %}
+      <a class="btn btn-light pt-2 pb-2" href="" style="text-align: left;
+        display: flex; flex-direction: row; align-items: center;">
+        <i class="fa-solid fa-person-chalkboard me-2"></i>
+        <span class="sidebar-tags">My Courses</span>
+      </a>
+    {% endif %}
     <a class="btn btn-light pt-2 pb-2" href="{% url 'course' %}" style="text-align: left;
       display: flex; flex-direction: row; align-items: center;">
       <i class="fa-solid fa-person-chalkboard me-2"></i>
@@ -45,7 +52,7 @@
       <i class="fa-solid fa-check me-2"></i>
       <span class="sidebar-tags">Tests</span>
     </a>
-    <a class="btn btn-light pt-2 pb-2" href="" style="text-align: left;
+    <a class="btn btn-light pt-2 pb-2" href="{% url 'chatroom' %}" style="text-align: left;
       display: flex; flex-direction: row; align-items: center;">
       <i class="fa-regular fa-comment me-2"></i>
       <span class="sidebar-tags">Discuss</span>

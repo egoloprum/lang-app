@@ -1,0 +1,29 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<section class="m-3">
+  <div class="m-3">
+
+    <div class="white-border p-3">
+      <h5>Chatrooms</h5>
+      <div class="row">
+        <div class="col-3">
+          {% for chatroom in chatrooms %}
+            <div class="m-3">
+              <p><a class="btn btn-light" style="width: 100%;" id="{{ chatroom.id }}"
+                hx-get="/follower/chats/{{ chatroom.id }}" hx-target="#chat">{{ chatroom.name }}</a></p>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="col" style="border-left: 1px solid #000;" id="chat">
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
