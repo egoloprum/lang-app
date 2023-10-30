@@ -6,7 +6,20 @@
     <div class="white-border p-3" style="max-height: 500px; height: 500px; display: flex;
       flex-direction: column; justify-content: space-between;">
       <div>
-        <p>{{ chatroom.name }}</p>
+        <p style="display: flex; justify-content: space-between;">
+          <span>{{ chatroom.name }}</span>
+          {% if request.user == chatroom.host %}
+          <span>
+            <a class="btn btn-light" href="" data-bs-toggle="modal" data-bs-target="#modal-add">Add</a>
+            <a class="btn btn-light" href="" data-bs-toggle="modal" data-bs-target="#modal-remove">Remove</a>
+            <a class="btn btn-light" href="" data-bs-toggle="modal" data-bs-target="#modal-delete">Delete</a>
+          </span>
+          {% else %}
+          <span>
+            <a class="btn btn-light" href="" data-bs-toggle="modal" data-bs-target="#modal-leave">Leave</a>
+          </span>
+          {% endif %}
+        </p>
         <div class="m-3" id="messages"
           style="height: 350px; overflow-y: scroll;">
           {% for message in messages %}
@@ -43,6 +56,100 @@
   </div>
 </section>
 
+<div class="modal fade" id="modal-add" tabindex="-1" aria-labelledby="modal-add" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-3 shadow">
+      <div class="modal-body p-4 text-center" id="modal-body">
+        <div style="display: flex; align-items: center; justify-content: end;">
+          <h5 class="pe-3">Please choose your action</h5>
+          <a class="btn-close mb-2 ms-5" type="button" aria-label="close" 
+          data-bs-dismiss="modal"></a>
+        </div>
+        <div>
+          {% for user in out_users %}
+            <p>{{ user.username }}</p>
+            {% empty %}
+            <p>There is no users to add to this chatroom.</p>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="modal-footer flex-nowrap p-0">
+        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+          href="" style="color: green;">Add</a>
+        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+        href="" style="color: rgb(221, 232, 23);">Cancel</a>
+      </div>                  
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-remove" tabindex="-1" aria-labelledby="modal-remove" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-3 shadow">
+      <div class="modal-body p-4 text-center" id="modal-body">
+        <div style="display: flex; align-items: center; justify-content: end;">
+          <h5 class="pe-3">Please choose your action</h5>
+          <a class="btn-close mb-2 ms-5" type="button" aria-label="close" 
+          data-bs-dismiss="modal"></a>
+        </div>
+        <p>You can always change your mind.</p>
+      </div>
+      <div class="modal-footer flex-nowrap p-0">
+        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+          href="" style="color: green;">Result</a>
+        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+        href="" style="color: rgb(221, 232, 23);">Edit</a>
+        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+        href="" style="color: red;">Delete</a>
+      </div>                  
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-delete" tabindex="-1" aria-labelledby="modal-delete" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-3 shadow">
+      <div class="modal-body p-4 text-center" id="modal-body">
+        <div style="display: flex; align-items: center; justify-content: end;">
+          <h5 class="pe-3">Please choose your action</h5>
+          <a class="btn-close mb-2 ms-5" type="button" aria-label="close" 
+          data-bs-dismiss="modal"></a>
+        </div>
+        <p>You can always change your mind.</p>
+      </div>
+      <div class="modal-footer flex-nowrap p-0">
+        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+          href="" style="color: green;">Result</a>
+        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+        href="" style="color: rgb(221, 232, 23);">Edit</a>
+        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+        href="" style="color: red;">Delete</a>
+      </div>                  
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-leave" tabindex="-1" aria-labelledby="modal-leave" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-3 shadow">
+      <div class="modal-body p-4 text-center" id="modal-body">
+        <div style="display: flex; align-items: center; justify-content: end;">
+          <h5 class="pe-3">Please choose your action</h5>
+          <a class="btn-close mb-2 ms-5" type="button" aria-label="close" 
+          data-bs-dismiss="modal"></a>
+        </div>
+        <p>You can always change your mind.</p>
+      </div>
+      <div class="modal-footer flex-nowrap p-0">
+        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+          href="" style="color: green;">Result</a>
+        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+        href="" style="color: rgb(221, 232, 23);">Edit</a>
+      </div>                  
+    </div>
+  </div>
+</div>
+
 {% block script %}
 
 {{ chatroom.id|json_script:"json-roomname" }}
@@ -77,7 +184,18 @@
 
     if (data.message) {
       let message = document.createElement("div");
-      message.setAttribute("style", "display: flex; justify-content: flex-end;");
+      let message_user = document.createElement("label");
+      message_user.innerHTML = data.username;
+
+      if (data.username != userName) {
+        message.setAttribute("style", "display: flex; justify-content: flex-start;");
+        message_user.setAttribute("style", "color: red;");
+      }
+
+      else {
+        message.setAttribute("style", "display: flex; justify-content: flex-end;");
+        message_user.setAttribute("style", "color: blue;");
+      }
 
       let message_form = document.createElement("div");
       message_form.setAttribute("style", "width: 90%;");
@@ -86,10 +204,6 @@
       let message_body = document.createElement("p");
       message_body.className = "form-control";
       message_body.innerHTML = data.message;
-
-      let message_user = document.createElement("label");
-      message_user.setAttribute("style", "color: blue;");
-      message_user.innerHTML = data.username;
 
       let message_time = document.createElement("p");
       message_time.className = "small-font-size";

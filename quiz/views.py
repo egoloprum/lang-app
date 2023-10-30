@@ -68,8 +68,11 @@ def quizEdit(request, pk):
         quiz_pts = None if request.POST.get('quiz-pts') == "" else request.POST.get('quiz-pts')
         quiz_exp = None if request.POST.get('quiz-exp') == "" else request.POST.get('quiz-exp')
         quiz_public = True if request.POST.get('quiz-public') == 'on' else False
-        quiz_start = None if request.POST.get('quiz-duration') == "" else request.POST.get('quiz-start')
-        quiz_end = None if request.POST.get('quiz-duration') == "" else request.POST.get('quiz-end')
+        quiz_start = None if request.POST.get('quiz-start') == "" else request.POST.get('quiz-start')
+        quiz_end = None if request.POST.get('quiz-end') == "" else request.POST.get('quiz-end')
+
+        print(quiz_start)
+        print(quiz_end)
 
         quiz.name = quiz_name
         quiz.duration = quiz_duration

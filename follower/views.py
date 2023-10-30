@@ -127,11 +127,17 @@ def eachChat(request, pk):
     chatroom = ChatRoom.objects.get(id=pk)
     chatroom.user.add(request.user)
 
+    out_users = User.objects.filter(chatroom_user=None)
+
+    chatroom_users = chatroom.user.all()
+
     messages = Message.objects.select_related('user').filter(room=chatroom)
 
     context = {
         'chatroom': chatroom,
         'messages': messages,
+        'out_users': out_users,
+        'chatroom_users': chatroom_users,
     }
 
     return render(request, 'chat-each.html', context)

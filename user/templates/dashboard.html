@@ -64,7 +64,7 @@
                     {% if quiz.publication %}
                       <tr>
                         <td>{{ quiz.publication }}</td>
-                        <td><a href="{% url 'quiz-result' quiz.id %}">{{ quiz.name }}</a></td>
+                        <td class="text-nowrap"><a href="{% url 'quiz-result' quiz.id %}">{{ quiz.name }}</a></td>
                         <td>{{ quiz.child_count }}</td>
                         {% if quiz.difficulty == 'Easy' %}
                           <td style="display: flex; align-items: center;">

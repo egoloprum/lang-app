@@ -1,0 +1,1232 @@
+[
+  {
+    "name": "Quiz 1",
+    "duration": "00:10",
+    "start_date": "2023-10-10",
+    "end_date": "2023-10-20",
+    "minimum": "60",
+    "difficulty": "Easy",
+    "points": "50",
+    "experience": "10",
+    "publication": "True",
+    "questions": [
+      {
+        "body": "I ______ bus on Mondays.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "'m going to work with",
+            "correct": ""
+          },
+          {
+            "body": "'m going to work by",
+            "correct": "True"
+          },
+          {
+            "body": "go to work with",
+            "correct": ""
+          },
+          {
+            "body": "go to work by",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "Sorry, but this chair is ______.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "me",
+            "correct": ""
+          },
+          {
+            "body": "mine",
+            "correct": "True"
+          },
+          {
+            "body": "my",
+            "correct": ""
+          },
+          {
+            "body": "our",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "A: 'How old ______?'   B: 'I ______ .'",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "are you / am 20 years old.",
+            "correct": "True"
+          },
+          {
+            "body": "have you / have 20 years old",
+            "correct": ""
+          },
+          {
+            "body": "are you / am 20 years.",
+            "correct": ""
+          },
+          {
+            "body": "do you have / have 20 years.",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "I ______ to the cinema.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "not usually go",
+            "correct": ""
+          },
+          {
+            "body": "don't usually go",
+            "correct": "True"
+          },
+          {
+            "body": "don't go usually",
+            "correct": ""
+          },
+          {
+            "body": "do not go usually",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "Where ______ ?",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "your sister works",
+            "correct": ""
+          },
+          {
+            "body": "your sister work",
+            "correct": ""
+          },
+          {
+            "body": "does your sister work",
+            "correct": "True"
+          },
+          {
+            "body": "do your sister work",
+            "correct": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Quiz 2",
+    "duration": "00:20",
+    "start_date": "2023-10-13",
+    "end_date": "2023-10-23",
+    "minimum": "60",
+    "difficulty": "Medium",
+    "points": "100",
+    "experience": "20",
+    "publication": "True",
+    "questions": [
+      {
+        "body": "The test is ______ February.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "in",
+            "correct": "True"
+          },
+          {
+            "body": "at",
+            "correct": ""
+          },
+          {
+            "body": "on",
+            "correct": ""
+          },
+          {
+            "body": "over",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "I eat pasta ______ week.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "twice in a",
+            "correct": ""
+          },
+          {
+            "body": "twice a",
+            "correct": "True"
+          },
+          {
+            "body": "one time a",
+            "correct": ""
+          },
+          {
+            "body": "once in a",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "I don't have ______ free time.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "many",
+            "correct": ""
+          },
+          {
+            "body": "any",
+            "correct": "True"
+          },
+          {
+            "body": "a lot",
+            "correct": ""
+          },
+          {
+            "body": "some",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "A: '_____ to the cinema tomorrow?'",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "We will go",
+            "correct": ""
+          },
+          {
+            "body": "Do we go",
+            "correct": ""
+          },
+          {
+            "body": "We go",
+            "correct": ""
+          },
+          {
+            "body": "Shall we go",
+            "correct": "True"
+          }
+        ]
+      },
+      {
+        "body": "We went to the market ______ some vegetables.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "to buy",
+            "correct": "True"
+          },
+          {
+            "body": "for buy",
+            "correct": ""
+          },
+          {
+            "body": "for to buy",
+            "correct": ""
+          },
+          {
+            "body": "for buying",
+            "correct": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Quiz 3",
+    "duration": "00:15",
+    "start_date": "2023-10-15",
+    "end_date": "2023-10-27",
+    "minimum": "60",
+    "difficulty": "Easy",
+    "points": "50",
+    "experience": "15",
+    "publication": "True",
+    "questions": [
+      {
+        "body": "Sorry, but when you called I ______ a shower.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "had",
+            "correct": ""
+          },
+          {
+            "body": "did have",
+            "correct": ""
+          },
+          {
+            "body": "was having",
+            "correct": ""
+          },
+          {
+            "body": "were having",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "______ are very friendly and very intelligent.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "Dolphins",
+            "correct": "True"
+          },
+          {
+            "body": "The dolphins",
+            "correct": ""
+          },
+          {
+            "body": "A dolphin",
+            "correct": ""
+          },
+          {
+            "body": "The dolphin",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "Somebody stole ______ yesterday.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "the car of my mother",
+            "correct": ""
+          },
+          {
+            "body": "my car mother",
+            "correct": ""
+          },
+          {
+            "body": "my mother's car",
+            "correct": "True"
+          },
+          {
+            "body": "my mother car",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "______ with me?",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "Do you like to dance",
+            "correct": ""
+          },
+          {
+            "body": "Would you like to dance",
+            "correct": "True"
+          },
+          {
+            "body": "Do you like dance",
+            "correct": ""
+          },
+          {
+            "body": "Would you like dancing",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "She is ______ her sister, I think.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "more happier than",
+            "correct": ""
+          },
+          {
+            "body": "more happy that",
+            "correct": ""
+          },
+          {
+            "body": "happier that",
+            "correct": ""
+          },
+          {
+            "body": "happier than",
+            "correct": "True"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Quiz 4",
+    "duration": "00:10",
+    "start_date": "2023-10-23",
+    "end_date": "2023-10-31",
+    "minimum": "60",
+    "difficulty": "Hard",
+    "points": "100",
+    "experience": "50",
+    "publication": "True",
+    "questions": [
+      {
+        "body": "I couldn't eat ______ before the exam.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "nothing",
+            "correct": ""
+          },
+          {
+            "body": "anything",
+            "correct": "True"
+          },
+          {
+            "body": "everything",
+            "correct": ""
+          },
+          {
+            "body": "something",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "Please, pass me the remote. ______ TV.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "I'm watching",
+            "correct": ""
+          },
+          {
+            "body": "I will watch",
+            "correct": ""
+          },
+          {
+            "body": "I'm going to watch",
+            "correct": "True"
+          },
+          {
+            "body": "I might watch",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "I'll call you when I ______ home.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "arrive",
+            "correct": "True"
+          },
+          {
+            "body": "'m going to arrive",
+            "correct": ""
+          },
+          {
+            "body": "will arrive",
+            "correct": ""
+          },
+          {
+            "body": "arrived",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "______ Japan?",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "Have you ever gone in",
+            "correct": ""
+          },
+          {
+            "body": "Do you have been in",
+            "correct": ""
+          },
+          {
+            "body": "Have you ever been to",
+            "correct": "True"
+          },
+          {
+            "body": "Have you ever been into",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "He drives very ______.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "slow",
+            "correct": ""
+          },
+          {
+            "body": "slower",
+            "correct": ""
+          },
+          {
+            "body": "more slowly",
+            "correct": ""
+          },
+          {
+            "body": "slowly",
+            "correct": "True"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Quiz 5",
+    "duration": "00:15",
+    "start_date": "2023-10-24",
+    "end_date": "2023-10-30",
+    "minimum": "60",
+    "difficulty": "Medium",
+    "points": "75",
+    "experience": "30",
+    "publication": "True",
+    "questions": [
+      {
+        "body": "Can you ______ the lights? I can't see.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "open",
+            "correct": ""
+          },
+          {
+            "body": "turn on",
+            "correct": "True"
+          },
+          {
+            "body": "start",
+            "correct": ""
+          },
+          {
+            "body": "put on",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "We couldn't find a taxi, ______ we walked home.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "so",
+            "correct": "True"
+          },
+          {
+            "body": "because",
+            "correct": ""
+          },
+          {
+            "body": "but",
+            "correct": ""
+          },
+          {
+            "body": "although",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "Tomorrow I ______ get up early; it's my day off.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "mustn't",
+            "correct": ""
+          },
+          {
+            "body": "must",
+            "correct": ""
+          },
+          {
+            "body": "haven't to",
+            "correct": ""
+          },
+          {
+            "body": "don't have to",
+            "correct": "True"
+          }
+        ]
+      },
+      {
+        "body": "I ______ this coffee. It tastes horrible.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "am not like",
+            "correct": ""
+          },
+          {
+            "body": "don't like",
+            "correct": "True"
+          },
+          {
+            "body": "'m not liking",
+            "correct": ""
+          },
+          {
+            "body": "not like",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "We ______ yesterday.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "arrived",
+            "correct": "True"
+          },
+          {
+            "body": "did arrive",
+            "correct": ""
+          },
+          {
+            "body": "have arrive",
+            "correct": ""
+          },
+          {
+            "body": "have arrived",
+            "correct": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Quiz 6",
+    "duration": "00:10",
+    "start_date": "2023-10-11",
+    "end_date": "2023-10-12",
+    "minimum": "60",
+    "difficulty": "Hard",
+    "points": "150",
+    "experience": "50",
+    "publication": "True",
+    "questions": [
+      {
+        "body": "When I arrive home, I'm going to have a ______ bath.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "relaxing",
+            "correct": "True"
+          },
+          {
+            "body": "relaxed",
+            "correct": ""
+          },
+          {
+            "body": "relax",
+            "correct": ""
+          },
+          {
+            "body": "relaxation",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "A: 'We don't have any milk.'   B: 'Really? I ______ more.'",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "'m going to buy",
+            "correct": ""
+          },
+          {
+            "body": "'ll buy",
+            "correct": "True"
+          },
+          {
+            "body": "'m buying",
+            "correct": ""
+          },
+          {
+            "body": "buy",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "We ______ to seeing you next Thursday.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "really want",
+            "correct": ""
+          },
+          {
+            "body": "hope",
+            "correct": ""
+          },
+          {
+            "body": "are looking forward",
+            "correct": "True"
+          },
+          {
+            "body": "really wish",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "I'd like to go ______ in the park.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "to walking",
+            "correct": ""
+          },
+          {
+            "body": "for walk",
+            "correct": ""
+          },
+          {
+            "body": "for a walk",
+            "correct": "True"
+          },
+          {
+            "body": "to walk",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "German ______ in Germany, Austria and Switzerland.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "is spoken",
+            "correct": "True"
+          },
+          {
+            "body": "spoken",
+            "correct": ""
+          },
+          {
+            "body": "speaks",
+            "correct": ""
+          },
+          {
+            "body": "is speak",
+            "correct": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Quiz 7",
+    "duration": "00:20",
+    "start_date": "2023-10-11",
+    "end_date": "2023-10-18",
+    "minimum": "60",
+    "difficulty": "Easy",
+    "points": "50",
+    "experience": "10",
+    "publication": "True",
+    "questions": [
+      {
+        "body": "I ______ your book. It's fantastic. I'll finish it tonight.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "'ve been reading",
+            "correct": "True"
+          },
+          {
+            "body": "read",
+            "correct": ""
+          },
+          {
+            "body": "'ve read",
+            "correct": ""
+          },
+          {
+            "body": "'m read",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "He went on a business _____ to New York.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "travel",
+            "correct": "True"
+          },
+          {
+            "body": "journey",
+            "correct": ""
+          },
+          {
+            "body": "commute",
+            "correct": ""
+          },
+          {
+            "body": "trip",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "If I tell you a secret, ______ anyone?",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "are you tell",
+            "correct": ""
+          },
+          {
+            "body": "do you tell",
+            "correct": ""
+          },
+          {
+            "body": "will you tell",
+            "correct": "True"
+          },
+          {
+            "body": "are you telling",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "My brother and I don't ______ very well.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "get off",
+            "correct": ""
+          },
+          {
+            "body": "get on",
+            "correct": ""
+          },
+          {
+            "body": "go on",
+            "correct": "True"
+          },
+          {
+            "body": "break off",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "I ______ fifty pages, but I have to read fifty more.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "'ve been reading",
+            "correct": ""
+          },
+          {
+            "body": "was reading",
+            "correct": ""
+          },
+          {
+            "body": "'ve reading",
+            "correct": ""
+          },
+          {
+            "body": "'ve read",
+            "correct": "True"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Quiz 8",
+    "duration": "00:15",
+    "start_date": "2023-10-1",
+    "end_date": "2023-10-2",
+    "minimum": "60",
+    "difficulty": "Hard",
+    "points": "150",
+    "experience": "100",
+    "publication": "True",
+    "questions": [
+      {
+        "body": "If I ______ you, I wouldn't do it.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "was",
+            "correct": ""
+          },
+          {
+            "body": "were",
+            "correct": "True"
+          },
+          {
+            "body": "would be",
+            "correct": ""
+          },
+          {
+            "body": "am",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "This painting ______ a fortune.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "is worth",
+            "correct": "True"
+          },
+          {
+            "body": "is value",
+            "correct": ""
+          },
+          {
+            "body": "values",
+            "correct": ""
+          },
+          {
+            "body": "worths",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "She is the same age ______ me.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "than",
+            "correct": ""
+          },
+          {
+            "body": "that",
+            "correct": ""
+          },
+          {
+            "body": "what",
+            "correct": ""
+          },
+          {
+            "body": "as",
+            "correct": "True"
+          }
+        ]
+      },
+      {
+        "body": "It's obvious that you...",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "don't drive as faster as me.",
+            "correct": ""
+          },
+          {
+            "body": "drive faster than me.",
+            "correct": "True"
+          },
+          {
+            "body": "drive more fast than I.",
+            "correct": ""
+          },
+          {
+            "body": "drive no faster than I.",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "The boat sank, but they ______ swim to the shore.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "could",
+            "correct": ""
+          },
+          {
+            "body": "were able to",
+            "correct": "True"
+          },
+          {
+            "body": "can",
+            "correct": ""
+          },
+          {
+            "body": "abled to",
+            "correct": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Quiz 9",
+    "duration": "00:10",
+    "start_date": "2023-12-15",
+    "end_date": "2023-12-20",
+    "minimum": "60",
+    "difficulty": "Easy",
+    "points": "50",
+    "experience": "10",
+    "publication": "True",
+    "questions": [
+      {
+        "body": "If I had known that she was there, I ______  hello.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "would say",
+            "correct": ""
+          },
+          {
+            "body": "said",
+            "correct": ""
+          },
+          {
+            "body": "had said",
+            "correct": ""
+          },
+          {
+            "body": "would have said",
+            "correct": "True"
+          }
+        ]
+      },
+      {
+        "body": "I think he ______ in prison for what he did.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "should put",
+            "correct": ""
+          },
+          {
+            "body": "could been put",
+            "correct": ""
+          },
+          {
+            "body": "should be put",
+            "correct": "True"
+          },
+          {
+            "body": "could put",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "He ______ him with his homework.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "told me to help",
+            "correct": "True"
+          },
+          {
+            "body": "said me that I help",
+            "correct": ""
+          },
+          {
+            "body": "said me I help",
+            "correct": ""
+          },
+          {
+            "body": "told me that I help",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "We ______. We hired a very good interior designer.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "redecorated the kitchen",
+            "correct": ""
+          },
+          {
+            "body": "had redecorated the kitchen",
+            "correct": ""
+          },
+          {
+            "body": "got redecorated the kitchen",
+            "correct": ""
+          },
+          {
+            "body": "had the kitchen redecorated",
+            "correct": "True"
+          }
+        ]
+      },
+      {
+        "body": "A: 'I had a sauna yesterday'   B: '___ ? That's great.'",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "Did you",
+            "correct": "True"
+          },
+          {
+            "body": "You did",
+            "correct": ""
+          },
+          {
+            "body": "Had you",
+            "correct": ""
+          },
+          {
+            "body": "Didn't you",
+            "correct": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Quiz 10",
+    "duration": "00:10",
+    "start_date": "2023-10-29",
+    "end_date": "2023-10-31",
+    "minimum": "60",
+    "difficulty": "Medium",
+    "points": "80",
+    "experience": "35",
+    "publication": "True",
+    "questions": [
+      {
+        "body": "I wonder ______ at the party.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "who was she talking",
+            "correct": ""
+          },
+          {
+            "body": "who she was talking to",
+            "correct": "True"
+          },
+          {
+            "body": "who was she talking to",
+            "correct": ""
+          },
+          {
+            "body": "who she was talking",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "Which is correct?",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "How older people are, wiser they become",
+            "correct": ""
+          },
+          {
+            "body": "If older people are, wiser they become",
+            "correct": ""
+          },
+          {
+            "body": "The more old the people, the more wise",
+            "correct": ""
+          },
+          {
+            "body": "The older people are, the wiser they become",
+            "correct": "True"
+          }
+        ]
+      },
+      {
+        "body": "I bought a ______ jacket.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "nice red leather",
+            "correct": "True"
+          },
+          {
+            "body": "leather nice red",
+            "correct": ""
+          },
+          {
+            "body": "red nice leather",
+            "correct": ""
+          },
+          {
+            "body": "red leather nice",
+            "correct": ""
+          }
+        ]
+      },
+      {
+        "body": "By 2025 we ______ the cure for type 1 diabetes.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "will be discovering",
+            "correct": ""
+          },
+          {
+            "body": "are discovering",
+            "correct": ""
+          },
+          {
+            "body": "are going to be discovering",
+            "correct": ""
+          },
+          {
+            "body": "will have discovered",
+            "correct": "True"
+          }
+        ]
+      },
+      {
+        "body": "The building ______.",
+        "explanation": "",
+        "answers": [
+          {
+            "body": "was damaged badly in the hurricane last year",
+            "correct": ""
+          },
+          {
+            "body": "was badly damaged last year in the hurricane",
+            "correct": ""
+          },
+          {
+            "body": "was badly damaged in the hurricane last year",
+            "correct": "True"
+          },
+          {
+            "body": "last year was damaged badly in the hurricane",
+            "correct": ""
+          }
+        ]
+      }
+    ]
+  }
+]
