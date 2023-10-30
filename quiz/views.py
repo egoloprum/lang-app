@@ -178,11 +178,24 @@ def quizEach(request, pk):
             request.path = "http://127.0.0.1:8000/quiz/" + str(quiz.id)
         iter = 1
 
+        try:
+            comp = Completion.objects.get(user=request.user, quiz=quiz)
+        except:
+            comp = Completion.objects.create(user=request.user, quiz=quiz)
+
+        if not comp.completed:
+            comp.completed = True
+            comp.save()
+
         if quiz.content:
             result = Result.objects.create(quiz=quiz, user=request.user, has_content=True)
+            comp.contest = quiz.contest
+            comp.save()
 
         if quiz.course:
             result = Result.objects.create(quiz=quiz, user=request.user, has_course=True)
+            comp.course = quiz.course
+            comp.save()
 
         if not quiz.content and not quiz.course:
             result = Result.objects.create(quiz=quiz, user=request.user)
@@ -207,15 +220,6 @@ def quizEach(request, pk):
 
         result.score = points
         result.save()
-
-        try:
-            comp = Completion.objects.get(user=request.user, quiz=quiz)
-        except:
-            comp = Completion.objects.create(user=request.user, quiz=quiz)
-
-        if not comp.completed:
-            comp.completed = True
-            comp.save()
 
         return redirect('quiz-result', quiz.id)
     

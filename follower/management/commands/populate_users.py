@@ -14,20 +14,25 @@ class Command(BaseCommand):
 
       for x in range(0, 20):
         username = "account" + str(x)
+        username_admin = "admin" + str(x)
         password = "Qawsedrf12"
 
         user, created = User.objects.get_or_create(
           username=username, password=password
         )
 
-        if created:
+        admin, created_admin = User.objects.get_or_create(
+           username=username_admin, password=password, is_superuser=True, is_staff=True, is_active=True
+        )
+
+        if created or created_admin:
            self.stdout.write(
-              self.style.SUCCESS(f"Created user: {user.username}")
+              self.style.SUCCESS(f"Created user: {user.username} and admin: {admin.username}")
            )
            created_users.append(user.username)
         else:
           self.stdout.write(
-             self.style.WARNING(f"User already exists: {user.username}")
+             self.style.WARNING(f"User already exists: {user.username} and admin: {admin.username}")
           )
 
       self.stdout.write(

@@ -117,7 +117,7 @@ def dashboardPath(request, pk):
     
     else:
         quiz_result = Average_score.objects.filter(user=curr_user)
-        results = Result.objects.filter(user=curr_user).select_related('quiz')
+        results = Result.objects.filter(user=curr_user, has_course=None, has_content=None).select_related('quiz')
 
         context['results'] = results
         context['quiz_result'] = quiz_result
@@ -144,7 +144,7 @@ def dashboardPath(request, pk):
         comp_medium = 0
         comp_hard = 0
 
-        completions = Completion.objects.select_related()
+        completions = Completion.objects.select_related('quiz', 'user')
         for comp in completions:
             if comp.quiz.difficulty == 'Easy' and comp.user == curr_user:
                 comp_easy += 1
@@ -165,7 +165,7 @@ def dashboardPath(request, pk):
         completions = Completion.objects.select_related()
 
         try:
-            complete_quiz = completions.filter(user=curr_user, completed=True, course=None)
+            complete_quiz = completions.filter(user=curr_user, completed=True, course=None, content=None)
         except Completion.DoesNotExist:
             complete_quiz = None
 

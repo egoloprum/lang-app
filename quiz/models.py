@@ -24,8 +24,10 @@ class Quiz(models.Model):
     end_date = models.DateTimeField(null=True, blank=True)  
 
     def __str__(self):
-        if self.name == None:
-            return f" {self.id} empty"
+        if self.course:
+            return f" {self.id} {self.name} in course ({ self.course.name })"
+        elif self.content:
+            return f" {self.id} {self.name} in content ({ self.content.name } of {self.content.course.name})"
         else:
             return f" {self.id} {self.name}"
 
@@ -40,10 +42,7 @@ class Question(models.Model):
     explanation = models.CharField(max_length=250, null=True, blank=True)
 
     def __str__(self):
-        if self.body == None:
-            return f" {self.id} empty"
-        else:
-            return f" {self.id} / {self.body}"
+        return f"id==({ self.id }) quiz==({ self.quiz.name }) // ({self.body})"
     
     def get_answers(self):
         return self.answer_set.all()
@@ -54,10 +53,7 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, null=False, related_name='answer_question')
 
     def __str__(self):
-        if self.body == None:
-            return f" {self.id} empty"
-        else:
-            return f"{self.question.id} / {self.id} / {self.body}"
+        return f"id==({self.id}) question==({self.question.id}) // ({self.body})"
 
 class Result(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False, related_name='result_quiz')
@@ -69,7 +65,7 @@ class Result(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.pk)
+        return f"quiz==({ self.quiz.name }) user==({ self.user.username }) score==({ self.score })"
 
 class Selected_Answer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name='sel_answer_user')
@@ -78,10 +74,7 @@ class Selected_Answer(models.Model):
     result = models.ForeignKey(Result, on_delete=models.CASCADE, null=False, related_name='sel_answer_result')
 
     def __str__(self):
-        if self == None:
-            return f"{self.id} empty"
-        else:
-            return f"{self.selected.id} / {self.id}"
+        return f"question==({ self.question.id }) user==({ self.user.username }) answer==({ self.selected.id })"
 
 class Average_score(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, related_name='average_score_quiz')
@@ -90,5 +83,5 @@ class Average_score(models.Model):
     score = models.FloatField()
 
     def __str__(self):
-        return str(self.pk)
+        return f"quiz==({ self.quiz.name }) user==({ self.user.username }) score==({ self.score })"
 

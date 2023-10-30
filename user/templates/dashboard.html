@@ -247,7 +247,7 @@
                   {% for average_result in results reversed %}
                   <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ average_result.quiz.name }}</td>
+                    <td><a href="{% url 'quiz-result' average_result.quiz.id %}">{{ average_result.quiz.name }}</a></td>
                     <td>{{ average_result.quiz.difficulty }}</td>
                     <td>{{ average_result.score|floatformat:2 }}</td>
                     <td>{{ average_result.created_at|naturaltime }}</td>

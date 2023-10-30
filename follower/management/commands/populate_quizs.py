@@ -30,11 +30,13 @@ class Command(BaseCommand):
         quiz_questions = data['questions']
 
         try:
-          host = User.objects.get(username='admin', is_superuser=True)
+          hosts = User.objects.filter(is_superuser=True)
+          host = hosts[random.randint(0, len(hosts))]
 
         except User.DoesNotExist:
-          host = User.objects.create(username='admin', password='admin', 
+          host = User.objects.get_or_create(username='admin', password='admin', 
                                       is_superuser=True, is_staff=True, is_active=True)
+          
 
         quiz, created = Quiz.objects.get_or_create(
           name=quiz_name, duration=quiz_duration, start_date=quiz_start,
@@ -53,10 +55,8 @@ class Command(BaseCommand):
             self.style.WARNING(f"Quiz already exists: {quiz.name}")
           )
 
-
+        created_questions = []
         for question in quiz_questions:
-          created_questions = []
-
           question_body = question['body']
           question_explanation = question['explanation']
           question_answers = question['answers']
@@ -76,9 +76,8 @@ class Command(BaseCommand):
               self.style.WARNING(f"Question already exists: {question.id}")
             )
 
+          created_answers = []
           for answer in question_answers:
-            created_answers = []
-
             answer_body = answer['body']
             answer_correct = True if answer['correct'] == 'True' else False
 
@@ -90,11 +89,11 @@ class Command(BaseCommand):
               self.stdout.write(
                 self.style.SUCCESS(f"Created answer: {answer.id}")
                 )
-              created_questions.append(answer.id)
+              created_answers.append(answer.id)
 
             else:
               self.stdout.write(
-                self.style.WARNING(f"Question already exists: {answer.id}")
+                self.style.WARNING(f"Answer already exists: {answer.id}")
               )
 
           self.stdout.write(
