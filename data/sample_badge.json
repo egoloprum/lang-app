@@ -1,0 +1,32 @@
+[
+   {
+      "name": "Welcome to English Study",
+      "description": "This award is given to user who signed first time",
+      "pts": "100",
+      "exp": "100"
+   },
+   {
+      "name": "Hot Start",
+      "description": "This award is given to user who successfully finished 5 tests",
+      "pts": "200",
+      "exp": "150"
+   },
+   {
+      "name": "Time to Study",
+      "description": "This award is given to user who applied to any course first time",
+      "pts": "150",
+      "exp": "150"
+   },
+   {
+      "name": "Let's get friends",
+      "description": "This award is given to user who gets follower first time",
+      "pts": "50",
+      "exp": "50"
+   },
+   {
+      "name": "New Look",
+      "description": "This award is given to user who applied profile picture first time",
+      "pts": "50",
+      "exp": "50"
+   }
+]

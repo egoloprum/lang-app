@@ -1,14 +1,23 @@
 from django.shortcuts import render, redirect
-import math
+from itertools import chain
+
+from course.models import Course
+from quiz.models import Quiz
 
 # Create your views here.
 
 def home(request):
-    return render(request, 'index.html')
+    courses = Course.objects.select_related('host').order_by('-start_date')[:5]
+    quizs = Quiz.objects.select_related('host').order_by('-start_date')[:5]
 
-def subscribe(request):
-    return render(request, 'subscribe.html')
+    elements = set(chain(courses, quizs))
 
+    context = {
+        'courses': courses,
+        'quizs': quizs,
+        'elements': elements
+    }
+    return render(request, 'index.html', context)
 
 def calendar(request):
     return render(request, 'calendar.html')

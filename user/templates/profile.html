@@ -9,43 +9,9 @@
       <div class="row rows-col-2 m-0">
         <!-- profile info side -->
         <section class="white-border me-3 col">
-          <div class="m-2">
-            {% if request.user != curr_user %}
-
-              {% if is_follower == False and is_self == False %}
-
-                <!-- they sent you -->
-                {% if request_sent == 0 %}
-                  <a class="btn btn-outline-success" href="{% url 'accept-follow-request' pending_follow_request_id %}" 
-                    style="width: 100%;">Accept Follow Request</a>
-                  <a class="btn btn-outline-danger" href="{% url 'cancel-follow-request' curr_user.id %}" style="width: 100%;">Cancel</a>
-                {% endif %}
-
-                <!-- you sent them request -->
-                {% if request_sent == 1 %}
-                    <a class="btn btn-outline-danger" hx-boost="true" hx-trigger="load" hx-target="#request-result"
-                    href="{% url 'cancel-follow-request' curr_user.id %}" style="width: 100%;">Cancel Follow Request</a>
-                {% endif %}
-          
-                <!-- no request sent -->
-                {% if request_sent == -1 %}
-                    <a class="btn btn-outline-primary" hx-boost="true" hx-trigger="load" hx-target="#request-result"
-                      href="{% url 'send-follow-request' curr_user.id %}" style="width: 100%;">Send Follow Request</a>
-                {% endif %}
-        
-              {% endif %}
-
-              {% if is_follower %}
-                <a class="btn btn-outline-info" href="">Message</a>
-                <a class="btn btn-outline-dark" href="{% url 'decline-follow' curr_user.id  %}">Unfollow</a>
-              {% endif %}
-
-            {% endif %}
-            <div id="request-result"></div>
-          </div>
-
           <div class="m-3">
             <div class="mb-3">
+              <!-- information -->
               <div class="mb-3">
                 <h5 style="text-align: center; font-weight: 600;">Information</h5><hr>
                 <div style="display: flex;">
@@ -59,6 +25,7 @@
                 </div>
               </div>
 
+              <!-- courses -->
               <div class="mb-3">
                 <h5 style="text-align: center; font-weight: 600;">Courses</h5><hr>
                 <div>
@@ -71,10 +38,42 @@
                 </div>
               </div>
 
+              <!-- resources -->
               <div class="mb-3">
                 <h5 style="text-align: center; font-weight: 600;">Resources</h5><hr>
-                <div>
-                  <p><a href="">Chat with this staff.</a></p>
+                <div class="m-2">
+                  {% if request.user != curr_user %}
+      
+                    {% if is_follower == False and is_self == False %}
+      
+                      <!-- they sent you -->
+                      {% if request_sent == 0 %}
+                        <a class="btn btn-outline-success" href="{% url 'accept-follow-request' pending_follow_request_id %}" 
+                          style="width: 100%;">Accept Follow Request</a>
+                        <a class="btn btn-outline-danger" href="{% url 'cancel-follow-request' curr_user.id %}" style="width: 100%;">Cancel</a>
+                      {% endif %}
+      
+                      <!-- you sent them request -->
+                      {% if request_sent == 1 %}
+                          <a class="btn btn-outline-danger" hx-boost="true" hx-trigger="load" hx-target="#request-result"
+                          href="{% url 'cancel-follow-request' curr_user.id %}" style="width: 100%;">Cancel Follow Request</a>
+                      {% endif %}
+                
+                      <!-- no request sent -->
+                      {% if request_sent == -1 %}
+                          <a class="btn btn-outline-primary" hx-boost="true" hx-trigger="load" hx-target="#request-result"
+                            href="{% url 'send-follow-request' curr_user.id %}" style="width: 100%;">Send Follow Request</a>
+                      {% endif %}
+              
+                    {% endif %}
+      
+                    {% if is_follower %}
+                      <a class="btn btn-outline-info" href="">Message</a>
+                      <a class="btn btn-outline-dark" href="{% url 'decline-follow' curr_user.id  %}">Unfollow</a>
+                    {% endif %}
+      
+                  {% endif %}
+                  <div id="request-result"></div>
                 </div>
               </div>
             </div>
@@ -84,6 +83,7 @@
         <!-- profile right side -->
         <div class="white-border col mb-3 pe-0 ps-0" style="height: 600px;">
           <div class="m-3">
+            <!-- followers -->
             <div class="mb-3">
               <h5 style="text-align: center; font-weight: 600;">Followers</h5><hr>
               <div class="mb-2">
@@ -97,6 +97,27 @@
                 {% endfor %}
               </div>
             </div>
+
+            <!-- badges -->
+            <div class="mb-3">
+              <h5 style="text-align: center; font-weight: 600;">Badges</h5><hr>
+              <div class="mb-2">
+                <a href="{% url 'badges' %}">Badges: {{ badges|length }}</a>
+              </div>
+              <div class="row m-0">
+                {% for badge in badges %}
+                <div class="col-3 small-font-size">
+                  <p class="mb-2" style="text-align: center;">{{ badge.name }}</p>
+                  {% if badge.picture %}
+                    <img src="{{ badge.picture.url }}" style="width: 125px; height: 125px;">
+                  {% endif %}
+                  <p style="text-align: center;">{{ badge.description }}</p>
+                    {% empty %}
+                  <p>This staff does not have badges.</p>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -104,43 +125,9 @@
       <div class="row rows-col-2 m-0">
         <!-- profile info side -->
         <section class="white-border me-3 col">
-          <div class="m-2">
-            {% if request.user != curr_user %}
-
-              {% if is_follower == False and is_self == False %}
-
-                <!-- they sent you -->
-                {% if request_sent == 0 %}
-                  <a class="btn btn-outline-success" href="{% url 'accept-follow-request' pending_follow_request_id %}" 
-                    style="width: 100%;">Accept Follow Request</a>
-                  <a class="btn btn-outline-danger" href="{% url 'cancel-follow-request' curr_user.id %}" style="width: 100%;">Cancel</a>
-                {% endif %}
-
-                <!-- you sent them request -->
-                {% if request_sent == 1 %}
-                    <a class="btn btn-outline-danger" hx-boost="true" hx-trigger="load" hx-target="#request-result"
-                    href="{% url 'cancel-follow-request' curr_user.id %}" style="width: 100%;">Cancel Follow Request</a>
-                {% endif %}
-          
-                <!-- no request sent -->
-                {% if request_sent == -1 %}
-                    <a class="btn btn-outline-primary" hx-boost="true" hx-trigger="load" hx-target="#request-result"
-                      href="{% url 'send-follow-request' curr_user.id %}" style="width: 100%;">Send Follow Request</a>
-                {% endif %}
-        
-              {% endif %}
-
-              {% if is_follower %}
-                <a class="btn btn-outline-info" href="">Message</a>
-                <a class="btn btn-outline-dark" href="{% url 'decline-follow' curr_user.id  %}">Unfollow</a>
-              {% endif %}
-
-            {% endif %}
-            <div id="request-result"></div>
-          </div>
-
           <div class="m-3">
             <div class="mb-3">
+              <!-- information -->
               <div class="mb-3">
                 <h5 style="text-align: center; font-weight: 600;">Information</h5><hr>
                 <div class="row">
@@ -156,24 +143,42 @@
                 </div>
               </div>
 
-              <div class="mb-3">
-                <h5 style="text-align: center; font-weight: 600;">Badges</h5><hr>
-                <div>
-                  {% for badge in badges %}
-                    <p>
-                      <span>{{ course.name }}</span>
-                      <span>{{ course.name.url }}</span>
-                    </p>
-                    {% empty %}
-                    <p>This user does not have badges.</p>
-                  {% endfor %}
-                </div>
-              </div>
-
+              <!-- resources -->
               <div class="mb-3">
                 <h5 style="text-align: center; font-weight: 600;">Resources</h5><hr>
-                <div>
-                  <p><a href="">Chat with this user.</a></p>
+                <div class="m-2">
+                  {% if request.user != curr_user %}
+      
+                    {% if is_follower == False and is_self == False %}
+      
+                      <!-- they sent you -->
+                      {% if request_sent == 0 %}
+                        <a class="btn btn-outline-success" href="{% url 'accept-follow-request' pending_follow_request_id %}" 
+                          style="width: 100%;">Accept Follow Request</a>
+                        <a class="btn btn-outline-danger" href="{% url 'cancel-follow-request' curr_user.id %}" style="width: 100%;">Cancel</a>
+                      {% endif %}
+      
+                      <!-- you sent them request -->
+                      {% if request_sent == 1 %}
+                          <a class="btn btn-outline-danger" hx-boost="true" hx-trigger="load" hx-target="#request-result"
+                          href="{% url 'cancel-follow-request' curr_user.id %}" style="width: 100%;">Cancel Follow Request</a>
+                      {% endif %}
+                
+                      <!-- no request sent -->
+                      {% if request_sent == -1 %}
+                          <a class="btn btn-outline-primary" hx-boost="true" hx-trigger="load" hx-target="#request-result"
+                            href="{% url 'send-follow-request' curr_user.id %}" style="width: 100%;">Send Follow Request</a>
+                      {% endif %}
+              
+                    {% endif %}
+      
+                    {% if is_follower %}
+                      <a class="btn btn-outline-info" href="{% url 'create-chatroom' curr_user.id %}">Message</a>
+                      <a class="btn btn-outline-dark" href="{% url 'decline-follow' curr_user.id  %}">Unfollow</a>
+                    {% endif %}
+      
+                  {% endif %}
+                  <div id="request-result"></div>
                 </div>
               </div>
             </div>
@@ -183,6 +188,7 @@
         <!-- profile right side -->
         <div class="white-border col mb-3 pe-0 ps-0" style="height: 600px;">
           <div class="m-3">
+            <!-- followers -->
             <div class="mb-3">
               <h5 style="text-align: center; font-weight: 600;">Followers</h5><hr>
               <div class="mb-2">
@@ -193,6 +199,27 @@
                   <p>{{ follower.name }}</p>
                   {% empty %}
                   <p>This staff does not have followers.</p>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- badges -->
+            <div class="mb-3">
+              <h5 style="text-align: center; font-weight: 600;">Badges</h5><hr>
+              <div class="mb-2">
+                <a href="{% url 'badges' %}">Badges: {{ badges|length }}</a>
+              </div>
+              <div class="row m-0">
+                {% for badge in badges %}
+                <div class="col-3 small-font-size">
+                  <p class="mb-2" style="text-align: center;">{{ badge.name }}</p>
+                  {% if badge.picture %}
+                    <img src="{{ badge.picture.url }}" style="width: 125px; height: 125px;">
+                  {% endif %}
+                  <p style="text-align: center;">{{ badge.description }}</p>
+                    {% empty %}
+                  <p>This staff does not have badges.</p>
+                </div>
                 {% endfor %}
               </div>
             </div>

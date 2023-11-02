@@ -85,20 +85,20 @@
                         <td>{{ quiz.exp }}</td>
                       </tr>
                     {% else %}
-                      <tr  class="table-danger">
+                      <tr class="table-danger">
                         <td>{{ quiz.publication }}</td>
                         <td><a href="{% url 'quiz-result' quiz.id %}">{{ quiz.name }}</a></td>
                         <td>{{ quiz.child_count }}</td>
                         {% if quiz.difficulty == 'Easy' %}
-                          <td style="display: flex; align-items: center; justify-content: center;">
+                          <td style="display: flex; align-items: center;">
                             <span class="badge text-bg-success">{{ quiz.difficulty }}</span>
                           </td>
                         {% elif quiz.difficulty == 'Medium' %}
-                          <td style="display: flex; align-items: center; justify-content: center;">
+                          <td style="display: flex; align-items: center;">
                             <span class="badge text-bg-warning">{{ quiz.difficulty }}</span>
                           </td>
                         {% else %}
-                          <td style="display: flex; align-items: center; justify-content: center;">
+                          <td style="display: flex; align-items: center;">
                             <span class="badge text-bg-danger">{{ quiz.difficulty }}</span>
                           </td>
                         {% endif %}

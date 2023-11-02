@@ -64,9 +64,15 @@
         {% endif %}
       </div>
       
-      <div>
-        <button class="btn btn-outline-primary me-2">Save form</button>
-        <a class="btn btn-secondary" href="{% url 'course' %}">Discard</a>
+      <div style="display: flex; justify-content: space-between;">
+        <div>
+          <button class="btn btn-outline-primary me-2">Save form</button>
+          <a class="btn btn-secondary" href="{% url 'course' %}">Discard</a>
+        </div>
+        <div>
+          <a class="btn btn-danger" data-bs-toggle="modal" 
+            data-bs-target="#exampleModal-delete">Delete</a>
+        </div>
       </div>
     </div>
 
@@ -219,6 +225,26 @@
           <span class="text text-1" id="text-1">Success</span>
           <span class="text text-2" id="text-2">Your changes has been saved</span>
       </div>
+  </div>
+</div>
+
+<!-- delete modal -->
+<div class="modal fade" id="exampleModal-delete" tabindex="-1" 
+  aria-labelledby="exampleModalLabel-delete" aria-hidden="true">
+  <div class="modal-dialog" style="width: 400px;">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-bottom-0">
+        <h1 class="modal-title fs-5">Delete course {{ course.name }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-0">
+        <p>This action will delete the course you are editing. Are you sure to continue ?</p>
+      </div>
+      <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+        <a type="button" class="btn btn-danger" href="{% url 'course-delete' course.id %}">Delete</a>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
   </div>
 </div>
 

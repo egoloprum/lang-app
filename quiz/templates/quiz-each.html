@@ -32,6 +32,7 @@
         {% endfor %}
       </div>
   
+      <!-- time side -->
       <div class="col-3 p-0 ms-3" style="position: sticky; top: 0; height: fit-content;">
         <div class="white-border mb-3">
           <div class="launch-time p-3" style="display: flex; justify-content: space-evenly; align-items: center;">
@@ -57,7 +58,7 @@
           </div>
     
           <div class="m-2" style="display: flex; justify-content: space-between;">
-              <button class="btn btn-primary m-2" style="width: 100%;" type="submit" id="{{ quiz.id }}"">Finish</button>
+              <button class="btn btn-primary m-2" style="width: 100%;" type="submit" id="finish-quiz">Finish</button>
               <a class="btn btn-secondary m-2" style="width: 100%;" href="{% url 'quiz' %}">Discard</a>
           </div>
         </div>
@@ -65,5 +66,11 @@
     </form>
   </div>
 </section>
+
+{% block script %}
+
+{{ quiz.duration|time:'i'|json_script:"json-minute" }}
+
+{% endblock %}
 
 {% endblock %}

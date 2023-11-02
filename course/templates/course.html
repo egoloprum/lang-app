@@ -40,8 +40,9 @@
         <div class="me-2" style="width: 100%;">
           <select class="form-select" name="course-date">
             <option selected>Date</option>
-            <option>With time</option>
-            <option>Without time</option>
+            <option>Started</option>
+            <option>Ended</option>
+            <option>Not yet</option>
           </select>
         </div>
         <!-- search -->
@@ -56,20 +57,24 @@
     <div class="row m-0 ps-5 pe-5">
       {% for course, progress in course_progresses %}
         <div class="col-3 p-3">
-          <div class="white-border p-3">
-            <p class=""><b>{{ course.name }}</b></p>
-            <p class="small-font-size text-muted mb-3">{{ course.created_at|naturaltime }}</p>
-            <div class="mb-4 small-font-size">     
+          <div class="white-border p-3 courses" id="{{ forloop.counter }}">
+            <div class="mb-3">
+              <p class=""><b>{{ course.name }}</b><span class="ms-2 small-font-size text-muted">
+                (<a href="{% url 'profile' course.host.id %}">{{ course.host }}</a>)</span>
+              </p>
+              <p class="small-font-size text-muted">{{ course.created_at|naturaltime }}</p>
+            </div>
+            <div class="mb-4 small-font-size blue-border" style="transform: rotate(-2deg);">     
               {% if course.body == None or course.body == '' or course.body == 'None' %}
-                <p>There is no introduction yet.</p>
+                <p style="font-weight: 600;">There is no introduction yet.</p>
               {% else %}
-                <p>{{ course.body|safe|truncatewords_html:10  }}</p>
+                <p style="font-weight: 600;">{{ course.body|safe|truncatewords_html:10  }}</p>
               {% endif %}
             </div>
 
             {% if course.start_date and course.end_date %}
               <div class="mb-3">
-                <div style="display: flex; justify-content: space-between;">
+                <div class="small-font-size" style="display: flex; justify-content: space-between; font-weight: 600;">
                   <p>Start date</p>
                   <p>End date</p>
                 </div>
@@ -80,18 +85,18 @@
               </div>
             {% endif %}
 
-            <div class="mb-2 small-font-size" style="display: flex; justify-content: space-between;">
-              <p>Progress</p>
-              <p>{% for prog in progress %}
-                {{ prog.value }}
-              {% endfor %} %</p>
-            </div>
+            {% if not request.user.is_staff %}
+              <div class="mb-2 small-font-size" style="display: flex; justify-content: space-between;">
+                <p style="font-weight: 600;">Progress</p>
+                <p style="font-weight: 600;">{% for prog in progress %}{{ prog.value }}{% endfor %} %</p>
+              </div>
 
-            <div class="mb-3" style="height: 10px; border: 1px solid #333; border-radius: 5px;">
-            </div>
-
+              <div class="mb-3" style="height: 10px; border: 1px solid #333; border-radius: 5px;">
+              </div>
+            {% endif %}
+            
             <div class="mb-2">
-              <p class="mb-1">Tags</p>
+              <p class="small-font-size" style="font-weight: 600;">Tags</p>
               <div class="small-font-size">              
                 {% if not course.tag %}
                   <p class="text-muted">There is no tags.</p>
@@ -103,10 +108,10 @@
 
             <div class="mb-2">
               {% if course.publication %}
-              <a class="btn btn-info btn-sm" href="" data-bs-toggle="modal" 
+              <a class="btn btn-dark btn-sm" href="" data-bs-toggle="modal" 
                 data-bs-target="#exampleModal-{{ course.id }}" style="width: 100%;">Here to start</a>
               {% else %}
-              <a class="btn btn-warning btn-sm" href="" data-bs-toggle="modal" 
+              <a class="btn btn-danger btn-sm" href="" data-bs-toggle="modal" 
                 data-bs-target="#exampleModal-{{ course.id }}" style="width: 100%;">Here to start</a>
               {% endif %}
             </div>
@@ -135,9 +140,7 @@
                   <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
                     href="{% url 'course-result' course.id %}" style="color: green;">Result</a>
                   <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
-                  href="{% url 'course-edit' course.id %}" style="color: rgb(221, 232, 23);">Edit</a>
-                  <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
-                  href="" style="color: red;">Delete</a>
+                  href="{% url 'course-edit' course.id %}" style="color: rgb(222, 232, 17);">Edit</a>
                 {% else %}
                   <a class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" 
                     href="{% url 'course-each' course.id %}">
@@ -155,5 +158,19 @@
     </div>
   </div>
 </section>
+
+<script>
+  let courses = document.getElementsByClassName('courses');
+  const course_color = [
+    '#C9E8F2', '#F8E6F4', '#D4DFF1', '#FFE9C2', '#ecc194', '#58f3a8', '#feae49', '#57bee6', '#e6e6e6',
+    '#7ba697', '#f3b790', '#d08fa5', '#3c2973', '#b6bbf9', '#fbc99a', '#d586d7', '#fcdde8', '#cfc2fc',
+    '#61c8a4', '#ffea7b', '#000'
+  ]
+
+  for (let i = 0; i < courses.length; i++) {
+    courses[i].setAttribute("style", `background: ${ course_color[i] }; border: 1px solid #000;`);
+  }
+
+</script>
 
 {% endblock %}

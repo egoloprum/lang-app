@@ -122,6 +122,18 @@ def chatRoom(request):
 
     return render(request, 'chatroom.html', context)
 
+def createChatroom(request, pk):
+    host = request.user
+    chatter = User.objects.get(id=pk)
+    try:
+        chatroom = ChatRoom.objects.get(host=host, name=f"{host.username} + {chatter.username}")
+        return redirect('chatroom')
+    
+    except ChatRoom.DoesNotExist:
+        chatroom = ChatRoom.objects.create(host=host, name=f"{host.username} + {chatter.username}")
+        chatroom.add(chatter)
+        return redirect('chatroom')
+
 @login_required(login_url='login')
 def eachChat(request, pk):
     chatroom = ChatRoom.objects.get(id=pk)

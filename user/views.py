@@ -33,7 +33,15 @@ def loginUser(request):
             try:
                 Profile.objects.get(user=user)
             except Profile.DoesNotExist:
-                Profile.objects.create(user=user)
+                profile = Profile.objects.create(user=user)
+                profile.badge.add(Badge.objects.get(name='Welcome to English Study'))
+                profile.save()
+
+            try:
+                FollowList.objects.get(user=user)
+            except FollowList.DoesNotExist:
+                FollowList.objects.create(user=user)
+
             user.profile.active = True
             user.profile.save()
             return redirect('home')
@@ -68,7 +76,9 @@ def registerUser(request):
         try:
             Profile.objects.get(user=user)
         except Profile.DoesNotExist:
-            Profile.objects.create(user=user)
+            profile = Profile.objects.create(user=user)
+            profile.badge.add(Badge.objects.get(name='Welcome to English Study'))
+            profile.save()
 
         return redirect('home')
 
@@ -80,7 +90,17 @@ def checkUsername(request):
     if User.objects.filter(username=username).exists():
         return HttpResponse("<p>This username already exists</p>")
     else:
-        return HttpResponse("")
+        return HttpResponse("<p>This username is okay</p>")
+    
+def checkPassword(request):
+    password = request.POST.get('password')
+
+    try:
+        validate_password(password)
+    except Exception:
+        return HttpResponse("<p>bad password</p>")
+    
+    return HttpResponse("<p>okay password</p>")
 
 @login_required(login_url='login')
 def logoutUser(request):
@@ -101,7 +121,7 @@ def get_follow_request_or_false(sender, reciever):
 
 @login_required(login_url='login')
 def dashboardPath(request, pk):
-    curr_user = User.objects.get(id=pk)
+    curr_user = User.objects.select_related('user').get(id=pk)
     context = {}
     context['curr_user'] = curr_user
 
@@ -188,9 +208,14 @@ def profilePath(request, pk):
         profile = Profile.objects.get(user=curr_user)
     except Profile.DoesNotExist:
         profile = Profile.objects.create(user=curr_user)
+        profile.badge.add(Badge.objects.get(name='Welcome to English Study'))
+        profile.save()
+        
+    badges = profile.badge.all()
 
     context['curr_user'] = curr_user
     context['profile'] = profile
+    context['badges'] = badges
 
     try:
         follow_list = FollowList.objects.get(user=curr_user)
@@ -231,6 +256,9 @@ def profilePath(request, pk):
                 request_sent = -1
 
     follow_requests = FollowRequest.objects.filter(reciever=curr_user, is_active=True)
+
+    courses = Course.objects.select_related('host').filter(host=curr_user)
+    context['courses'] = courses
 
     context['follow_requests'] = follow_requests
     context['followers'] = followers
@@ -278,8 +306,10 @@ def profileUpdate(request):
             user_profile = Profile.objects.get(user=user)
             user_profile.gender = gender
             user_profile.country = country
+            
             if avatar:
                 user_profile.avatar = avatar
+                user_profile.badge.add(Badge.objects.get(name='New Look'))
             user_profile.save()
 
             return redirect('profile', user.id)
@@ -327,6 +357,13 @@ def profileUpdate(request):
             return redirect('profile-update-account')
 
     return render(request, 'profile-update.html', context)
+
+@login_required(login_url='login')
+def profileDelete(request, pk):
+    user = User.objects.get(id=pk)
+    user.delete()
+    logout(request)
+    return redirect('home')
 
 @login_required(login_url='login')
 def userPath(request):

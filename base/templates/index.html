@@ -1,5 +1,6 @@
 {% extends 'main.html' %}
 {% load static %}
+{% load humanize %}
 {% block content %}
 
 {% if user.is_authenticated %}
@@ -7,60 +8,24 @@
 <section class="m-3">
   <div class="m-3 row">
     <div class="p-3 col-8 white-border">
-      <div class="small-font-size m-2">
-        <p class="text-muted">in 6 days</p>
-        <p>
-          <span>Join our Content <a href="">Biweekly Contest 111</a></span>
-        </p>
-      </div><hr>
-  
-      <div class="small-font-size m-2">
-        <p class="text-muted">in 6 days</p>
-        <p>
-          <span>Join our Content <a href="">Weekly Contest 359</a></span>
-        </p>
-      </div><hr>
-  
-      <div class="small-font-size m-2">
-        <p class="text-muted">in 6 days</p>
-        <p>
-          <span>Join our Content <a href="">Weekly Contest 359</a></span>
-        </p>
-      </div><hr>
-  
-      <div class="small-font-size m-2">
-        <p class="text-muted">a day ago</p>
-        <p>
-          <span>imanishkumar7545 posted All Types of Patterns for Bits Manipulations and How to use it</span>
-        </p>
-        <p>
-          Bitwise Operators: Manipulating Binary Numbers Bitwise operators are powerful tools for manipulating binary numbers. 
-          They operate at the bit level, allowing you to perform various operations efficiently. Here are the most...
-        </p>
-      </div><hr>
-  
-      <div class="small-font-size m-2">
-        <p class="text-muted">a day ago</p>
-        <p>
-          <span>LeetCode posted 🏆 Weekly Contest 358</span>
-        </p>
-        <p>
-          Welcome to Weekly Contest 358! Feel free to share and post your contest experience here!
-          You can also view the rankings for the contest here.
-          Links to the individual problems are included...
-        </p>
-      </div><hr>
-  
-      <div class="small-font-size m-2">
-        <p class="text-muted">a day ago</p>
-        <p>
-          <span>An anonymous user posted Interview Experience | Google India | L4 - Offer</span>
-        </p>
-        <p>
-          Background: ~3 years in a FAANG company Recruiter reached out via LinkedIn Tier-3 college graduate Screening round
-           Question Matching APKs to Devices in Google Play Round 1: A DDA is given where each row has...
-        </p>
-      </div><hr>
+      {% for element in elements %}
+        <div class="m-2">
+          <p class="mb-2 text-muted small-font-size d-flex gap-2">
+            <span>{{ element.end_date|naturaltime }}</span>
+            <span><a href="{% url 'profile' element.host.id %}">{{ element.host.username }}</a></span>
+          </p>
+          <p class="mb-2 gap-2 d-flex flex-row align-items-center">
+            {% if 'Quiz' in element.name %}
+              <span class="small-font-size">Join our quiz</span>
+              <a class="blue-border" style="background: #ffea7b; transform: rotate(2deg);" href="{% url 'quiz' %}">{{ element.name }}</a>
+            {% else %}
+              <span class="small-font-size">Join our course</span>
+              <a class="blue-border" style="transform: rotate(-2deg);" href="{% url 'course' %}">{{ element.name }}</a>
+            {% endif %}
+          </p>
+          <p class="small-font-size">{{ element.body|safe|truncatewords_html:20 }}</p>
+        </div><hr>
+      {% endfor %}
     </div>
   
     <div class="p-3 ms-3 col white-border">

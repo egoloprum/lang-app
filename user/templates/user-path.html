@@ -27,6 +27,7 @@
             <th style="width: 10px;">#</th>
             <th>Username</th>
             <th>Active</th>
+            <th>Role</th>
             <th>Country</th>
             <th>Level</th>
             <th>Badges</th>
@@ -48,6 +49,7 @@
                 False
               {% endif %}
             </td>
+            <td>{% if user.is_staff %}Staff{% else %}User{% endif %}</td>
             <td>{{ user.profile.country }}</td>
             <td>{{ user.profile.level }}</td>
             <td>{{ user.profile.badges.count }}</td>

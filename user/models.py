@@ -16,7 +16,7 @@ class Badge(models.Model):
 
 class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
-  badge = models.ForeignKey(Badge, on_delete=models.CASCADE,null=True , blank=True)
+  badge = models.ManyToManyField(Badge, blank=True)
   points = models.IntegerField(default=0, null=False)
   experience = models.IntegerField(default=0, null=False)
 

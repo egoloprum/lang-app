@@ -11,7 +11,7 @@ from user.models import Completion
 def createCourse(request):
   host = request.user
   course = Course.objects.create(host=host)
-  course.name = f"New Course {course.id}"
+  course.name = f"Course {course.id}"
   course.save()
   return redirect('course-edit', course.id)
 
@@ -31,8 +31,7 @@ def course(request):
 
   if request.user.is_staff:
     for course in courses:
-      progress = Progress.objects.get_or_create(course=course, user=request.user)
-      course_progresses.append(progress)
+      course_progresses.append('course')
 
     course_progresses = zip(courses, course_progresses)
     context = {'topics': topics, 'course_progresses': course_progresses}
@@ -41,7 +40,7 @@ def course(request):
     courses = courses.filter(publication=True)
     for course in courses:
       progress = Progress.objects.get_or_create(course=course, user=request.user)
-      course_progresses.append(progress)
+      course_progresses.append(progress)   
 
     course_progresses = zip(courses, course_progresses)
     context = {'topics': topics, 'course_progresses': course_progresses}
@@ -102,6 +101,12 @@ def editCourse(request, pk):
   }
 
   return render(request, 'course-edit.html', context)
+
+@login_required(login_url='login')
+def deleteCourse(request, pk):
+  course = Course.objects.get(id=pk)
+  course.delete()
+  return redirect('course')
 
 @login_required(login_url='login')
 def resultCourse(request, pk):

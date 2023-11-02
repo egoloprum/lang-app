@@ -20,15 +20,16 @@
       <div class="mb-3" style="display: flex; ">
         <div style="width: 100%; display: flex; align-items: center;" class="me-3 text-nowrap">
           <label class="form-label me-3" style="width: 100px;">Duration</label>
-          <input class="form-control" type="time" name="quiz-duration" value="{{ quiz.duration }}">
+          <input class="form-control" type="time" name="quiz-duration" min="00:00" max="00:59" 
+           value="{{ quiz.duration|time:'H:i' }}">
         </div>
         <div style="width: 100%; display: flex; align-items: center;" class="me-3 text-nowrap">
           <label class="form-label me-3" style="width: 100px;">Start Date</label>
-          <input class="form-control" type="date" name="quiz-start" value="{{ quiz.start_date }}">
+          <input class="form-control" type="date" name="quiz-start" value="{{ quiz.start_date|date:'Y-m-d' }}">
         </div>
         <div style="width: 100%; display: flex; align-items: center;" class="text-nowrap">
           <label class="form-label me-3" style="width: 100px;">End Date</label>
-          <input class="form-control" type="date" name="quiz-end" value="{{ quiz.end_date }}">
+          <input class="form-control" type="date" name="quiz-end" value="{{ quiz.end_date|date:'Y-m-d' }}">
         </div>
       </div>
 
@@ -67,9 +68,15 @@
         {% endif %}
       </div>
       
-      <div>
-        <button class="btn btn-outline-primary me-2">Save form</button>
-        <a class="btn btn-secondary" href="{% url 'quiz' %}">Discard</a>
+      <div style="display: flex; justify-content: space-between;">
+        <div>
+          <button class="btn btn-outline-primary me-2">Save form</button>
+          <a class="btn btn-secondary" href="{% url 'quiz' %}">Discard</a>
+        </div>
+        <div>
+          <a class="btn btn-danger" data-bs-toggle="modal" 
+          data-bs-target="#exampleModal-delete">Delete</a>
+        </div>
       </div>
     </div>
 
@@ -165,5 +172,24 @@
   </div>
 </div>
 
+<!-- delete modal -->
+<div class="modal fade" id="exampleModal-delete" tabindex="-1" 
+  aria-labelledby="exampleModalLabel-delete" aria-hidden="true">
+  <div class="modal-dialog" style="width: 400px;">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-bottom-0">
+        <h1 class="modal-title fs-5">Delete quiz {{ quiz.name }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-0">
+        <p>This action will delete the quiz you are editing. Are you sure to continue ?</p>
+      </div>
+      <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+        <a type="button" class="btn btn-danger" href="{% url 'quiz-delete' quiz.id %}">Delete</a>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}

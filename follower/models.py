@@ -20,7 +20,10 @@ class FollowList(models.Model):
   def unfollow(self, removee):
     remover_followers_list = self
     remover_followers_list.remove_follower(removee)
-    follwers_list = FollowList.objects.get(user=removee)
+    try:
+      follwers_list = FollowList.objects.get(user=removee)
+    except:
+      follwers_list = FollowList.objects.create(user=removee)
     follwers_list.remove_follower(self.user)
 
   def is_mutual_follower(self, follower):
@@ -44,7 +47,11 @@ class FollowRequest(models.Model):
     reciever_follow_list = FollowList.objects.get(user=self.reciever)
     if reciever_follow_list:
       reciever_follow_list.add_follower(self.sender)
-      sender_follow_list = FollowList.objects.get(user=self.sender)
+      try:
+        sender_follow_list = FollowList.objects.get(user=self.sender)
+      except FollowList.DoesNotExist:
+        sender_follow_list = FollowList.objects.create(user=self.sender)
+
       if sender_follow_list:
         sender_follow_list.add_follower(self.reciever)
         self.is_active = True

@@ -1088,7 +1088,9 @@ if (current_url.split('/').find((element) => element == 'quiz') == 'quiz' && cur
     }
   }
 
-  let countdown = 10;
+  let countdown = JSON.parse(document.getElementById('json-minute').textContent);
+  countdown = countdown * 60;
+  console.log(countdown);
   let x = setInterval(function() {
     countdown--;
 
@@ -1100,7 +1102,7 @@ if (current_url.split('/').find((element) => element == 'quiz') == 'quiz' && cur
       document.getElementById("seconds").innerHTML = seconds;
     }
     if (countdown == 0) {
-      // document.getElementById("suka").click();
+      document.getElementById("finish-quiz").click();
     }
   }, 1000);
 

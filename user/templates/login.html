@@ -2,14 +2,6 @@
 {% load static %}
 {% block content %}
 
-{% if messages %}
-  <ul class="messages" style="color:#e80d0d;">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-  </ul>
-{% endif %}
-
 <section style="display: flex; align-items: center; justify-content: center; height: 700px;">
   <div class="white-border m-3 p-3" style="height: 500px; width: 700px; border-radius: 10px; display: flex; 
     flex-direction: column; justify-content: center;">
@@ -37,13 +29,18 @@
             placeholder="Password" style="border-radius: 20px" required>
           </div>
 
+          {% if messages %}
+            <ul class="messages mb-3 small-font-size" style="color:#e80d0d;">
+              {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
           <div class="mb-3">
             <button type="submit" class="btn btn-primary" style="width: 100%; border-radius: 20px;">Login</button>
           </div>
         </form>
-        <div style="text-align: center;">
-          <p>Forgot Username/Password ?</p>
-        </div>
       </div>
     </div>
 

@@ -13,4 +13,5 @@ urlpatterns = [
 
   path('chats', views.chatRoom, name='chatroom'),
   path('chats/<str:pk>', views.eachChat, name='chat-each'),
+  path('chat-create', views.createChatroom, name='create-chatroom'),
 ]

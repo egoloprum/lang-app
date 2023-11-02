@@ -39,17 +39,15 @@ def quiz(request):
 @login_required(login_url='login')
 def quizCreate(request):
     host = request.user
-    quiz = Quiz.objects.create(host=host)
+    quiz = Quiz.objects.create(host=host, name='New Quiz')
     return redirect('quiz-edit', quiz.id)
 
 @login_required(login_url='login')
 def quizDelete(request, pk):
     quiz = Quiz.objects.get(id=pk)
-    try:
-        quiz.delete()
-        return redirect(request.META.get('HTTP_REFERER'))
-    except Exception:
-        return HttpResponse('Something is wrong')
+    quiz.delete()
+    return redirect('quiz')
+
 
 @login_required(login_url='login')
 def quizEdit(request, pk):

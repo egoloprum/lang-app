@@ -13,7 +13,7 @@
             <th>#</th>
             <th>Username</th>
             {% if request.user == curr_user %}
-            <th>Unfollow</th>
+              <th>Unfollow</th>
             {% endif %}
           </tr>
         </thead>
@@ -23,14 +23,18 @@
             <td>{{ forloop.counter }}</td>
             <td>{{ follower.user }}</td>
             {% if request.user == curr_user %}
-            <td><a href="{% url 'decline-follow' follower.id %}" class="btn btn-outline-danger">Unfollow</a></td>
+              <td><a href="{% url 'decline-follow' follower.id %}" hx-boost="true"
+                class="btn btn-sm btn-outline-danger" style="width: 100%;">Unfollow</a>
+              </td>
             {% endif %}
           </tr>
-          {% empty %}
+            {% empty %}
             <tr>
               <td>0</td>
               <td>No followers</td>
-              <td></td>
+              {% if request.user == curr_user %}
+                <td></td>
+              {% endif %}
             </tr>
           {% endfor %}
         </tbody>
@@ -51,7 +55,7 @@
           </tr>
         </thead>
         <tbody class="small-font-size">
-          {% if follow_requests.exists and request.user == curr_user %}
+          {% if request.user == curr_user %}
             {% for request in follow_requests %}
             <tr>
               <td>{{ forloop.counter }}</td>
@@ -61,6 +65,14 @@
               <td><a hx-boost="true" href="{% url 'cancel-request' request.id %}">Cancel</a>
               </td>
             </tr>
+              {% empty %}
+              <tr>
+                <td>No requests</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
             {% endfor %}
           {% endif %}
         </tbody>
@@ -80,21 +92,23 @@
           </tr>
         </thead>
         <tbody class="small-font-size">
-          {% if follow_requests_sent.exists and request.user == curr_user %}
-          {% for request in follow_requests_sent %}
-          <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ request.reciever.user }}</td>
-            <td>{{ request.timestamp }}</td>
-            <td><a hx-boost="true" href="{% url 'cancel-request' request.id %}">Cancel</a>
-            </td>
-          </tr>
-          {% empty %}
-            <tr>
-              <td>0</td>
-              <td>No followers</td>
-            </tr>
-          {% endfor %}
+          {% if request.user == curr_user %}
+            {% for request in follow_requests_sent %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ request.reciever.user }}</td>
+                <td>{{ request.timestamp }}</td>
+                <td><a hx-boost="true" href="{% url 'cancel-request' request.id %}">Cancel</a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td>0</td>
+                <td>No followers</td>
+                <td></td>
+                <td></td>
+              </tr>
+            {% endfor %}
           {% endif %}
         </tbody>
       </table>
