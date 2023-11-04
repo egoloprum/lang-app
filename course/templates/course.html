@@ -54,9 +54,9 @@
     </div><hr>
 
     <!-- course side div -->
-    <div class="row m-0 ps-5 pe-5">
+    <div class="row d-flex flex-wrap justify-content-between m-0 ps-5 pe-5">
       {% for course, progress in course_progresses %}
-        <div class="col-3 p-3">
+        <div class="col p-3" style="min-width: 250px; max-width: 300px;">
           <div class="white-border p-3 courses" id="{{ forloop.counter }}">
             <div class="mb-3">
               <p class=""><b>{{ course.name }}</b><span class="ms-2 small-font-size text-muted">
@@ -162,9 +162,12 @@
 <script>
   let courses = document.getElementsByClassName('courses');
   const course_color = [
-    '#C9E8F2', '#F8E6F4', '#D4DFF1', '#FFE9C2', '#ecc194', '#58f3a8', '#feae49', '#57bee6', '#e6e6e6',
-    '#7ba697', '#f3b790', '#d08fa5', '#3c2973', '#b6bbf9', '#fbc99a', '#d586d7', '#fcdde8', '#cfc2fc',
-    '#61c8a4', '#ffea7b', '#000'
+    '#C9E8F2', '#F8E6F4', '#D4DFF1', '#FFE9C2', '#ecc194', '#58f3a8', '#feae49', '#57bee6',
+    '#7ba697', '#f3b790', '#d08fa5', '#b6bbf9', '#fbc99a', '#d586d7', '#fcdde8', '#cfc2fc',
+    '#61c8a4', '#ffea7b', '#e6e6e6', '#C9E8F2', '#F8E6F4', '#D4DFF1', '#FFE9C2', '#ecc194',
+    '#C9E8F2', '#F8E6F4', '#D4DFF1', '#FFE9C2', '#ecc194', '#58f3a8', '#feae49', '#57bee6',
+    '#7ba697', '#f3b790', '#d08fa5', '#b6bbf9', '#fbc99a', '#d586d7', '#fcdde8', '#cfc2fc',
+    '#61c8a4', '#ffea7b', '#e6e6e6', '#C9E8F2', '#F8E6F4', '#D4DFF1', '#FFE9C2', '#ecc194',
   ]
 
   for (let i = 0; i < courses.length; i++) {

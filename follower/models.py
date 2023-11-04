@@ -82,3 +82,20 @@ class Message(models.Model):
 
   def __str__(self):
     return f"{self.body} by {self.user.username} in {self.room.name}"
+
+class Notification(models.Model):
+  user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notif_sender')
+  body = models.TextField(null=True, blank=True)
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  is_read = models.BooleanField(default=False)
+
+  def __str__(self):
+    return f"{self.user} has recieved {self.body}"
+
+class NotificationList(models.Model):
+  user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='list_user')
+  notification = models.ManyToManyField(Notification, related_name='list_notification')
+
+  def __str__(self):
+    return f"{self.user.username}"

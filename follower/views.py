@@ -153,3 +153,13 @@ def eachChat(request, pk):
     }
 
     return render(request, 'chat-each.html', context)
+
+@login_required(login_url='login')
+def Notifications(request):
+    user = request.user
+    notifications = NotificationList.objects.get(user=user).notification.all()
+    context = {
+        'notifications': notifications,
+    }
+
+    return render(request, 'notifications.html', context)

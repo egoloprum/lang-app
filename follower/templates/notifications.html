@@ -1,0 +1,18 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<section class="m-3">
+   <div class="m-3">
+      <div class="p-3 white-border" id="notification-div">
+         <h5>Notifications</h5>
+         <ul>
+            {% for notif in notifications %}
+               <li>{{ notif.body }}</li>
+            {% endfor %}
+         </ul>
+      </div>
+   </div>
+</section>
+
+{% endblock %}

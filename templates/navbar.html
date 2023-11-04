@@ -10,7 +10,10 @@
     </div>
     <div>
       <a class="me-3" style="text-decoration: none;" href="{% url 'user-path' %}">Users</a>
-      <a class="me-3" style="text-decoration: none;" href=""><i class="fa-regular fa-bell"></i></a>  
+      <a class="me-3" style="text-decoration: none;" href="{% url 'notifications' %}">
+        <span id="notification-bell"></span>
+        <i class="fa-regular fa-bell"></i>
+      </a>
       <a class="me-3" style="text-decoration: none;" href="{% url 'profile' request.user.id %}">
         <i class="fa-regular fa-user"></i>
       </a>

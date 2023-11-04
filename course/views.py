@@ -40,7 +40,7 @@ def course(request):
     courses = courses.filter(publication=True)
     for course in courses:
       progress = Progress.objects.get_or_create(course=course, user=request.user)
-      course_progresses.append(progress)   
+      course_progresses.append(progress)
 
     course_progresses = zip(courses, course_progresses)
     context = {'topics': topics, 'course_progresses': course_progresses}
@@ -63,8 +63,6 @@ def editCourse(request, pk):
     start = None if request.POST.get('course-start') == '' else request.POST.get('course-start')
     end = None if request.POST.get('course-end') == '' else request.POST.get('course-end')
     public = True if request.POST.get('course-public') == 'on' else False
-
-    print(start)
 
     course.name = name
     course.body = body
@@ -208,7 +206,6 @@ def deleteChapter(request, pk):
 
 @login_required(login_url='login')
 def editChapter(request, id, pk):
-  print(id, pk)
   content = Content.objects.get(id=id)
   course = Course.objects.get(id=pk)
   quizs = Quiz.objects.filter(content=content).annotate(questions_count=models.Count('question_quiz'))

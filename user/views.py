@@ -12,7 +12,7 @@ from django.contrib.auth.password_validation import validate_password
 from .models import *
 from course.models import Course
 from quiz.models import Quiz, Result, Average_score
-from follower.models import FollowList, FollowRequest
+from follower.models import FollowList, FollowRequest, NotificationList
 
 def loginUser(request):
     context = {}
@@ -41,6 +41,11 @@ def loginUser(request):
                 FollowList.objects.get(user=user)
             except FollowList.DoesNotExist:
                 FollowList.objects.create(user=user)
+
+            try:
+                NotificationList.objects.get(user=user)
+            except NotificationList.DoesNotExist:
+                NotificationList.objects.create(user=user)
 
             user.profile.active = True
             user.profile.save()
@@ -79,6 +84,11 @@ def registerUser(request):
             profile = Profile.objects.create(user=user)
             profile.badge.add(Badge.objects.get(name='Welcome to English Study'))
             profile.save()
+
+        try:
+            NotificationList.objects.get(user=user)
+        except NotificationList.DoesNotExist:
+            NotificationList.objects.create(user=user)
 
         return redirect('home')
 

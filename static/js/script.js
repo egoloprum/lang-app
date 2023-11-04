@@ -1591,55 +1591,6 @@ if (current_url.split('/').find((element) => element == 'quiz') == 'quiz' && cur
 
 // profile-update.html
 if (current_url == 'user/profile-update/account') {
-  const profile_update_password = document.querySelector("#profile-update-password");
-  const profile_update_length = document.querySelector(".profile-update-requirement-1");
-  const profile_update_letters = document.querySelector(".profile-update-requirement-2");
-  const profile_update_cap_letters = document.querySelector(".profile-update-requirement-3");
-  const profile_update_numbers = document.querySelector(".profile-update-requirement-4");
-
-  profile_update_password.addEventListener("keyup", (e) => {
-    var lowerCaseLetters = /[a-z]/g;
-    var upperCaseLetters = /[A-Z]/g;
-    var numbers = /[0-9]/g;
-    var password = profile_update_password.value;
-
-    if(password.length >= 8) {
-      profile_update_length.style.color = "green";
-      profile_update_length.style.fontWeight = 500;
-    }
-    else {
-      profile_update_length.style.color = "grey";
-      profile_update_length.style.fontWeight = 400;
-    }
-
-    if(password.match(lowerCaseLetters)) {
-      profile_update_letters.style.color = "green";
-      profile_update_letters.style.fontWeight = 500;
-    }
-    else {
-      profile_update_letters.style.color = "grey";
-      profile_update_letters.style.fontWeight = 400;
-    }
-
-    if(password.match(upperCaseLetters)) {
-      profile_update_cap_letters.style.color = "green";
-      profile_update_cap_letters.style.fontWeight = 500;
-    }
-    else {
-      profile_update_cap_letters.style.color = "grey";
-      profile_update_cap_letters.style.fontWeight = 400;
-    }
-
-    if(password.match(numbers)) {
-      profile_update_numbers.style.color = "green";
-      profile_update_numbers.style.fontWeight = 500;
-    }
-    else {
-      profile_update_numbers.style.color = "grey";
-      profile_update_numbers.style.fontWeight = 400;
-    }
-
-  });
 
 }
 
@@ -1699,3 +1650,29 @@ if (current_url == 'calendar') {
       });
   });
 }
+
+var notificationSocket = new WebSocket(
+  'ws://'
+  + window.location.host
+  + '/ws/'
+  + 'follower/notifications'
+)
+
+notificationSocket.onopen = function (e) {
+  console.log('Notication socket connected');
+}
+notificationSocket.onclose = function (e) {
+  console.log('Notification socket closed');
+}
+
+var number = 0;
+notificationSocket.onmessage = function (e) {
+  const data = JSON.parse(e.data);
+  console.log(data.notif_body);
+
+  if (data.notif_body) {
+    let notif_bell = document.getElementById('notification-bell');
+    notif_bell.innerHTML = data.notif_count;
+  }
+}
+

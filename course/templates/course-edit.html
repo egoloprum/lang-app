@@ -3,7 +3,7 @@
 {% block content %}
 
 <section class="m-3 p-3">
-  <form method="POST" action="">
+  <form method="POST" action="" id="course-edit-form">
     {% csrf_token %}
 
     <div class="white-border p-4 mb-4">
@@ -58,15 +58,15 @@
       <div class="mb-3">
         <label class="form-label me-3">Publication</label>
         {% if course.publication == True %}
-          <input type="checkbox" name="course-public" checked>
+          <input type="checkbox" class="form-check-input" name="course-public" id="course-publication" checked>
         {% else %}
-          <input type="checkbox" name="course-public">
+          <input type="checkbox" class="form-check-input" name="course-public" id="course-publication">
         {% endif %}
       </div>
       
       <div style="display: flex; justify-content: space-between;">
         <div>
-          <button class="btn btn-outline-primary me-2">Save form</button>
+          <button class="btn btn-outline-primary me-2" id="course-edit-button">Save form</button>
           <a class="btn btn-secondary" href="{% url 'course' %}">Discard</a>
         </div>
         <div>
@@ -247,5 +247,49 @@
     </div>
   </div>
 </div>
+
+{% block script %}
+
+{{ course.name|json_script:"json-course-name" }}
+{{ request.user.username|json_script:"json-request-user" }}
+{{ course.host.username|json_script:"json-course-host" }}
+
+<script>
+  var course_name = JSON.parse(document.getElementById('json-course-name').textContent);
+  var course_host = JSON.parse(document.getElementById('json-course-host').textContent);
+  var request_user = JSON.parse(document.getElementById('json-request-user').textContent);
+
+  try {
+    document.querySelector('#course-edit-form').addEventListener('submit', 
+      function(e) {
+
+        let course_public = document.getElementById('course-publication');
+        let notif_body = `${ course_host } has just created ${ course_name } course. Find out more.`;
+
+        if(course_public.checked) {
+          const data = {
+            'type_data': 'course-edit',
+            'notif_body': notif_body,
+            'course_name': course_name,
+            'course_host': course_host,
+            'request_user': request_user,
+          }
+          notificationSocket.send(JSON.stringify(data));
+
+          let edit_btn = document.getElementById('course-edit-button');
+          edit_btn.click();
+        }
+        else {
+          console.log(`${ course_name } is not published`);
+        }
+      }
+    );
+  }
+  catch (e) {
+    console.log(e);
+  }
+</script>
+
+{% endblock %}
 
 {% endblock %}

@@ -168,10 +168,10 @@
     + 'chats/'
     + roomName
     + '/'
-    );
+  );
 
   chatSocket.onopen = function (e) {
-    console.log('Socket connected');
+    console.log('Chat socket connected');
   }
 
   chatSocket.onmessage = function(e) {
@@ -214,7 +214,7 @@
       message_form.append(message_time);
       message.append(message_form);
 
-    document.getElementById('messages').append(message);
+      document.getElementById('messages').append(message);
     } 
     else {
       alert('The message was empty!');
@@ -224,7 +224,7 @@
   };
 
   chatSocket.onclose = function(e) {
-    console.log('Socked disconnected');
+    console.log('Chat socked disconnected');
   }
   
   document.querySelector('#chat-message-submit').onclick = function(e) {
