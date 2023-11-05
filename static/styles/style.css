@@ -109,13 +109,6 @@ body li {
   font-size: 13px;
 }
 
-.success {
-  color: green;
-}
-.error {
-  color: red;
-}
-
 .wrapper{
   width: 100%;
   background: #fff;

@@ -7,58 +7,25 @@
     <!-- search bar -->
     <div class="mb-3">
       <label class="form-label">Search User</label>
-      <form method="POST" action="">
+      <form method="POST" action="" class="d-flex flex-row gap-2">
         {% csrf_token %}
-        <input class="form-control" type="search" name="q">
+        <input class="form-control" type="search" name="search-users" 
+          hx-post="{% url 'search-user-path' %}" hx-target="#users-table" 
+          hx-trigger="keyup changed delay:500ms">
+
+        <select class="form-select" name="search-type">
+          <option>Type user</option>
+          <option>User</option>
+          <option>Staff</option>
+        </select>
+
+        <button class="btn btn-outline-success" hx-post="{% url 'search-user-path' %}" 
+          hx-boost="true" hx-target="#users-table">Search</button>
       </form>
-      {% if messages %}
-        <ul class="messages" style="color:#e80d0d;">
-          {% for message in messages %}
-          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
     </div>
 
-    <div class="p-3">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th style="width: 10px;">#</th>
-            <th>Username</th>
-            <th>Active</th>
-            <th>Role</th>
-            <th>Country</th>
-            <th>Level</th>
-            <th>Badges</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for user in users %}
-          <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>
-              <a href="{% url 'profile' user.id %}">
-                <img src="{{ user.profile.avatar.url }}" style="width: 30px; border-radius: 50%;" class="me-2 ms-2">{{ user.username }}
-              </a>
-            </td>
-            <td>
-              {% if user.profile.active %}
-                Active now
-              {% else %}
-                False
-              {% endif %}
-            </td>
-            <td>{% if user.is_staff %}Staff{% else %}User{% endif %}</td>
-            <td>{{ user.profile.country }}</td>
-            <td>{{ user.profile.level }}</td>
-            <td>{{ user.profile.badges.count }}</td>
-          </tr>
-          {% empty %}
-            There is no user.
-          {% endfor %}
-        </tbody>
-      </table>
+    <div class="p-3" id="users-table">
+      {% include 'user-path-partial.html' %}
     </div>
   </div>
 </section>

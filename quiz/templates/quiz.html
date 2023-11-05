@@ -5,150 +5,43 @@
 
 <section class="m-3">
   <div class="white-border p-3 m-3">
-    <div class="row">  
+    <form class="d-flex justify-content-between gap-2" method="POST" action="">  
+      {% csrf_token %}
       <div class="col">
-        <input type="search" class="form-control" placeholder="Search...">
+        <input type="search" class="form-control" name="search-quiz" placeholder="Search..."
+          hx-post="{% url 'search-quiz' %}" hx-target="#quiz-table" hx-trigger="keyup changed delay:500ms">
       </div>
-
       <div class="col">
-        <select class="form-select">
-          <option selected><a hx-boost="true" class="form-control" href="{% url 'quiz' %}">All</a></option>
-          {% for diff in difficulties %}
-              <option class="difficulty-color"><a hx-boost="true" class="form-control" href="{% url 'quiz' %}?q={{diff}}">{{ diff|title }}</a></option>
-          {% endfor %}
-        </select>
-      </div>
-    </div>
-
-    <div class="mt-3" style="display: flex; justify-content: space-between;">
-      <div class="me-2" style="width: 100%;">
-        <select class="form-select">
-          <option selected>Status</option>
+        <select class="form-select" name="search-status">
+          <option>Status</option>
           <option>Not Started</option>
           <option>Failed</option>
           <option>Solved</option>
         </select>
       </div>
-      <div class="me-2" style="width: 100%;">
-        <select class="form-select">
-          <option selected>Difficulty</option>
+      <div class="col">
+        <select class="form-select" name="search-difficulty">
+          <option>Difficulty</option>
           <option>Easy</option>
           <option>Medium</option>
           <option>Hard</option>
         </select>
       </div>
-      <div class="me-2" style="width: 100%;">
-        <select class="form-select">
-          <option selected>Access</option>
-          <option>Free</option>
-          <option>Premium</option>
-        </select>
-      </div>
-      <div style="width: 100%;">
-        <select class="form-select">
-          <option selected>Date</option>
+      <div class="col">
+        <select class="form-select" name="search-date">
+          <option>Date</option>
           <option>Not Started</option>
           <option>Started</option>
           <option>Finished</option>
         </select>
       </div>
-    </div><hr>
+      <div class="col">
+        <button class="btn btn-outline-success" hx-post="{% url 'search-quiz' %}" hx-boost="true" hx-target="#quiz-table">Search</button>
+      </div>
+    </form>
 
-    <div class="row p-3 pb-0">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th scope="col">Status</th>
-            <th scope="col">Title</th>
-            <th scope="col">Created by</th>
-            <th scope="col">Questions</th>
-            <th scope="col">Difficulty</th>
-            <th scope="col">Acceptance</th>
-            <th scope="col">Duration</th>
-            <th scope="col">Started</th>
-            <th scope="col">Ended</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for quiz in quizs %}
-            {% if quiz.publication %}
-            <tr>
-            {% else %}
-            <tr class="table-danger">
-            {% endif %}
-              <td>
-                {% for comp in completions %}
-                  {% if comp.quiz == quiz %}
-                    Solved
-                    {{ break }}
-                  {% endif %}
-                {% endfor %}
-              </td>
-              <td><a href="" data-bs-toggle="modal" data-bs-target="#exampleModal-{{ quiz.id }}">
-                {{ forloop.counter }}. {{ quiz.name }}
-                </a></td>
-              <td>{{ quiz.host }}</td>
-              <td>{{ quiz.child_count }}</td>
-              <td style="display: flex; align-items: center;">
-                {% if quiz.difficulty is None %}
-                  <span>--</span>
-                {% else %}
-                  {% if quiz.difficulty == 'Easy' %}<span class="badge text-bg-success">{{ quiz.difficulty }}</span>
-                  {% elif quiz.difficulty == 'Medium' %}<span class="badge text-bg-warning">{{ quiz.difficulty }}</span>
-                  {% else %}<span class="badge text-bg-danger">{{ quiz.difficulty }}</span>{% endif %}
-                {% endif %}
-              </td>
-
-              <td>
-                {% if quiz.required_score is None %}
-                  --
-                {% else %}
-                  {{ quiz.required_score }} %
-                {% endif %}
-              </td>
-              <td>{% if quiz.duration %}{{ quiz.duration|date:"i" }}{% else %}0{% endif %} minutes</td>
-              <td>{% if quiz.start_date %}{{ quiz.start_date|date:"Y-m-d" }}{% else %}--{% endif %}</td>
-              <td>{% if quiz.end_date %}{{ quiz.end_date|date:"Y-m-d" }}{% else %}--{% endif %}</td>
-            </tr>
-
-            <!-- start-modal -->
-            <div class="modal fade" id="exampleModal-{{ quiz.id }}" tabindex="-1" aria-labelledby="exampleModalLabel-{{ quiz.id }}" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content rounded-3 shadow">
-                  <div class="modal-body p-4 text-center" id="modal-body">
-                    <div style="display: flex; align-items: center; justify-content: end;">
-                      <h5 class="pe-3">Please choose your action</h5>
-                      <a class="btn-close mb-2 ms-5" type="button" aria-label="close" 
-                      data-bs-dismiss="modal"></a>
-                    </div>
-                    <p>You can always change your mind.</p>
-                  </div>
-                  <div class="modal-footer flex-nowrap p-0">
-                    {% if request.user == quiz.host %}
-                      <a class="btn btn-lg btn-link fs-6 text-decoration-none text-nowrap col py-3 m-0 rounded-0 border-end" 
-                        href="{% url 'quiz-each' quiz.id %}">
-                        <strong>Start test</strong>
-                      </a>
-                      <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
-                        href="{% url 'quiz-result' quiz.id %}" style="color: green;">Result</a>
-                      <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
-                      href="{% url 'quiz-edit' quiz.id %}" style="color: rgb(221, 232, 23);">Edit</a>
-                    {% else %}
-                      <a class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" 
-                        href="{% url 'quiz-each' quiz.id %}">
-                        <strong>Start test</strong>
-                      </a>
-                      <a class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"
-                        href="{% url 'quiz-result' quiz.id %}">Result</a>
-                    {% endif %}
-
-                  </div>                  
-                </div>
-              </div>
-            </div>
-          {% endfor %}
-        </tbody>
-      </table>
+    <div class="row p-3 pb-0" id="quiz-table">
+      {% include 'quiz-partial.html' %}
     </div>
   </div>
 </section>

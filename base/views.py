@@ -11,8 +11,10 @@ from follower.models import NotificationList
 def home(request):
     courses = Course.objects.select_related('host').order_by('-start_date')[:5]
     quizs = Quiz.objects.select_related('host').order_by('-start_date')[:5]
+    list_count = 0
 
-    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+    if request.user.is_authenticated:
+        list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
     elements = set(chain(courses, quizs))
 

@@ -48,9 +48,12 @@
       
                       <!-- they sent you -->
                       {% if request_sent == 0 %}
+                      <div class="d-flex flex-column gap-2">
                         <a class="btn btn-outline-success" href="{% url 'accept-follow-request' pending_follow_request_id %}" 
                           style="width: 100%;">Accept Follow Request</a>
-                        <a class="btn btn-outline-danger" href="{% url 'cancel-follow-request' curr_user.id %}" style="width: 100%;">Cancel</a>
+                        <a class="btn btn-outline-danger" href="{% url 'cancel-follow-request' curr_user.id %}" 
+                          style="width: 100%;">Cancel</a>
+                      </div>
                       {% endif %}
       
                       <!-- you sent them request -->
@@ -68,8 +71,10 @@
                     {% endif %}
       
                     {% if is_follower %}
-                      <a class="btn btn-outline-info" href="">Message</a>
-                      <a class="btn btn-outline-dark" href="{% url 'decline-follow' curr_user.id  %}">Unfollow</a>
+                      <div class="d-flex flex-column gap-2">
+                        <a class="btn btn-outline-info" href="{% url 'create-chatroom' curr_user.id %}">Message</a>
+                        <a class="btn btn-outline-dark" href="{% url 'decline-follow' curr_user.id  %}">Unfollow</a>
+                      </div>
                     {% endif %}
       
                   {% endif %}
@@ -153,9 +158,12 @@
       
                       <!-- they sent you -->
                       {% if request_sent == 0 %}
+                      <div class="d-flex flex-column gap-2">
                         <a class="btn btn-outline-success" href="{% url 'accept-follow-request' pending_follow_request_id %}" 
                           style="width: 100%;">Accept Follow Request</a>
-                        <a class="btn btn-outline-danger" href="{% url 'cancel-follow-request' curr_user.id %}" style="width: 100%;">Cancel</a>
+                        <a class="btn btn-outline-danger" href="{% url 'cancel-follow-request' curr_user.id %}" 
+                          style="width: 100%;">Cancel</a>
+                      </div>
                       {% endif %}
       
                       <!-- you sent them request -->
@@ -173,8 +181,10 @@
                     {% endif %}
       
                     {% if is_follower %}
+                    <div class="d-flex flex-column gap-2">
                       <a class="btn btn-outline-info" href="{% url 'create-chatroom' curr_user.id %}">Message</a>
                       <a class="btn btn-outline-dark" href="{% url 'decline-follow' curr_user.id  %}">Unfollow</a>
+                    </div>
                     {% endif %}
       
                   {% endif %}

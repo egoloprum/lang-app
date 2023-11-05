@@ -118,7 +118,7 @@ def decline_follow(request, pk):
 
 @login_required(login_url='login')
 def chatRoom(request):
-    chatrooms = ChatRoom.objects.select_related('host')
+    chatrooms = ChatRoom.objects.select_related('host').filter(user=request.user).order_by('-created_at')
     list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
     context = {
@@ -132,13 +132,42 @@ def createChatroom(request, pk):
     host = request.user
     chatter = User.objects.get(id=pk)
     try:
-        chatroom = ChatRoom.objects.get(host=host, name=f"{host.username} + {chatter.username}")
-        return redirect('chatroom')
-    
+        chatroom = ChatRoom.objects.get(host=host, name=f"{host.username}_{chatter.username}")
+        chatroom.user.add(chatter)
+        chatroom.user.add(host)
+
     except ChatRoom.DoesNotExist:
-        chatroom = ChatRoom.objects.create(host=host, name=f"{host.username} + {chatter.username}")
-        chatroom.add(chatter)
-        return redirect('chatroom')
+        try:
+            chatroom = ChatRoom.objects.get(host=chatter, name=f"{chatter.username}_{host.username}")
+        except ChatRoom.DoesNotExist:
+            chatroom = ChatRoom.objects.create(host=host, name=f"{host.username}_{chatter.username}")
+            chatroom.user.add(chatter)
+            chatroom.user.add(host)
+
+    return redirect('chatroom')    
+
+def leaveChat(request, pk):
+    leaver = request.user
+    chatroom = ChatRoom.objects.get(id=pk)
+    chatroom.user.remove(leaver)
+    return redirect('chatroom')
+
+def addChat(request, pk, name):
+    chatroom = ChatRoom.objects.get(id=pk)
+    user = User.objects.get(username=name)
+    chatroom.user.add(user)
+    return HttpResponse('Successfully added user')
+
+def removeChat(request, pk, name):
+    chatroom = ChatRoom.objects.get(id=pk)
+    user = User.objects.get(username=name)
+    chatroom.user.remove(user)
+    return HttpResponse('Successfully removed user')
+
+def deleteChat(request, pk):
+    chatroom = ChatRoom.objects.get(id=pk)
+    chatroom.delete()
+    return redirect('chatroom')
 
 @login_required(login_url='login')
 def eachChat(request, pk):

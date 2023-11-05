@@ -21,7 +21,7 @@
           {% for follower in follow_list %}
           <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ follower.user }}</td>
+            <td><a href="{% url 'profile' follower.user.id %}">{{ follower.user }}</a></td>
             {% if request.user == curr_user %}
               <td><a href="{% url 'decline-follow' follower.id %}" hx-boost="true"
                 class="btn btn-sm btn-outline-danger" style="width: 100%;">Unfollow</a>
@@ -59,7 +59,7 @@
             {% for request in follow_requests %}
             <tr>
               <td>{{ forloop.counter }}</td>
-              <td>{{ request.sender.username }}</td>
+              <td><a href="{% url 'profile' request.sender.id %}"></a>{{ request.sender.username }}</td>
               <td>{{ request.timestamp }}</td>
               <td><a href="{% url 'accept-follow-request' request.id %}">Accept</a></td>
               <td><a hx-boost="true" href="{% url 'cancel-request' request.id %}">Cancel</a>
@@ -96,7 +96,7 @@
             {% for request in follow_requests_sent %}
               <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{ request.reciever.user }}</td>
+                <td><a href="{% url 'profile' request.reciever.user.id %}">{{ request.reciever.user }}</a></td>
                 <td>{{ request.timestamp }}</td>
                 <td><a hx-boost="true" href="{% url 'cancel-request' request.id %}">Cancel</a>
                 </td>

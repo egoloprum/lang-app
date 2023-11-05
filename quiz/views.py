@@ -24,20 +24,43 @@ def quiz(request):
     # sort_diff = ['a', 'e', 'i',]
     # difficulties.sort(key = lambda i: sort_diff.index(i[0]))     
 
-    if request.method == 'POST':
-        quiz_id = Quiz.objects.get(pk=request.POST.get('quiz-id'))
-        quiz_id.delete()
+    context = {}
 
     completions = Completion.objects.filter(user=request.user, completed=True).select_related('quiz')
     list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+    context['completions'] = completions
+    context['list_count'] = list_count
 
     if request.user.is_staff:
         quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(content=None, course=None)
-        context = {'quizs': quizs, 'completions': completions, 'list_count' : list_count,}
+        context['quizs'] = quizs
     else:
         quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(publication=True, content=None, course=None)
-        context = {'quizs': quizs, 'completions': completions, 'list_count': list_count,}
+        context['quizs'] = quizs
+
     return render(request, 'quiz.html', context)
+
+def searchQuiz(request):
+    search_quiz = request.POST.get('search-quiz')
+    search_status = request.POST.get('search-status')
+    search_diff = '' if request.POST.get('search-difficulty') == 'Difficulty' else request.POST.get('search-difficulty')
+    search_date = request.POST.get('search-date')
+    context = {}
+
+    if request.user.is_staff:
+        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(
+            content=None, course=None)
+        
+        quizs = quizs.filter(Q(name__icontains=search_quiz, difficulty=search_diff))
+        context['quizs'] = quizs
+    else:
+        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(
+            publication=True, content=None, course=None)
+        
+        quizs = quizs.filter(Q(name__icontains=search_quiz, difficulty=search_diff))
+        context['quizs'] = quizs
+
+    return render(request, 'quiz-partial.html', context)
 
 @login_required(login_url='login')
 def quizCreate(request):

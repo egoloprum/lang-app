@@ -10,6 +10,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.password_validation import validate_password
 
 from .models import *
+from django.db.models import Q
 from course.models import Course
 from quiz.models import Quiz, Result, Average_score
 from follower.models import FollowList, FollowRequest, NotificationList
@@ -385,27 +386,23 @@ def profileDelete(request, pk):
 
 @login_required(login_url='login')
 def userPath(request):
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
     users = User.objects.select_related('profile').exclude(id=request.user.id)
 
-    if request.method == 'POST':
-        username = request.POST.get('q').lower()
-
-        if users.filter(username__startswith=username).exists():
-            users = users.filter(username__startswith=username)
-            return redirect('user-path')
-
-        elif username == '':
-            users = users
-            return redirect('user-path')
-        else:
-            messages.error(request, 'This user does not exist')
-            return redirect('user-path')
-
-    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
-
-    context = {'users': users, 'list_count': list_count,}
-
+    context = {'list_count': list_count, 'users': users}
     return render(request, 'user-path.html', context)
+
+def searchUserpath(request):
+    search_users = request.POST.get('search-users')
+    search_type = True if request.POST.get('search-type') == 'Staff' else False
+
+    users = User.objects.select_related('profile').exclude(id=request.user.id)
+    users = users.filter(Q(username__icontains=search_users, is_staff=search_type))
+
+    context = {
+        'users': users,
+    }
+    return render(request, 'user-path-partial.html', context)
 
 def badges(request):
     badges = Badge.objects.select_related()

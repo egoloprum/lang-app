@@ -22,6 +22,7 @@ urlpatterns = [
   path('delete', views.deleteUser, name='delete'), 
 
   path('user-path', views.userPath, name='user-path'),
+  path('search-users', views.searchUserpath, name='search-user-path'),
   path('badges', views.badges, name='badges'),
 ]
 
