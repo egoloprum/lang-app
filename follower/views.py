@@ -9,7 +9,10 @@ from .models import *
 @login_required(login_url='login')
 def followerList(request, pk):
     curr_user = User.objects.get(id=pk)
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
     context = {}
+    context['list_count'] = list_count
 
     try:
         follow_list = FollowList.objects.get(user=curr_user)
@@ -116,8 +119,11 @@ def decline_follow(request, pk):
 @login_required(login_url='login')
 def chatRoom(request):
     chatrooms = ChatRoom.objects.select_related('host')
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
     context = {
         'chatrooms': chatrooms,
+        'list_count': list_count,
     }
 
     return render(request, 'chatroom.html', context)
@@ -140,16 +146,16 @@ def eachChat(request, pk):
     chatroom.user.add(request.user)
 
     out_users = User.objects.filter(chatroom_user=None)
-
     chatroom_users = chatroom.user.all()
-
     messages = Message.objects.select_related('user').filter(room=chatroom)
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
     context = {
         'chatroom': chatroom,
         'messages': messages,
         'out_users': out_users,
         'chatroom_users': chatroom_users,
+        'list_count': list_count,
     }
 
     return render(request, 'chat-each.html', context)
@@ -157,9 +163,12 @@ def eachChat(request, pk):
 @login_required(login_url='login')
 def Notifications(request):
     user = request.user
-    notifications = NotificationList.objects.get(user=user).notification.all()
+    notifications = NotificationList.objects.get(user=user).notification.all().order_by('-created_at')
+    list_count = notifications.count()
+
     context = {
         'notifications': notifications,
+        'list_count': list_count,
     }
 
     return render(request, 'notifications.html', context)

@@ -3,7 +3,7 @@
 {% block content %}
 
 <section class="m-3">
-  <form method="POST" action="" class="m-3">
+  <form method="POST" action="" class="m-3" id="quiz-edit-form">
     {% csrf_token %}
 
     <div class="white-border p-4 mb-4">
@@ -62,15 +62,15 @@
       <div class="mb-3">
         <label class="form-label me-3">Publication</label>
         {% if quiz.publication == True %}
-          <input class="form-check-input" type="checkbox" name="quiz-public" checked>
+          <input class="form-check-input" type="checkbox" name="quiz-public" id="quiz-publication" checked>
         {% else %}
-          <input class="form-check-input" type="checkbox" name="quiz-public">
+          <input class="form-check-input" type="checkbox" name="quiz-public" id="quiz-publication">
         {% endif %}
       </div>
       
       <div style="display: flex; justify-content: space-between;">
         <div>
-          <button class="btn btn-outline-primary me-2">Save form</button>
+          <button class="btn btn-outline-primary me-2" id="quiz-edit-button">Save form</button>
           <a class="btn btn-secondary" href="{% url 'quiz' %}">Discard</a>
         </div>
         <div>
@@ -191,5 +191,47 @@
     </div>
   </div>
 </div>
+
+{{ quiz.name|json_script:"json-quiz-name" }}
+{{ request.user.username|json_script:"json-request-user" }}
+{{ quiz.host.username|json_script:"json-quiz-host" }}
+{{ list_count|json_script:"json-list-count" }}
+
+<script>
+  var quiz_name = JSON.parse(document.getElementById('json-quiz-name').textContent);
+  var quiz_host = JSON.parse(document.getElementById('json-quiz-host').textContent);
+  var request_user = JSON.parse(document.getElementById('json-request-user').textContent);
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
+
+  try {
+    document.querySelector('#quiz-edit-form').addEventListener('submit', 
+      function(e) {
+
+        let quiz_public = document.getElementById('quiz-publication');
+        let notif_body = `User (${ quiz_host }) has just created (${ quiz_name }) quiz. Find out more.`;
+
+        if(quiz_public.checked) {
+          const data = {
+            'notif_body': notif_body,
+            'notif_type': quiz_name,
+            'notif_sender': quiz_host,
+            'request_user': request_user,
+          }
+          notificationSocket.send(JSON.stringify(data));
+
+          let edit_btn = document.getElementById('quiz-edit-button');
+          edit_btn.click();
+        }
+        else {
+          console.log(`${ quiz_name } is not published`);
+        }
+      }
+    );
+  }
+  catch (e) {
+    console.log(e);
+  }  
+</script>
 
 {% endblock %}

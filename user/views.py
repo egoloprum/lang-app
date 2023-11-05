@@ -132,8 +132,11 @@ def get_follow_request_or_false(sender, reciever):
 @login_required(login_url='login')
 def dashboardPath(request, pk):
     curr_user = User.objects.select_related('user').get(id=pk)
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
     context = {}
     context['curr_user'] = curr_user
+    context['list_count'] = list_count
 
     quizs = Quiz.objects.select_related().filter(course=None, content=None)
     courses = Course.objects.select_related()
@@ -212,7 +215,10 @@ def dashboardPath(request, pk):
 @login_required(login_url='login')
 def profilePath(request, pk):
     curr_user = User.objects.select_related('profile').get(id=pk)
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
     context = {}
+    context['list_count'] = list_count
 
     try:
         profile = Profile.objects.get(user=curr_user)
@@ -299,7 +305,9 @@ def deleteUser(request):
 @login_required(login_url='login')
 def profileUpdate(request):
     user = User.objects.select_related('profile').get(id=request.user.id)
-    context = {'user': user}
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
+    context = {'user': user, 'list_count': list_count,}
 
     if request.method == "POST":
         if request.path == '/user/profile-update':
@@ -393,13 +401,18 @@ def userPath(request):
             messages.error(request, 'This user does not exist')
             return redirect('user-path')
 
-    context = {'users': users}
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
+    context = {'users': users, 'list_count': list_count,}
 
     return render(request, 'user-path.html', context)
 
 def badges(request):
     badges = Badge.objects.select_related()
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
     context = {
         'badges': badges,
+        'list_count': list_count,
     }
     return render(request, 'badges.html', context)

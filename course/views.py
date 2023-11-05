@@ -6,6 +6,7 @@ from django.db.models import Q
 from .models import *
 from quiz.models import Quiz
 from user.models import Completion
+from follower.models import NotificationList
 
 @login_required(login_url='login')
 def createCourse(request):
@@ -20,6 +21,7 @@ def course(request):
   topics = Topic.objects.all()
   courses = Course.objects.select_related('host').order_by('-created_at')
   course_progresses = []
+  list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
   status = request.GET.get('course-status') if request.GET.get('course-status') != None else ''
   tag = request.GET.get('course-tags') if request.GET.get('course-tags') != None else ''
@@ -34,7 +36,11 @@ def course(request):
       course_progresses.append('course')
 
     course_progresses = zip(courses, course_progresses)
-    context = {'topics': topics, 'course_progresses': course_progresses}
+    context = {
+      'topics': topics, 
+      'course_progresses': course_progresses,
+      'list_count': list_count,
+      }
     
   else:
     courses = courses.filter(publication=True)
@@ -43,7 +49,12 @@ def course(request):
       course_progresses.append(progress)
 
     course_progresses = zip(courses, course_progresses)
-    context = {'topics': topics, 'course_progresses': course_progresses}
+
+    context = {
+      'topics': topics, 
+      'course_progresses': course_progresses,
+      'list_count': list_count,
+    }
 
   return render(request, 'course.html', context)
 
@@ -89,6 +100,8 @@ def editCourse(request, pk):
     for file in File.objects.filter(content=content).select_related('content'):
       content_files.append(file)
 
+  list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
   context = {
     'course': course,
     'quizs': quizs,
@@ -96,6 +109,7 @@ def editCourse(request, pk):
     'topics': topics,
     'cour_files': course_files,
     'cont_files': content_files,
+    'list_count': list_count,
   }
 
   return render(request, 'course-edit.html', context)
@@ -116,6 +130,7 @@ def resultCourse(request, pk):
   progresses = Progress.objects.select_related('course', 'user').filter(course=course)
 
   course_users = list(zip(course_users, progresses))
+  list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
   context = {
     'course': course,
@@ -124,6 +139,7 @@ def resultCourse(request, pk):
     'files': files,
     'quizs': quizs,
     'progresses': progresses,
+    'list_count': list_count,
   }
   return render(request, 'course-result.html', context)
 
@@ -146,11 +162,14 @@ def eachCourse(request, pk):
   completion_quizs = zip(quizs, completion_quizs)  
 
   files = File.objects.filter(course=course)
+  list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
   context = {
     'course': course,
     'contents': contents,
     'completion_quizs': completion_quizs,
     'files': files,
+    'list_count': list_count,
   }
   return render(request, 'course-each.html', context)
 
@@ -173,13 +192,15 @@ def eachChapter(request, pk):
 
     completion_quizs.append(completion)
 
-  completion_quizs = zip(quizs, completion_quizs) 
+  completion_quizs = zip(quizs, completion_quizs)
+  list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
   context = {
     'content': this_content, 
     'course': course, 
     'contents': contents,
     'completion_quizs': completion_quizs,
+    'list_count': list_count
   }
   
   return render(request, 'content-each.html', context)   
@@ -209,11 +230,13 @@ def editChapter(request, id, pk):
   content = Content.objects.get(id=id)
   course = Course.objects.get(id=pk)
   quizs = Quiz.objects.filter(content=content).annotate(questions_count=models.Count('question_quiz'))
+  list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
   context = {
     'content': content,
     'course': course,
     'quizs': quizs,
+    'list_count': list_count,
   }
 
   if request.method == "POST":
@@ -276,8 +299,12 @@ def deleteQuizFromChapter(request, pk):
 def topic(request, pk):
   topic = Topic.objects.get(id=pk)
   courses = Course.objects.select_related('topic').filter(topic=topic)
+  list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
-  context = {'courses':courses }
+  context = {
+    'courses':courses,
+    'list_count': list_count, 
+  }
 
   return render(request, 'topic.html', context)
 

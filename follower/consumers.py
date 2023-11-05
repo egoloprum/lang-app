@@ -84,50 +84,45 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
   async def receive(self, text_data):
     text_data_json = json.loads(text_data)
-    type_data = text_data_json["type_data"]
 
-    if type_data == 'course-edit':
-      notif_body = text_data_json["notif_body"]
-      notif_user = text_data_json["course_host"]
-      notif_course = text_data_json["course_name"]
-      request_user = text_data_json["request_user"]
+    notif_body = text_data_json["notif_body"]
+    notif_sender = text_data_json["notif_sender"]
+    notif_type = text_data_json["notif_type"]
+    request_user = text_data_json["request_user"]
 
-      if not notif_body == '':
-        await (self.save_notif(notif_body, notif_user))
+    if not notif_body == '':
+      await (self.save_notif(notif_body, notif_sender))
 
-      await self.channel_layer.group_send(
-        self.group_name,
-        {
-          "type": 'notif_message',
-          "type_data": type_data,
-          "notif_body": notif_body,
-          "notif_user": notif_user,
-          "notif_course": notif_course,
-          'request_user': request_user,
-        }
-      )
+    await self.channel_layer.group_send(
+      self.group_name,
+      {
+        "type": 'notif_message',
+        "notif_body": notif_body,
+        "notif_sender": notif_sender,
+        "notif_type": notif_type,
+        'request_user': request_user,
+      }
+    )
 
   async def notif_message(self, event):
-    type_data = event['type_data']
     notif_body = event['notif_body']
-    notif_user = event['notif_user']
-    notif_course = event['notif_course']
+    notif_sender = event['notif_sender']
+    notif_type = event['notif_type']
     request_user = event['request_user']
 
     notif_count = await (self.notif_counter(request_user))
     print(notif_count)
 
-    if type_data == 'course-edit':
-      await self.send(text_data=json.dumps({
-        "notif_body": notif_body,
-        "notif_user": notif_user,
-        "notif_course": notif_course,
-        "notif_count": notif_count,
-      }))
+    await self.send(text_data=json.dumps({
+      "notif_body": notif_body,
+      "notif_sender": notif_sender,
+      "notif_type": notif_type,
+      "notif_count": notif_count,
+    }))
 
   @sync_to_async
-  def save_notif(self, notif_body, notif_user):
-    user = User.objects.get(username=notif_user)
+  def save_notif(self, notif_body, notif_sender):
+    user = User.objects.get(username=notif_sender)
     notification = Notification.objects.create(user=user, body=notif_body)
     for list in NotificationList.objects.all():
       list.notification.add(notification)

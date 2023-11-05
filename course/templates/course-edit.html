@@ -253,25 +253,27 @@
 {{ course.name|json_script:"json-course-name" }}
 {{ request.user.username|json_script:"json-request-user" }}
 {{ course.host.username|json_script:"json-course-host" }}
+{{ list_count|json_script:"json-list-count" }}
 
 <script>
   var course_name = JSON.parse(document.getElementById('json-course-name').textContent);
   var course_host = JSON.parse(document.getElementById('json-course-host').textContent);
   var request_user = JSON.parse(document.getElementById('json-request-user').textContent);
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
 
   try {
     document.querySelector('#course-edit-form').addEventListener('submit', 
       function(e) {
 
         let course_public = document.getElementById('course-publication');
-        let notif_body = `${ course_host } has just created ${ course_name } course. Find out more.`;
+        let notif_body = `User (${ course_host }) has just created (${ course_name }) course. Find out more.`;
 
         if(course_public.checked) {
           const data = {
-            'type_data': 'course-edit',
             'notif_body': notif_body,
-            'course_name': course_name,
-            'course_host': course_host,
+            'notif_type': course_name,
+            'notif_sender': course_host,
             'request_user': request_user,
           }
           notificationSocket.send(JSON.stringify(data));

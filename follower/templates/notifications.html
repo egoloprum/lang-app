@@ -1,18 +1,32 @@
 {% extends 'main.html' %}
-
+{% load humanize %}
 {% block content %}
 
 <section class="m-3">
    <div class="m-3">
       <div class="p-3 white-border" id="notification-div">
          <h5>Notifications</h5>
-         <ul>
-            {% for notif in notifications %}
-               <li>{{ notif.body }}</li>
-            {% endfor %}
-         </ul>
+         <table class="table">
+            <tbody>
+               {% for notif in notifications %}
+                  <tr>
+                     <td>
+                        <span style="font-weight: 600;">{{ notif.body }}</span>
+                        <span class="text-muted ">{{ notif.created_at|naturaltime }}</span>
+                     </td>
+                  </tr>
+               {% endfor %}
+            </tbody>
+         </table>
       </div>
    </div>
 </section>
+
+{{ list_count|json_script:"json-list-count" }}
+
+<script>
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
+</script>
 
 {% endblock %}

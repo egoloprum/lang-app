@@ -8,6 +8,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator 
 from django.contrib import messages
 from django.db.models import Avg, Count, Q
+
+from follower.models import NotificationList
 # Create your views here.
 
 @login_required(login_url='login')
@@ -27,13 +29,14 @@ def quiz(request):
         quiz_id.delete()
 
     completions = Completion.objects.filter(user=request.user, completed=True).select_related('quiz')
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
     if request.user.is_staff:
         quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(content=None, course=None)
-        context = {'quizs': quizs, 'completions': completions}
+        context = {'quizs': quizs, 'completions': completions, 'list_count' : list_count,}
     else:
         quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(publication=True, content=None, course=None)
-        context = {'quizs': quizs, 'completions': completions}
+        context = {'quizs': quizs, 'completions': completions, 'list_count': list_count,}
     return render(request, 'quiz.html', context)
 
 @login_required(login_url='login')
@@ -47,7 +50,6 @@ def quizDelete(request, pk):
     quiz = Quiz.objects.get(id=pk)
     quiz.delete()
     return redirect('quiz')
-
 
 @login_required(login_url='login')
 def quizEdit(request, pk):
@@ -68,9 +70,6 @@ def quizEdit(request, pk):
         quiz_public = True if request.POST.get('quiz-public') == 'on' else False
         quiz_start = None if request.POST.get('quiz-start') == "" else request.POST.get('quiz-start')
         quiz_end = None if request.POST.get('quiz-end') == "" else request.POST.get('quiz-end')
-
-        print(quiz_start)
-        print(quiz_end)
 
         quiz.name = quiz_name
         quiz.duration = quiz_duration
@@ -108,10 +107,13 @@ def quizEdit(request, pk):
 
         return redirect('quiz')
     
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
     context = {
         'quiz': quiz,
         'questions': questions,
-        'answers': answers
+        'answers': answers,
+        'list_count': list_count,
     }
     return render(request, 'quiz-edit.html', context)
 
@@ -163,10 +165,13 @@ def quizEach(request, pk):
         answers.extend(Answer.objects.filter(question=question).select_related('question'))
         cor_answers.append(Answer.objects.filter(question=question, correct=True).select_related('question'))
 
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
     context = {
         'quiz': quiz,
         'questions': questions,
         'answers': answers,
+        'list_count': list_count,
     }
 
     sel_answers = [[] for _ in range(len(questions))]
@@ -227,10 +232,12 @@ def quizEach(request, pk):
 def quizResult(request, pk):
     quiz = Quiz.objects.select_related('host').get(id=pk)
     questions = Question.objects.select_related('quiz').filter(quiz=quiz)
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
     context = {}
     context['quiz'] = quiz
     context['questions'] = questions
+    context['list_count'] = list_count
 
     if request.user.is_staff:
         all_results = Result.objects.select_related('quiz', 'user').filter(quiz=quiz).order_by('-created_at')
@@ -249,7 +256,6 @@ def quizResult(request, pk):
         context['average_score'] = average_score
 
     if request.META.get('HTTP_REFERER').replace("http://127.0.0.1:8000", "") == request.path.replace("/result", "").replace("/each", ""):
-        print("work right")
         result = Result.objects.filter(user=request.user).last()
         cor_answers = []
         sel_answers = []

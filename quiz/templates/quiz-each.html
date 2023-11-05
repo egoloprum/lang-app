@@ -70,6 +70,12 @@
 {% block script %}
 
 {{ quiz.duration|time:'i'|json_script:"json-minute" }}
+{{ list_count|json_script:"json-list-count" }}
+
+<script>
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
+</script>
 
 {% endblock %}
 

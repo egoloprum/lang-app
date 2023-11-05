@@ -154,11 +154,14 @@
 
 {{ chatroom.id|json_script:"json-roomname" }}
 {{ request.user.username|json_script:"json-username" }}
+{{ list_count|json_script:"json-list-count" }}
 
 
 <script>
   var roomName = JSON.parse(document.getElementById('json-roomname').textContent);
   var userName = JSON.parse(document.getElementById('json-username').textContent);
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
 
   var chatSocket = new WebSocket(
     'ws://'

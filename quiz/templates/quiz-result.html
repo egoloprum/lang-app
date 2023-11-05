@@ -191,6 +191,12 @@
   </div>
 </section>
 
+{{ list_count|json_script:"json-list-count" }}
+<script>
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
+</script>
+
 <!-- <div>
   <p class="mb-2" style="width: 500px; height: 50px; display: flex; border: 2px solid #385AF1;
     border-radius: 10px;  font-weight: 600; color: #385AF1;
