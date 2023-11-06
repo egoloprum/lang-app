@@ -6,9 +6,9 @@
 <section class="m-3">
   <div class="m-3">
     {% if curr_user.is_staff %}
-      <div class="row rows-col-2 m-0">
+      <div class="row rows-col-2 gap-3 m-0">
         <!-- profile info side -->
-        <section class="white-border me-3 col">
+        <section class="white-border col">
           <div class="m-3">
             <div class="mb-3">
               <!-- information -->
@@ -86,7 +86,7 @@
         </section>
 
         <!-- profile right side -->
-        <div class="white-border col mb-3 pe-0 ps-0" style="height: 600px;">
+        <div class="white-border col pe-0 ps-0">
           <div class="m-3">
             <!-- followers -->
             <div class="mb-3">
@@ -109,17 +109,13 @@
               <div class="mb-2">
                 <a href="{% url 'badges' %}">Badges: {{ badges|length }}</a>
               </div>
-              <div class="row m-0">
+              <div class="d-flex flex-row flex-wrap justify-content-between gap-2 m-0">
                 {% for badge in badges %}
-                <div class="col-3 small-font-size">
-                  <p class="mb-2" style="text-align: center;">{{ badge.name }}</p>
-                  {% if badge.picture %}
-                    <img src="{{ badge.picture.url }}" style="width: 125px; height: 125px;">
-                  {% endif %}
-                  <p style="text-align: center;">{{ badge.description }}</p>
-                    {% empty %}
-                  <p>This staff does not have badges.</p>
-                </div>
+                  <div class="small-font-size text-center" style="max-width: 175px;">
+                    <p class="mb-2 text-nowrap">{{ badge.name }}</p>
+                    <p><img src="{{ badge.picture.url }}" style="width: 100px;"></p>
+                    <p>{{ badge.description }}</p>
+                  </div>
                 {% endfor %}
               </div>
             </div>
@@ -127,9 +123,9 @@
         </div>
       </div>
     {% else %}
-      <div class="row rows-col-2 m-0">
+      <div class="row rows-col-2 gap-3 m-0">
         <!-- profile info side -->
-        <section class="white-border me-3 col">
+        <section class="white-border col">
           <div class="m-3">
             <div class="mb-3">
               <!-- information -->
@@ -196,7 +192,7 @@
         </section>
 
         <!-- profile right side -->
-        <div class="white-border col mb-3 pe-0 ps-0" style="height: 600px;">
+        <div class="white-border col pe-0 ps-0">
           <div class="m-3">
             <!-- followers -->
             <div class="mb-3">
@@ -219,17 +215,14 @@
               <div class="mb-2">
                 <a href="{% url 'badges' %}">Badges: {{ badges|length }}</a>
               </div>
-              <div class="row m-0">
+
+              <div class="d-flex flex-row flex-wrap justify-content-between gap-2 m-0">
                 {% for badge in badges %}
-                <div class="col-3 small-font-size">
-                  <p class="mb-2" style="text-align: center;">{{ badge.name }}</p>
-                  {% if badge.picture %}
-                    <img src="{{ badge.picture.url }}" style="width: 125px; height: 125px;">
-                  {% endif %}
-                  <p style="text-align: center;">{{ badge.description }}</p>
-                    {% empty %}
-                  <p>This staff does not have badges.</p>
-                </div>
+                  <div class="small-font-size text-center" style="max-width: 175px;">
+                    <p class="mb-2 text-nowrap">{{ badge.name }}</p>
+                    <p><img src="{{ badge.picture.url }}" style="width: 100px;"></p>
+                    <p>{{ badge.description }}</p>        
+                  </div>
                 {% endfor %}
               </div>
             </div>

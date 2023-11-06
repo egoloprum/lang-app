@@ -8,7 +8,8 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 
-from user.models import Badge
+from user.models import Badge, Profile
+from follower.models import NotificationList
 
 class Command(BaseCommand):
    help = "Populate badges from a JSON file"
@@ -28,7 +29,17 @@ class Command(BaseCommand):
             try:
                host = User.objects.get(username='admin')
             except User.DoesNotExist:
-               host = User.objects.create(username='admin', password='admin', is_superuser=True, is_staff=True)
+               host = User.objects.create(username='admin', password=make_password('admin'), is_superuser=True, is_staff=True)
+
+            try:
+               Profile.objects.get(user=host)
+            except Profile.DoesNotExist:
+               Profile.objects.create(user=host)
+
+            try:
+               NotificationList.objects.get(user=host)
+            except NotificationList.DoesNotExist:
+               NotificationList.objects.create(user=host)
 
             created = False
 

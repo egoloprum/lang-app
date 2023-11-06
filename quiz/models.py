@@ -75,13 +75,3 @@ class Selected_Answer(models.Model):
 
     def __str__(self):
         return f"question==({ self.question.id }) user==({ self.user.username }) answer==({ self.selected.id })"
-
-class Average_score(models.Model):
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, related_name='average_score_quiz')
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, related_name='average_score_ques')
-    user = models.ManyToManyField(User, related_name='average_score_user')
-    score = models.FloatField()
-
-    def __str__(self):
-        return f"quiz==({ self.quiz.name }) user==({ self.user.username }) score==({ self.score })"
-

@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import *
@@ -25,9 +27,9 @@ def quiz(request):
     # difficulties.sort(key = lambda i: sort_diff.index(i[0]))     
 
     context = {}
-
     completions = Completion.objects.filter(user=request.user, completed=True).select_related('quiz')
     list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
     context['completions'] = completions
     context['list_count'] = list_count
 
@@ -43,21 +45,61 @@ def quiz(request):
 def searchQuiz(request):
     search_quiz = request.POST.get('search-quiz')
     search_status = request.POST.get('search-status')
-    search_diff = '' if request.POST.get('search-difficulty') == 'Difficulty' else request.POST.get('search-difficulty')
+    search_diff = request.POST.get('search-difficulty')
     search_date = request.POST.get('search-date')
+    search_duration = request.POST.get('search-duration')
+
+    current_time = datetime.datetime.now()
+    completions = Completion.objects.filter(user=request.user, completed=True).select_related('quiz')
+
     context = {}
+    context['completions'] = completions
 
     if request.user.is_staff:
         quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(
             content=None, course=None)
         
-        quizs = quizs.filter(Q(name__icontains=search_quiz, difficulty=search_diff))
+        if search_duration == 'Ascending':
+            quizs = quizs.order_by('duration')
+        elif search_duration == 'Descending':
+            quizs = quizs.order_by('-duration')
+
+        if search_date == 'Not Started':
+            quizs = quizs.filter(Q(start_date__lte=current_time))
+        elif search_date == 'Started':
+            quizs = quizs.filter(Q(start_date__gte=current_time))
+        elif search_date == 'Finished':
+            quizs = quizs.filter(Q(end_date__lte=current_time))
+
+
+        if search_diff == 'Difficulty':
+            quizs = quizs.filter(Q(name__icontains=search_quiz))
+        else:
+            quizs = quizs.filter(Q(name__icontains=search_quiz, difficulty=search_diff))
+
         context['quizs'] = quizs
     else:
         quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(
             publication=True, content=None, course=None)
         
-        quizs = quizs.filter(Q(name__icontains=search_quiz, difficulty=search_diff))
+        if search_duration == 'Ascending':
+            quizs = quizs.order_by('duration')
+        elif search_duration == 'Descending':
+            quizs = quizs.order_by('-duration')
+
+        if search_date == 'Not Started':
+            quizs = quizs.filter(Q(start_date__lte=current_time))
+        elif search_date == 'Started':
+            quizs = quizs.filter(Q(start_date__gte=current_time))
+        elif search_date == 'Finished':
+            quizs = quizs.filter(Q(end_date__lte=current_time))
+
+
+        if search_diff == 'Difficulty':
+            quizs = quizs.filter(Q(name__icontains=search_quiz))
+        else:
+            quizs = quizs.filter(Q(name__icontains=search_quiz, difficulty=search_diff))
+
         context['quizs'] = quizs
 
     return render(request, 'quiz-partial.html', context)
@@ -244,7 +286,10 @@ def quizEach(request, pk):
                 if len(sel_answers[x]) == len(cor_answers[x]) and sel_answers[x][y] == cor_answers[x][y].id:
                     points += 1
 
-        result.score = points
+        try:
+            result.score = (points / questions.count()) * 100
+        except ZeroDivisionError:
+            result.score = 0
         result.save()
 
         return redirect('quiz-result', quiz.id)

@@ -1,5 +1,5 @@
 import json
-import string
+import datetime
 import random
 from faker import Faker
 from django.core.management.base import BaseCommand
@@ -31,12 +31,12 @@ class Command(BaseCommand):
         course_quizs = data['quizs']
 
         try:
-          hosts = User.objects.filter(is_superuser=True)
+          hosts = User.objects.filter(is_staff=True)
           host = hosts[random.randint(0, len(hosts) - 1)]
 
         except User.DoesNotExist:
-          host = User.objects.get_or_create(username='admin', password='admin', 
-                                      is_superuser=True, is_staff=True, is_active=True)
+          host = User.objects.get_or_create(username='course_staff', password=make_password('admin'), 
+                                            is_staff=True, is_active=True)
 
         fake = Faker()
         Faker.seed(0)
@@ -52,19 +52,18 @@ class Command(BaseCommand):
             course_body += body + ' '
 
         try:
-          course = Course.objects.get(name=course_name)
-          course.delete()
+          Course.objects.get(name=course_name).delete()
+        except Exception:
+          ...
 
-          course, created = Course.objects.get_or_create(
-            name=course_name, body=course_body, pts=course_pts, exp=course_exp, start_date=course_start,
-            end_date=course_end, publication=course_public, host=host, tag=course_tag
-          )
+        course, created = Course.objects.get_or_create(
+          name=course_name, body=course_body, pts=course_pts, exp=course_exp, 
+          publication=course_public, host=host, tag=course_tag
+        )
 
-        except Course.DoesNotExist:
-          course, created = Course.objects.get_or_create(
-            name=course_name, body=course_body, pts=course_pts, exp=course_exp, start_date=course_start,
-            end_date=course_end, publication=course_public, host=host, tag=course_tag
-          )
+        course.start_date = fake.date_between(start_date=datetime.date(2023, 1, 1), end_date=datetime.date(2023, 12, 31))
+        course.end_date = fake.date_between(start_date=course.start_date, end_date=datetime.date(2024, 12, 31))
+        course.save()
 
         if created:
           self.stdout.write(
@@ -87,7 +86,6 @@ class Command(BaseCommand):
           content_quiz = content['quizs']
 
           fake = Faker()
-          Faker.seed(0)
 
           fake_body = []
           content_body = ''
@@ -130,8 +128,7 @@ class Command(BaseCommand):
             quiz_questions = data['questions']
           
             quiz, created = Quiz.objects.get_or_create(
-              name=quiz_name, duration=quiz_duration, start_date=quiz_start,
-              end_date=quiz_end, required_score=quiz_score, difficulty=quiz_difficulty,
+              name=quiz_name, duration=quiz_duration, required_score=quiz_score, difficulty=quiz_difficulty,
               pts=quiz_points, exp=quiz_exp, publication=quiz_public, host=host, content=content
             )
 

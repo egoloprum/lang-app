@@ -1,6 +1,8 @@
 import json
 import string
 import random
+import datetime
+from faker import Faker
 from django.core.management.base import BaseCommand
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import get_user_model
@@ -30,19 +32,29 @@ class Command(BaseCommand):
         quiz_questions = data['questions']
 
         try:
-          hosts = User.objects.filter(is_superuser=True)
+          hosts = User.objects.filter(is_staff=True)
           host = hosts[random.randint(0, len(hosts))]
 
         except User.DoesNotExist:
-          host = User.objects.get_or_create(username='admin', password='admin', 
-                                      is_superuser=True, is_staff=True, is_active=True)
+          host = User.objects.get_or_create(username='host', password=make_password('admin'), 
+                                            is_staff=True, is_active=True)
           
+        fake = Faker()
+
+        try:
+          Quiz.objects.get(name=quiz_name).delete() 
+        except Quiz.DoesNotExist:
+          ...
 
         quiz, created = Quiz.objects.get_or_create(
-          name=quiz_name, duration=quiz_duration, start_date=quiz_start,
-          end_date=quiz_end, required_score=quiz_score, difficulty=quiz_difficulty,
+          name=quiz_name, duration=quiz_duration,
+          required_score=quiz_score, difficulty=quiz_difficulty,
           pts=quiz_points, exp=quiz_exp, publication=quiz_public, host=host
         )
+
+        quiz.start_date = fake.date_between(start_date=datetime.date(2023, 9, 1), end_date=datetime.date(2023, 12, 31))
+        quiz.end_date = fake.date_between(start_date=quiz.start_date, end_date=datetime.date(2024, 1, 24))
+        quiz.save()
 
         if created:
           self.stdout.write(

@@ -12,8 +12,11 @@ from django.contrib.auth.password_validation import validate_password
 from .models import *
 from django.db.models import Q
 from course.models import Course
-from quiz.models import Quiz, Result, Average_score
+from quiz.models import Quiz, Result
 from follower.models import FollowList, FollowRequest, NotificationList
+
+from faker import Faker
+
 
 def loginUser(request):
     context = {}
@@ -67,7 +70,7 @@ def registerUser(request):
         try:
             validate_password(password)
         except ValidationError:
-            messages.error(request, 'Your password sucks')
+            messages.error(request, 'Your password does not match standart')
             return redirect('register')
         
         try:
@@ -150,11 +153,9 @@ def dashboardPath(request, pk):
         context['courses'] = courses
     
     else:
-        quiz_result = Average_score.objects.filter(user=curr_user)
         results = Result.objects.filter(user=curr_user, has_course=None, has_content=None).select_related('quiz')
 
         context['results'] = results
-        context['quiz_result'] = quiz_result
 
         quiz_count = quizs.filter(publication=True).count()
         course_count = courses.filter(publication=True).count()
@@ -334,7 +335,7 @@ def profileUpdate(request):
             return redirect('profile', user.id)
 
         if request.path == '/user/profile-update/account':
-            user_name = request.POST.get('user_name')
+            user_name = request.POST.get('username')
             email = request.POST.get('email')
             cur_password = request.POST.get('current-password')
             new_password = request.POST.get('password')
@@ -387,17 +388,73 @@ def profileDelete(request, pk):
 @login_required(login_url='login')
 def userPath(request):
     list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+    profiles = Profile.objects.select_related('user').exclude(id=request.user.id)
     users = User.objects.select_related('profile').exclude(id=request.user.id)
+
+    users = list(zip(users, profiles))
 
     context = {'list_count': list_count, 'users': users}
     return render(request, 'user-path.html', context)
 
 def searchUserpath(request):
     search_users = request.POST.get('search-users')
-    search_type = True if request.POST.get('search-type') == 'Staff' else False
+    search_type = request.POST.get('search-type')
+    search_level = request.POST.get('search-level')
+    search_country = request.POST.get('search-country')
+    search_gender = request.POST.get('search-gender')
+    search_birthday = request.POST.get('search-birthday')
 
-    users = User.objects.select_related('profile').exclude(id=request.user.id)
-    users = users.filter(Q(username__icontains=search_users, is_staff=search_type))
+    profiles = Profile.objects.select_related('user').exclude(id=request.user.id)
+    base_users = User.objects.select_related('profile').exclude(id=request.user.id)
+
+    # searching by level
+    if search_level == 'Ascending':
+        profiles = profiles.order_by('level')
+        users = list(zip(base_users, profiles))
+
+    elif search_level == 'Descending':
+        profiles = profiles.order_by('-level')
+        users = list(zip(base_users, profiles))
+
+    # searching by country
+    if search_country == 'Ascending':
+        profiles = profiles.order_by('country')
+        users = list(zip(base_users, profiles))
+
+    elif search_country == 'Descending':
+        profiles = profiles.order_by('-country')
+        users = list(zip(base_users, profiles))
+
+    # searching by gender
+    if search_gender == 'Male':
+        profiles = profiles.filter(Q(gender='M'))
+        users = list(zip(base_users, profiles))
+
+    elif search_gender == 'Female':
+        profiles = profiles.filter(Q(gender='F'))
+        users = list(zip(base_users, profiles))
+
+    # searching by birthday
+    if search_birthday == 'Ascending':
+        profiles = profiles.order_by('birthday')
+        users = list(zip(base_users, profiles))
+
+    elif search_birthday == 'Descending':
+        profiles = profiles.order_by('-birthday')
+        users = list(zip(base_users, profiles))        
+
+    # searching by role
+    if search_type == 'Staff':
+        base_users = base_users.filter(Q(is_staff=True))
+        users = list(zip(base_users, profiles))    
+    elif search_type == 'User':
+        base_users = base_users.filter(Q(is_staff=False))
+        users = list(zip(base_users, profiles))
+
+    # searching by name
+    if search_users:
+        base_users = base_users.filter(Q(username__icontains=search_users))
+        users = list(zip(base_users, profiles))
 
     context = {
         'users': users,

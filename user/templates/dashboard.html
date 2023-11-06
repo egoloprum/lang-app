@@ -5,7 +5,7 @@
   {% if curr_user.is_staff %}
     <section class="m-3">
       <div class="m-3">
-        <div class="row m-0" style="gap: 1rem;">
+        <div class="row d-flex flex-wrap gap-3 m-0">
           <!-- Shortcut -->
           <div class="col-3 white-border">
             <div class="m-3">
@@ -27,9 +27,11 @@
             <div class="m-3">
               <h5>Badges</h5>
             </div>
-            <div class="m-3">
-              {% for badge in badges %}
-
+            <div class="m-3 d-flex flex-row flex-wrap gap-3">
+              {% for badge in curr_user.profile.badge.all %}
+                <p><img src="{{ badge.picture.url }}" style="width: 50px;" 
+                  data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ badge.name }}">
+                </p>        
               {% empty %}
                 <p>There is no badge here.</p>
               {% endfor %}
@@ -80,7 +82,7 @@
                           </td>
                         {% endif %}
                         <td>{{ quiz.required_score }} %</td>
-                        <td>{{ quiz.duration|date:"c" }}</td>
+                        <td class="text-nowrap">{{ quiz.duration|date:"i" }} minutes</td>
                         <td>{{ quiz.pts }}</td>
                         <td>{{ quiz.exp }}</td>
                       </tr>
@@ -212,9 +214,11 @@
             <div class="m-3">
               <h5>Badges</h5>
             </div>
-            <div class="m-3">
-              {% for badge in badges %}
-
+            <div class="m-3 d-flex flex-row flex-wrap gap-3">
+              {% for badge in curr_user.profile.badge.all %}
+                <p><img src="{{ badge.picture.url }}" style="width: 50px;" 
+                  data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ badge.name }}">
+                </p>        
               {% empty %}
                 <p>There is no badge here.</p>
               {% endfor %}

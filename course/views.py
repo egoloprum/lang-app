@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -19,44 +20,84 @@ def createCourse(request):
 @login_required(login_url='login')
 def course(request):
   topics = Topic.objects.all()
-  courses = Course.objects.select_related('host').order_by('-created_at')
-  course_progresses = []
   list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
-  status = request.GET.get('course-status') if request.GET.get('course-status') != None else ''
-  tag = request.GET.get('course-tags') if request.GET.get('course-tags') != None else ''
-  topic = request.GET.get('course-topics') if request.GET.get('course-topics') != None else ''
-  date = request.GET.get('course-date') if request.GET.get('course-date') != None else ''
-  name = request.GET.get('course-search') if request.GET.get('course-search') != None else ''
+  context = {}
+  context['topics'] = topics
+  context['list_count'] = list_count
 
-  courses = courses.filter(Q(name__icontains=name) | Q(tag__icontains=tag))
+  courses = Course.objects.select_related('host').order_by('-created_at')
+  course_progresses = []
 
   if request.user.is_staff:
     for course in courses:
       course_progresses.append('course')
 
     course_progresses = zip(courses, course_progresses)
-    context = {
-      'topics': topics, 
-      'course_progresses': course_progresses,
-      'list_count': list_count,
-      }
-    
+    context['course_progresses'] = course_progresses
+
   else:
     courses = courses.filter(publication=True)
     for course in courses:
-      progress = Progress.objects.get_or_create(course=course, user=request.user)
+      try:
+        progress = Progress.objects.get(course=course, user=request.user)
+      except Progress.DoesNotExist:
+        progress = 'course'
       course_progresses.append(progress)
 
     course_progresses = zip(courses, course_progresses)
-
-    context = {
-      'topics': topics, 
-      'course_progresses': course_progresses,
-      'list_count': list_count,
-    }
+    context['course_progresses'] = course_progresses
 
   return render(request, 'course.html', context)
+
+def searchCourse(request):
+  search_tag = request.POST.get('course-tags')
+  search_topic = request.POST.get('course-topics')
+  search_date = request.POST.get('course-date')
+  search_name = request.POST.get('course-search')
+
+  course_progresses = []
+  context = {}
+
+  current_time = datetime.datetime.now()
+  courses = Course.objects.select_related('host').order_by('-created_at')
+
+  courses = courses.filter(Q(name__icontains=search_name))
+
+  if search_tag == 'Beginner':
+    courses = courses.filter(Q(tag=search_tag))
+  elif search_tag == 'Intermediate':
+    courses = courses.filter(Q(tag=search_tag))
+  elif search_tag == 'Advanced':
+    courses = courses.filter(Q(tag=search_tag))
+
+  if search_date == 'Started':
+    courses = courses.filter(Q(start_date__lte=current_time))
+  elif search_date == 'Ended':
+    courses = courses.filter(Q(end_date__lte=current_time))
+  elif search_date == 'Not yet':
+    courses = courses.filter(Q(start_date__gte=current_time))
+
+  if request.user.is_staff:
+    for course in courses:
+      course_progresses.append('course')
+
+    course_progresses = zip(courses, course_progresses)
+    context['course_progresses'] = course_progresses
+
+  else:
+    courses = courses.filter(publication=True)
+    for course in courses:
+      try:
+        progress = Progress.objects.get(course=course, user=request.user)
+      except Progress.DoesNotExist:
+        progress = ''
+      course_progresses.append(progress)
+
+    course_progresses = zip(courses, course_progresses)
+    context['course_progresses'] = course_progresses
+
+  return render(request, 'course-partial.html', context)
 
 @login_required(login_url='login')
 def editCourse(request, pk):
@@ -149,7 +190,13 @@ def eachCourse(request, pk):
   course.user.add(request.user)
   contents = Content.objects.filter(course=course)
   quizs = Quiz.objects.select_related('course').filter(course=course)
-
+  
+  if not request.user.is_staff:
+    try:
+      Progress.objects.get(user=request.user, course=course)
+    except Progress.DoesNotExist:
+      Progress.objects.create(user=request.user, course=course)
+  
   completion_quizs = []
   for quiz in quizs:
     try:

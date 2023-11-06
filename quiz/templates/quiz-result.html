@@ -25,11 +25,9 @@
           <label class="me-3">Minimum score</label>
           <p class="form-control">{{ quiz.required_score }}%</p>
           <label class="me-3 ms-3">Average score</label>
-          {% if average_score.exists %}
-            <p class="form-control">{{ average_score.average_score|floatformat:-2 }}</p>
-          {% else %}
-            <p class="form-control">0</p>
-          {% endif %}
+          <p class="form-control">
+            {% if average_score.average_score %}{{ average_score.average_score|floatformat:-2 }}%{% else %}0{% endif %}
+          </p>
         </div>
         <div class="mb-3" style="display: flex; align-items: center;">
           <label class="me-3">Attempts</label>
@@ -37,12 +35,13 @@
         </div>
         <div class="mb-3" style="display: flex; align-items: center;">
           <label class="me-3">Created at</label>
-          <p class="form-control">{{ quiz.created_at|date:"M-j-Y | G:i" }}</p>
+          <p class="form-control">{{ quiz.created_at|naturaltime }}</p>
           <label class="me-3 ms-3">Duration</label>
-          <p class="form-control">{{ quiz.duration }}</p>
+          <p class="form-control">{{ quiz.duration|date:'i' }} minutes</p>
         </div>
       </div>
 
+      <!-- result data -->
       <div class="p-3 mt-3 white-border text-nowrap">
         <div class="mb-3">
           <h3>Result data</h3>
@@ -62,18 +61,12 @@
               <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ all_result.user.username }}</td>
-                <td>{{ all_result.score }}</td>
+                <td>{{ all_result.score|floatformat:-2 }}%</td>
                 <td>{{ all_result.created_at|naturaltime }}</td>
               </tr>
               {% endfor %}
             </tbody>
           </table>
-        </div>
-      </div>
-
-      <div class="p-3 mt-3 white-border text-nowrap">
-        <div class="mb-3">
-          <h3>Result graph</h3>
         </div>
       </div>
 
@@ -92,11 +85,11 @@
         </div>
         <div class="mb-3" style="display: flex; align-items: center;">
           <label class="me-3" style="width: 150px;">Last Score</label>
-          <p class="form-control">{{ results.last.score }}</p>
+          <p class="form-control">{% if results.last.score %}{{ results.last.score }}%{% else %}0{% endif %}</p>
         </div>
         <div class="mb-3" style="display: flex; align-items: center;">
           <label class="me-3" style="width: 150px;">Average Score</label>
-          <p class="form-control">{{ average_score.average_score|floatformat:-2 }}</p>
+          <p class="form-control">{% if average_score.average_score %}{{ average_score.average_score|floatformat:-2 }}% {% else %}0{% endif %}</p>
         </div>
         <div class="mb-3" style="display: flex; align-items: center;">
           <label class="me-3" style="width: 150px;">Attempts</label>
@@ -123,7 +116,7 @@
               <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ all_result.user.username }}</td>
-                <td>{{ all_result.score }}</td>
+                <td>{{ all_result.score|floatformat:-2 }}%</td>
                 <td>{{ all_result.created_at|naturaltime }}</td>
               </tr>
               {% empty %}

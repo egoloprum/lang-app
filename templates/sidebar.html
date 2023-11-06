@@ -32,12 +32,6 @@
       <i class="fa-solid fa-calendar me-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Calendar"></i>
       <span class="sidebar-tags">Calendar</span>
     </a>
-    {% if not request.user.is_staff %}
-      <a class="btn btn-light pt-2 pb-2 d-flex flex-row align-items-center" href="" style="text-align: left;">
-        <i class="fa-solid fa-person-chalkboard me-2" data-bs-toggle="tooltip" data-bs-placement="right" title="My Courses"></i>
-        <span class="sidebar-tags">My Courses</span>
-      </a>
-    {% endif %}
     <a class="btn btn-light pt-2 pb-2 d-flex flex-row align-items-center" href="{% url 'course' %}" style="text-align: left;">
       <i class="fa-solid fa-person-chalkboard me-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Courses"></i>
       <span class="sidebar-tags">Courses</span>

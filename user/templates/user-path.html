@@ -9,7 +9,7 @@
       <label class="form-label">Search User</label>
       <form method="POST" action="" class="d-flex flex-row gap-2">
         {% csrf_token %}
-        <input class="form-control" type="search" name="search-users" 
+        <input class="form-control" type="search" name="search-users" style="width: 200%;"
           hx-post="{% url 'search-user-path' %}" hx-target="#users-table" 
           hx-trigger="keyup changed delay:500ms">
 
@@ -17,6 +17,30 @@
           <option>Type user</option>
           <option>User</option>
           <option>Staff</option>
+        </select>
+
+        <select class="form-select" name="search-country">
+          <option>Country</option>
+          <option>Ascending</option>
+          <option>Descending</option>
+        </select>
+
+        <select class="form-select" name="search-gender">
+          <option>Gender</option>
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+
+        <select class="form-select" name="search-birthday">
+          <option>Birthday</option>
+          <option>Ascending</option>
+          <option>Descending</option>
+        </select>
+
+        <select class="form-select" name="search-level">
+          <option>Level</option>
+          <option>Ascending</option>
+          <option>Descending</option>
         </select>
 
         <button class="btn btn-outline-success" hx-post="{% url 'search-user-path' %}" 

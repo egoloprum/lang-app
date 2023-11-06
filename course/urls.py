@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
   path('', views.course, name='course'),
+  path('search-course', views.searchCourse, name='course-search'),
   path('each/<str:pk>', views.eachCourse, name='course-each'),
   path('each/<str:pk>/result', views.resultCourse, name='course-result'),
   path('<str:pk>/content', views.eachChapter, name='content-each'),
