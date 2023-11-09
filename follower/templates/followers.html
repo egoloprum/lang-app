@@ -21,7 +21,7 @@
           {% for follower in follow_list %}
           <tr>
             <td>{{ forloop.counter }}</td>
-            <td><a href="{% url 'profile' follower.user.id %}">{{ follower.user }}</a></td>
+            <td><a href="{% url 'profile' follower.id %}">{{ follower.user }}</a></td>
             {% if request.user == curr_user %}
               <td><a href="{% url 'decline-follow' follower.id %}" hx-boost="true"
                 class="btn btn-sm btn-outline-danger" style="width: 100%;">Unfollow</a>

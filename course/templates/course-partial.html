@@ -37,7 +37,10 @@
             <p style="font-weight: 600;">{{ progress.value }} %</p>
           </div>
 
-          <div class="mb-3" style="height: 10px; border: 1px solid #333; border-radius: 5px;">
+          <div class="progress" role="progressbar" aria-label="Default striped example" 
+            aria-valuenow="{{ progress.value }}" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar progress-bar-striped course-progress-bar" id="{{ progress.value }}"
+              style="width: 0.0%; background: #382464;">{{ progress.value }}%</div>
           </div>
         {% endif %}
 
@@ -91,7 +94,7 @@
             {% else %}
               <a class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" 
                 href="{% url 'course-each' course.id %}">
-                <strong>Start test</strong>
+                <strong>Start course</strong>
               </a>
               <a class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"
                 href="{% url 'course-result' course.id %}" style="color: green;">Result</a>
@@ -118,4 +121,11 @@
    for (let i = 0; i < courses.length; i++) {
       courses[i].setAttribute("style", `background: ${ course_color[i] }; border: 1px solid #000;`);
    }
+
+   const progress_bars = document.getElementsByClassName('course-progress-bar');
+
+   for (let i = 0; i < progress_bars.length; i++) {
+    progress_bars[i].setAttribute("style", `width: ${ progress_bars[i].id }%;`);
+   }
+
  </script>

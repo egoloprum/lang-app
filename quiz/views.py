@@ -1,4 +1,5 @@
 import datetime
+import math
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -12,6 +13,7 @@ from django.contrib import messages
 from django.db.models import Avg, Count, Q
 
 from follower.models import NotificationList
+from user.models import Profile, Badge
 # Create your views here.
 
 @login_required(login_url='login')
@@ -251,13 +253,9 @@ def quizEach(request, pk):
         except:
             comp = Completion.objects.create(user=request.user, quiz=quiz)
 
-        if not comp.completed:
-            comp.completed = True
-            comp.save()
-
         if quiz.content:
             result = Result.objects.create(quiz=quiz, user=request.user, has_content=True)
-            comp.contest = quiz.contest
+            comp.contest = quiz.content
             comp.save()
 
         if quiz.course:
@@ -291,6 +289,24 @@ def quizEach(request, pk):
         except ZeroDivisionError:
             result.score = 0
         result.save()
+
+        if not comp.completed and quiz.required_score <= result.score:
+            comp.completed = True
+            comp.save()
+
+            profile = Profile.objects.get(user=request.user)
+            profile.points += quiz.pts
+            profile.experience += quiz.exp
+            profile.level = math.floor(profile.experience / 500) + 1
+            
+            quiz_comp = Completion.objects.filter(user=request.user, completed=True, course=None, content=None).count()
+            if quiz_comp >= 5:
+                try:
+                    profile.badge.add(Badge.objects.get(name='Hot Start'))
+                except Badge.DoesNotExist:
+                    print('current badge does not exist')
+
+            profile.save()
 
         return redirect('quiz-result', quiz.id)
     

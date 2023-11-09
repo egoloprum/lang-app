@@ -6,7 +6,7 @@ from django.db.models import Q
 
 from .models import *
 from quiz.models import Quiz
-from user.models import Completion
+from user.models import Completion, Profile, Badge
 from follower.models import NotificationList
 
 @login_required(login_url='login')
@@ -45,6 +45,18 @@ def course(request):
         progress = 'course'
       course_progresses.append(progress)
 
+      if not progress == 'course' and progress.value == 100.0:
+        try:
+          course_completed = Completion.objects.get(course=course, user=request.user, content=None, quiz=None)
+        except Completion.DoesNotExist:
+          course_completed = Completion.objects.create(course=course, user=request.user, content=None, quiz=None)
+
+        course_completed.completed = True
+        course_completed.save()
+
+    courses_completion = Completion.objects.select_related('course').filter(completed=True, user=request.user, content=None, quiz=None).count()
+    print(courses_completion)
+
     course_progresses = zip(courses, course_progresses)
     context['course_progresses'] = course_progresses
 
@@ -52,7 +64,6 @@ def course(request):
 
 def searchCourse(request):
   search_tag = request.POST.get('course-tags')
-  search_topic = request.POST.get('course-topics')
   search_date = request.POST.get('course-date')
   search_name = request.POST.get('course-search')
 
@@ -190,25 +201,83 @@ def eachCourse(request, pk):
   course.user.add(request.user)
   contents = Content.objects.filter(course=course)
   quizs = Quiz.objects.select_related('course').filter(course=course)
-  
+  completion_quizs = []
+  course_quiz_completed = 0
+  contents_completed_count = 0
+
+  try:
+    Completion.objects.get(course=course, content=None, quiz=None, user=request.user)
+  except Completion.DoesNotExist:
+    Completion.objects.create(course=course, content=None, quiz=None, user=request.user)
+
+  if not request.user.is_staff:
+    for content in contents:
+      content_quizs = Quiz.objects.select_related('content').filter(content=content)
+      try:
+        content_completion = Completion.objects.get(course=course, content=content, quiz=None, user=request.user)
+      except Completion.DoesNotExist:
+        content_completion = Completion.objects.create(course=course, content=content, quiz=None, user=request.user)
+
+      content_quiz_completed = 0
+      for quiz in content_quizs:
+        try:
+          content_quiz_completion = Completion.objects.get(course=course, content=content, quiz=quiz, user=request.user)
+        except Completion.DoesNotExist:
+          content_quiz_completion = Completion.objects.create(course=course, content=content, quiz=quiz, user=request.user)
+
+        if content_quiz_completion.completed:
+          content_quiz_completed += 1
+
+      try:
+        if content_quiz_completed / content_quizs.count() == 1:
+          content_completion.completed = True
+          content_completion.save()
+          contents_completed_count += 1
+
+      except ZeroDivisionError:
+        print('content quizs is empty')
+
+  print(content_completion) 
+          
+  for quiz in quizs:
+    if not request.user.is_staff:
+      try:
+        course_quiz_completion = Completion.objects.get(course=course, content=None, quiz=quiz, user=request.user)
+
+        if course_quiz_completion.completed:
+          course_quiz_completed += 1
+
+      except Completion.DoesNotExist:
+        course_quiz_completion = Completion.objects.create(course=course, content=None, quiz=quiz, user=request.user)
+
+      completion_quizs.append(course_quiz_completion)
+    else:
+      completion_quizs.append('completion')
+
   if not request.user.is_staff:
     try:
-      Progress.objects.get(user=request.user, course=course)
+      progress = Progress.objects.get(user=request.user, course=course)
     except Progress.DoesNotExist:
-      Progress.objects.create(user=request.user, course=course)
-  
-  completion_quizs = []
-  for quiz in quizs:
+      progress = Progress.objects.create(user=request.user, course=course)
+      profile = Profile.objects.get(user=request.user)
+      profile.badge.add(Badge.objects.get(name='Time to Study'))
+      profile.save()
+
+    course_elements = quizs.count() + contents.count()
+
     try:
-      completion = Completion.objects.get(quiz=quiz, user=request.user)
-    except Completion.DoesNotExist:
-      completion = Completion.objects.create(quiz=quiz, user=request.user)
+      course_quizs_completed_count = quizs.count() / course_quiz_completed
+    except ZeroDivisionError:
+      course_quizs_completed_count = 0
 
-    completion_quizs.append(completion)
+    progress.value = (course_quizs_completed_count + contents_completed_count) / course_elements * 100
+    progress.save()
 
-  completion_quizs = zip(quizs, completion_quizs)  
-
+    print(progress.value)
+  
   files = File.objects.filter(course=course)
+  completion_quizs = zip(quizs, completion_quizs)
+
   list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
   context = {

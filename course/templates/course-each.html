@@ -4,10 +4,10 @@
 
 <section class="m-3">
   <div class="m-3">
-    <div class="row m-0">
+    <div class="row d-flex flex-wrap flex-row gap-2 m-0">
 
       <!-- left side div -->
-      <div class="col-2 me-3 white-border" style="height: fit-content;">
+      <div class="col white-border" style="min-width: 200px; max-width: 300px; height: fit-content;">
         <div class="m-1 mt-3 mb-2">
           <h4>{{ course.name }}</h4>
         </div>
@@ -44,14 +44,15 @@
               <p style="display: flex; flex-direction: row; align-items: center;">
                 <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal-{{ quiz.id }}">Course test {{ forloop.counter }}</a>
                 {% if completion.completed %}
-                  <span class="ms-2 badge bg-success rounded-pill">#</span>
+                  <span class="ms-2" style="background: green; width: 10px; height: 10px; border-radius: 50%;"></span>
                 {% else %}
-                  <span class="ms-2 badge bg-warning rounded-pill">#</span>
+                  <span class="ms-2" style="background: rgb(30, 238, 249); width: 10px; height: 10px; border-radius: 50%;"></span>
                 {% endif %}
               </p>
 
               <!-- quiz modal -->
-              <div class="modal fade" id="exampleModal-{{ quiz.id }}" tabindex="-1" aria-labelledby="exampleModalLabel-{{ quiz.id }}" aria-hidden="true">
+              <div class="modal fade" id="exampleModal-{{ quiz.id }}" tabindex="-1" 
+                aria-labelledby="exampleModalLabel-{{ quiz.id }}" aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content rounded-3 shadow">
                     <div class="modal-body p-4 text-center" id="modal-body">
@@ -80,7 +81,7 @@
                           <strong>Start test</strong>
                         </a>
                         <a class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"
-                          href="{% url 'quiz-result' quiz.id %}">Result</a>
+                          href="{% url 'quiz-result' quiz.id %}" style="color: green;">Result</a>
                       {% endif %}
   
                     </div>                  
@@ -155,6 +156,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </section>

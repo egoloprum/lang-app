@@ -154,7 +154,6 @@ def dashboardPath(request, pk):
     
     else:
         results = Result.objects.filter(user=curr_user, has_course=None, has_content=None).select_related('quiz')
-
         context['results'] = results
 
         quiz_count = quizs.filter(publication=True).count()
@@ -179,13 +178,13 @@ def dashboardPath(request, pk):
         comp_medium = 0
         comp_hard = 0
 
-        completions = Completion.objects.select_related('quiz', 'user')
+        completions = Completion.objects.select_related('quiz', 'user').filter(user=curr_user, course=None, content=None)
         for comp in completions:
-            if comp.quiz.difficulty == 'Easy' and comp.user == curr_user:
+            if comp.quiz.difficulty == 'Easy':
                 comp_easy += 1
-            if comp.quiz.difficulty == 'Medium' and comp.user == curr_user:
+            if comp.quiz.difficulty == 'Medium':
                 comp_medium += 1
-            if comp.quiz.difficulty == 'Hard' and comp.user == curr_user:
+            if comp.quiz.difficulty == 'Hard':
                 comp_hard += 1
 
         context['comp_easy'] = comp_easy
@@ -205,7 +204,7 @@ def dashboardPath(request, pk):
             complete_quiz = None
 
         try:
-            complete_course = completions.filter(user=curr_user, completed=True, quiz=None)
+            complete_course = completions.filter(user=curr_user, completed=True, quiz=None, content=None)
         except Completion.DoesNotExist:
             complete_course = None
         
@@ -241,6 +240,8 @@ def profilePath(request, pk):
         follow_list = FollowList.objects.create(user=curr_user)
 
     followers = follow_list.followers.all()
+    if followers.count() > 0:
+        profile.badge.add(Badge.objects.get(name="Let's get friends"))
 
     is_self = True
     is_follower = False
@@ -372,10 +373,6 @@ def profileUpdate(request):
             messages.success(request, 'Profile has been updated')
             return redirect('profile-update-account')
 
-        else:
-            messages.error(request, "Please enter correct password")
-            return redirect('profile-update-account')
-
     return render(request, 'profile-update.html', context)
 
 @login_required(login_url='login')
@@ -388,7 +385,7 @@ def profileDelete(request, pk):
 @login_required(login_url='login')
 def userPath(request):
     list_count = NotificationList.objects.get(user=request.user).notification.all().count()
-    profiles = Profile.objects.select_related('user').exclude(id=request.user.id)
+    profiles = Profile.objects.select_related('user').exclude(id=request.user.id).order_by('-points')
     users = User.objects.select_related('profile').exclude(id=request.user.id)
 
     users = list(zip(users, profiles))
@@ -404,61 +401,80 @@ def searchUserpath(request):
     search_gender = request.POST.get('search-gender')
     search_birthday = request.POST.get('search-birthday')
 
-    profiles = Profile.objects.select_related('user').exclude(id=request.user.id)
+    profiles = Profile.objects.select_related('user').exclude(id=request.user.id).order_by('points')
     base_users = User.objects.select_related('profile').exclude(id=request.user.id)
+
+    search_value = 0
 
     # searching by level
     if search_level == 'Ascending':
         profiles = profiles.order_by('level')
         users = list(zip(base_users, profiles))
+        search_value = 1
 
     elif search_level == 'Descending':
         profiles = profiles.order_by('-level')
         users = list(zip(base_users, profiles))
+        search_value = 1
 
     # searching by country
     if search_country == 'Ascending':
         profiles = profiles.order_by('country')
         users = list(zip(base_users, profiles))
+        search_value = 1
 
     elif search_country == 'Descending':
         profiles = profiles.order_by('-country')
         users = list(zip(base_users, profiles))
+        search_value = 1
 
     # searching by gender
     if search_gender == 'Male':
         profiles = profiles.filter(Q(gender='M'))
         users = list(zip(base_users, profiles))
+        search_value = 1
 
     elif search_gender == 'Female':
         profiles = profiles.filter(Q(gender='F'))
         users = list(zip(base_users, profiles))
+        search_value = 1
 
     # searching by birthday
     if search_birthday == 'Ascending':
         profiles = profiles.order_by('birthday')
         users = list(zip(base_users, profiles))
+        search_value = 1
 
     elif search_birthday == 'Descending':
         profiles = profiles.order_by('-birthday')
-        users = list(zip(base_users, profiles))        
+        users = list(zip(base_users, profiles))      
+        search_value = 1
 
     # searching by role
     if search_type == 'Staff':
         base_users = base_users.filter(Q(is_staff=True))
         users = list(zip(base_users, profiles))    
+        search_value = 1
+
     elif search_type == 'User':
         base_users = base_users.filter(Q(is_staff=False))
         users = list(zip(base_users, profiles))
+        search_value = 1
 
     # searching by name
     if search_users:
         base_users = base_users.filter(Q(username__icontains=search_users))
         users = list(zip(base_users, profiles))
+        search_value = 1
 
-    context = {
-        'users': users,
-    }
+    context = {}
+
+    if search_value == 0:
+        context['users'] = list(zip(base_users, profiles))
+
+    elif search_value == 1:
+        context['users'] = users
+
     return render(request, 'user-path-partial.html', context)
 
 def badges(request):

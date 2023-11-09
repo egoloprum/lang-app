@@ -8,6 +8,8 @@
       <th scope="col">Questions</th>
       <th scope="col">Difficulty</th>
       <th scope="col">Acceptance</th>
+      <th scope="col">Points</th>
+      <th scope="col">Experience</th>
       <th scope="col">Duration</th>
       <th scope="col">Started</th>
       <th scope="col">Ended</th>
@@ -51,6 +53,8 @@
             {{ quiz.required_score }} %
           {% endif %}
         </td>
+        <td>{{ quiz.pts }}</td>
+        <td>{{ quiz.exp }}</td>
         <td>{% if quiz.duration %}{{ quiz.duration|date:"i" }}{% else %}0{% endif %} minutes</td>
         <td>{% if quiz.start_date %}{{ quiz.start_date|date:"Y-m-d" }}{% else %}--{% endif %}</td>
         <td>{% if quiz.end_date %}{{ quiz.end_date|date:"Y-m-d" }}{% else %}--{% endif %}</td>
@@ -86,8 +90,7 @@
                 <a class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"
                   href="{% url 'quiz-result' quiz.id %}" style="color: green;">Result</a>
               {% endif %}
-
-            </div>                  
+            </div>               
           </div>
         </div>
       </div>

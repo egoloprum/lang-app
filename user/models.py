@@ -38,7 +38,7 @@ class Completion(models.Model):
   quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, blank=True, related_name='completion_quiz')
   course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
   content = models.ForeignKey(Content, on_delete=models.CASCADE, null=True, blank=True)
-  completed = models.BooleanField(default=False)  
+  completed = models.BooleanField(default=False)
 
   def __str__(self):
-    return f"user==({ 'none' if self.user == None else self.user.username }) quiz==({ 'none' if self.quiz == None else self.quiz.name }) course==({ 'none' if self.course == None else self.course.name }) content==({ 'none' if self.content == None else self.content.name })"
+    return f"user==({ 'none' if self.user == None else self.user.username }) { '' if self.quiz == None else f'quiz = {self.quiz.name}' } { '' if self.course == None else f'course = {self.course.name}' } { '' if self.content == None else  f'content = {self.content.name}' }"

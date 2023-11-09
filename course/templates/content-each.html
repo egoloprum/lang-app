@@ -50,7 +50,7 @@
                 {% if completion.completed %}
                   <span class="ms-2" style="background: green; width: 10px; height: 10px; border-radius: 50%;"></span>
                 {% else %}
-                  <span class="ms-2" style="background: yellow; width: 10px; height: 10px; border-radius: 50%;"></span>
+                  <span class="ms-2" style="background: rgb(30, 238, 249); width: 10px; height: 10px; border-radius: 50%;"></span>
                 {% endif %}
               </p>
 
@@ -84,7 +84,7 @@
                           <strong>Start test</strong>
                         </a>
                         <a class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"
-                          href="{% url 'quiz-result' quiz.id %}">Result</a>
+                          href="{% url 'quiz-result' quiz.id %}" style="color: green;">Result</a>
                       {% endif %}
   
                     </div>                  
