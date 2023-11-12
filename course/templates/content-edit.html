@@ -38,6 +38,7 @@
       </div>
     </div>
 
+    <!-- add quiz -->
     <div class="white-border p-4 row m-0 mb-3">
       <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
         <a class="btn btn-light" style="width: 100%;" id="{{ content.id }}" onclick="add_chap_quiz(this.id)">Add quiz</a>
@@ -86,19 +87,42 @@
       </div>
     </div>
 
-    <div class="white-border p-4 row m-0 mb-3">
-      <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
-        <a class="btn btn-light" style="width: 100%;" onclick="add_chap_video()">Add video</a>
-      </div>
-      <div class="col p-3 ms-3" id="chap-video-side">
-      </div>
-    </div>
-
+    <!-- add files -->
     <div class="white-border p-4 row m-0 mb-3">
       <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
         <a class="btn btn-light" style="width: 100%;" onclick="add_chap_file()">Add file</a>
       </div>
       <div class="col p-3 ms-3" id="chap-file-side">
+        {% for file in files %}
+          <div class="accordion accordion-flush" style="border-bottom: 1px solid #e4e4e4;" id="chap-file-{{ forloop.counter }}">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <a class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapse2-{{ forloop.counter }}"
+                  aria-controls="#flush-collapse2-{{ forloop.counter }}" aria-expanded="false">
+                  <p>{{ forloop.counter }}</p>
+                </a>
+              </h2>
+              <div class="accordion-collapse collapse" id="flush-collapse2-{{ forloop.counter }}">
+                <div class="accordion-body" id="accordion-body2-{{ forloop.counter }}">
+                  <div style="display: flex; flex-direction: row;" class="mb-3" id="testing">
+                    <label class="me-3">Description</label>
+                    <input class="form-control me-3" type="text" placeholder="Description here..." name="chap-file-desc-{{ forloop.counter }}"
+                      required value="{{ file.description }}">
+                    <a class="btn btn-light me-3 text-nowrap" onclick="del_cour_file(this.id)" id="del-chap-file-{{ forloop.counter }}" style="width: max-content;">
+                      <i class="fa-solid fa-trash"></i>
+                      <span>Delete file</span>
+                    </a>
+                  </div>
+                  <div style="display: flex; flex-direction: row;" class="mb-3">
+                    <label class="mb-3 me-3">file</label>
+                    <p class="form-control mb-3" style="width: 100%;"
+                      name="chap-file-{{ forloop.counter }}">{{ file.file }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
       </div>
     </div>
   </form>

@@ -6,66 +6,66 @@
     <div class="m-3">
       {% if request.user.is_staff %}
         <!-- course info side -->
-        <div class="white-border p-3">
+        <div class="white-border p-3 d-flex flex-column gap-3">
           <h5>Staff course result</h5>
           <!-- name host -->
-          <div class="row m-0 mb-3">
-            <div class="form-floating col">
+          <div class="row m-0 gap-3">
+            <div class="form-floating col" style="min-width: 150px;">
               <p class="form-control">{{ course.name }}</p>
               <label class="ms-3">Name</label>
             </div>
-            <div class="form-floating col">
+            <div class="form-floating col" style="min-width: 150px;">
               <p class="form-control">{{ course.host }}</p>
               <label class="ms-3">Host</label>
             </div>
           </div>
           <!-- topic tag -->
-          <div class="row m-0 mb-3">
-            <div class="form-floating col">
+          <div class="row m-0 gap-3">
+            <div class="form-floating col" style="min-width: 150px;">
               <p class="form-control">{% if course.topic.name == None %}----{% else %}{{ course.topic.name }}{% endif %}</p>
               <label class="ms-3">Topic</label>
             </div>
-            <div class="form-floating col">
+            <div class="form-floating col" style="min-width: 150px;">
               <p class="form-control">{% if course.tag == None %}----{% else %}{{ course.tag }}{% endif %}</p>
               <label class="ms-3">Tag</label>
             </div>
           </div>
           <!-- pts exp -->
-          <div class="row m-0 mb-3">
-            <div class="form-floating col">
+          <div class="row m-0 gap-3">
+            <div class="form-floating col" style="min-width: 150px;">
               <p class="form-control">{% if course.pts == None %}{% else %}{{ course.pts }}{% endif %}</p>
               <label class="ms-3">Points</label>
             </div>
-            <div class="form-floating col">
+            <div class="form-floating col" style="min-width: 150px;">
               <p class="form-control">{% if course.exp == None %}{% else %}{{ course.exp }}{% endif %}</p>
               <label class="ms-3">Experience</label>
             </div>
           </div>
           <!-- created updated -->
-          <div class="row m-0 mb-3">
-            <div class="form-floating col">
-              <p class="form-control">{% if course.created_at == None %}{% else %}{{ course.created_at }}{% endif %}</p>
+          <div class="row m-0 gap-3">
+            <div class="form-floating col" style="min-width: 150px;">
+              <p class="form-control" style="height: fit-content;">{% if course.created_at == None %}{% else %}{{ course.created_at }}{% endif %}</p>
               <label class="ms-3">Created at</label>
             </div>
-            <div class="form-floating col">
-              <p class="form-control">{% if course.updated_at == None %}{% else %}{{ course.updated_at }}{% endif %}</p>
+            <div class="form-floating col" style="min-width: 150px;">
+              <p class="form-control" style="height: fit-content;">{% if course.updated_at == None %}{% else %}{{ course.updated_at }}{% endif %}</p>
               <label class="ms-3">Updated at</label>
             </div>
           </div>
           <!-- start end  -->
-          <div class="row m-0 mb-3">
-            <div class="form-floating col">
-              <p class="form-control">{% if course.start_date == None %}{% else %}{{ course.start_date }}{% endif %}</p>
+          <div class="row m-0 gap-3">
+            <div class="form-floating col" style="min-width: 150px;">
+              <p class="form-control" style="height: fit-content;">{% if course.start_date == None %}{% else %}{{ course.start_date }}{% endif %}</p>
               <label class="ms-3">Start date</label>
             </div>
-            <div class="form-floating col">
-              <p class="form-control">{% if course.end_date == None %}{% else %}{{ course.end_date }}{% endif %}</p>
+            <div class="form-floating col" style="min-width: 150px;">
+              <p class="form-control" style="height: fit-content;">{% if course.end_date == None %}{% else %}{{ course.end_date }}{% endif %}</p>
               <label class="ms-3">End date</label>
             </div>
           </div>
           <!-- contents files  -->
-          <div class="row m-0 mb-3">
-            <div class="form-floating col dropdown">
+          <div class="row m-0 gap-3">
+            <div class="form-floating col dropdown" style="min-width: 150px;">
               <p class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 {{ contents|length }}
               </p>
@@ -76,7 +76,7 @@
               </ul>
               <label class="ms-3">Contents</label>
             </div>
-            <div class="form-floating col dropdown">
+            <div class="form-floating col dropdown" style="min-width: 150px;">
               <p class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 {{ files|length }}
               </p>
@@ -89,8 +89,8 @@
             </div>
           </div>
           <!-- quizs users -->
-          <div class="row m-0 mb-3">
-            <div class="form-floating col dropdown">
+          <div class="row m-0 gap-3">
+            <div class="form-floating col dropdown" style="min-width: 150px;">
               <p class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 {{ quizs|length }}
               </p>
@@ -102,7 +102,7 @@
               <label class="ms-3">Quizes</label>
             </div>
 
-            <div class="form-floating col dropdown">
+            <div class="form-floating col dropdown" style="min-width: 150px;">
               <p class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 {{ course_user|length }}
               </p>
@@ -116,9 +116,10 @@
           </div>
         </div>
 
-        <div class="white-border p-3 mt-3">
-          <h5>Users process</h5>
-          <table class="table table-bordered mt-3">
+        <!-- users progress -->
+        <div class="white-border p-3 mt-3 table-responsive">
+          <h5>Users progress</h5>
+          <table class="table table-sm table-bordered small-font-size mt-3">
             <thead>
               <tr>
                 <th>#</th>
@@ -137,14 +138,18 @@
                 <td>{{ user.profile.level }}</td>
                 <td>{{ user.profile.experience }}</td>
               </tr>
+              {% empty %}
+              <tr>
+                <td>No process yet.</td><td></td><td></td><td></td><td></td>
+              </tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
       {% else %}
-      <div class="white-border p-3">
-        <p>You are not allowed here.</p>
-      </div>
+        <div class="white-border p-3">
+          <p>You are not allowed here.</p>
+        </div>
       {% endif %}
     </div>
   </section>

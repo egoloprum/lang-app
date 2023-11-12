@@ -19,14 +19,19 @@ def createCourse(request):
 
 @login_required(login_url='login')
 def course(request):
-  topics = Topic.objects.all()
   list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
   context = {}
-  context['topics'] = topics
   context['list_count'] = list_count
 
   courses = Course.objects.select_related('host').order_by('-created_at')
+  courses_secure = []
+
+  for course in courses:
+    courses_secure.append(course.start_date)
+  
+  context['courses_secure'] = courses_secure
+
   course_progresses = []
 
   if request.user.is_staff:
@@ -55,7 +60,6 @@ def course(request):
         course_completed.save()
 
     courses_completion = Completion.objects.select_related('course').filter(completed=True, user=request.user, content=None, quiz=None).count()
-    print(courses_completion)
 
     course_progresses = zip(courses, course_progresses)
     context['course_progresses'] = course_progresses
@@ -116,7 +120,6 @@ def editCourse(request, pk):
   quizs = Quiz.objects.select_related('course').filter(course=course).annotate(questions_count=models.Count('question_quiz'))
   contents = Content.objects.select_related('course').filter(course=course)
   contents = contents.annotate(quizs_count=models.Count('quiz_content'), files_count=models.Count('file_content'))
-  topics = Topic.objects.all()
 
   if request.method == 'POST':
     name = None if request.POST.get('course-name') == '' else request.POST.get('course-name')
@@ -128,6 +131,8 @@ def editCourse(request, pk):
     public = True if request.POST.get('course-public') == 'on' else False
 
     course.name = name
+    course.topic = topic
+    course.tag = tag
     course.body = body
     course.start_date = start
     course.end_date = end
@@ -158,10 +163,10 @@ def editCourse(request, pk):
     'course': course,
     'quizs': quizs,
     'contents': contents,
-    'topics': topics,
     'cour_files': course_files,
     'cont_files': content_files,
     'list_count': list_count,
+    'TAG_CHOICES': TAG_CHOICES,
   }
 
   return render(request, 'course-edit.html', context)
@@ -236,8 +241,6 @@ def eachCourse(request, pk):
 
       except ZeroDivisionError:
         print('content quizs is empty')
-
-  print(content_completion) 
           
   for quiz in quizs:
     if not request.user.is_staff:
@@ -298,6 +301,7 @@ def eachChapter(request, pk):
   contents = content.filter(course=course)
 
   quizs = Quiz.objects.select_related('content').filter(content=this_content)
+  files = File.objects.filter(content=this_content)
 
   completion_quizs = []
   for quiz in quizs:
@@ -315,6 +319,7 @@ def eachChapter(request, pk):
     'content': this_content, 
     'course': course, 
     'contents': contents,
+    'files': files,
     'completion_quizs': completion_quizs,
     'list_count': list_count
   }
@@ -346,12 +351,14 @@ def editChapter(request, id, pk):
   content = Content.objects.get(id=id)
   course = Course.objects.get(id=pk)
   quizs = Quiz.objects.filter(content=content).annotate(questions_count=models.Count('question_quiz'))
+  files = File.objects.filter(content=content)
   list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
   context = {
     'content': content,
     'course': course,
     'quizs': quizs,
+    'files': files,
     'list_count': list_count,
   }
 
@@ -410,17 +417,3 @@ def deleteQuizFromChapter(request, pk):
     return HttpResponse('Quiz successfully deleted')
   except Exception:
     return HttpResponse('Something is wrong')
-
-@login_required(login_url='login')
-def topic(request, pk):
-  topic = Topic.objects.get(id=pk)
-  courses = Course.objects.select_related('topic').filter(topic=topic)
-  list_count = NotificationList.objects.get(user=request.user).notification.all().count()
-
-  context = {
-    'courses':courses,
-    'list_count': list_count, 
-  }
-
-  return render(request, 'topic.html', context)
-

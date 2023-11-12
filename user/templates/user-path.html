@@ -3,41 +3,41 @@
 {% block content %}
 
 <section class="m-3 ps-3 pe-3">
-  <div class="row p-3 m-0 white-border">
+  <div class="p-3 m-0 white-border">
     <!-- search bar -->
     <div class="mb-3">
       <label class="form-label">Search User</label>
-      <form method="POST" action="" class="d-flex flex-row gap-2">
+      <form method="POST" action="" class="d-flex flex-row flex-wrap justify-content-between gap-2">
         {% csrf_token %}
-        <input class="form-control" type="search" name="search-users" style="width: 200%;"
+        <input class="form-control" type="search" name="search-users" style="max-width: 200px; width: 200%;"
           hx-post="{% url 'search-user-path' %}" hx-target="#users-table" 
           hx-trigger="keyup changed delay:500ms">
 
-        <select class="form-select" name="search-type">
+        <select class="form-select" name="search-type" style="max-width: 200px;">
           <option>Type user</option>
           <option>User</option>
           <option>Staff</option>
         </select>
 
-        <select class="form-select" name="search-country">
+        <select class="form-select" name="search-country" style="max-width: 200px;">
           <option>Country</option>
           <option>Ascending</option>
           <option>Descending</option>
         </select>
 
-        <select class="form-select" name="search-gender">
+        <select class="form-select" name="search-gender" style="max-width: 200px;">
           <option>Gender</option>
           <option>Male</option>
           <option>Female</option>
         </select>
 
-        <select class="form-select" name="search-birthday">
+        <select class="form-select" name="search-birthday" style="max-width: 200px;">
           <option>Birthday</option>
           <option>Ascending</option>
           <option>Descending</option>
         </select>
 
-        <select class="form-select" name="search-level">
+        <select class="form-select" name="search-level" style="max-width: 200px;">
           <option>Level</option>
           <option>Ascending</option>
           <option>Descending</option>
@@ -48,7 +48,7 @@
       </form>
     </div>
 
-    <div class="p-3" id="users-table">
+    <div class="p-3 table-responsive" id="users-table">
       {% include 'user-path-partial.html' %}
     </div>
   </div>

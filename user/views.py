@@ -146,11 +146,15 @@ def dashboardPath(request, pk):
     courses = Course.objects.select_related()
 
     if curr_user.is_staff:
+        all_quizs = quizs
+        all_courses = courses
         quizs = quizs.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user)
         courses = courses.filter(host=pk)
 
         context['quizs'] = quizs
         context['courses'] = courses
+        context['all_quizs'] = all_quizs
+        context['all_courses'] = all_courses
     
     else:
         results = Result.objects.filter(user=curr_user, has_course=None, has_content=None).select_related('quiz')

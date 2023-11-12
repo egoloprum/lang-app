@@ -8,13 +8,13 @@
 
     <!-- search bar -->
     <div class="mt-3" >
-      <form method="POST" action="" class="d-flex flex-row justify-content-between">
+      <form method="POST" action="" class="d-flex flex-row flex-wrap gap-2 justify-content-between">
         {% csrf_token %}
-        <input type="search" class="form-control me-2" name="course-search" placeholder="Search..."
+        <input type="search" class="form-control me-2" name="course-search" style="max-width: 200px;" placeholder="Search..."
           hx-post="{% url 'course-search' %}" hx-target="#search-course" hx-trigger="keyup changed delay:300ms">
 
         <!-- tags -->
-        <div class="me-2" style="width: 100%;">
+        <div class="me-2" style="max-width: 200px; width: 100%;">
           <select class="form-select" name="course-tags">
             <option selected>Tags</option>
             <option>Beginner</option>
@@ -23,7 +23,7 @@
           </select>
         </div>
         <!-- topics -->
-        <div class="me-2" style="width: 100%;">
+        <div class="me-2" style="max-width: 200px; width: 100%;">
           <select class="form-select" name="course-topics">
             <option selected>Topics</option>
             <option>Advice</option>
@@ -31,7 +31,7 @@
           </select>
         </div>
         <!-- date -->
-        <div class="me-2" style="width: 100%;">
+        <div class="me-2" style="max-width: 200px; width: 100%;">
           <select class="form-select" name="course-date">
             <option selected>Date</option>
             <option>Started</option>
@@ -42,7 +42,7 @@
         <!-- search -->
         <div class="me-2">
           <button class="btn btn-outline-success" hx-post="{% url 'course-search' %}" hx-target="#search-course"
-            id="course-search-btn">Search</nutton>
+            id="course-search-btn" >Search</nutton>
         </div>
       </form>
     </div><hr>

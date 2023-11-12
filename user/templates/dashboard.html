@@ -7,9 +7,9 @@
       <div class="m-3">
         <div class="row d-flex flex-wrap gap-3 m-0">
           <!-- Shortcut -->
-          <div class="col-3 white-border">
+          <div class="col white-border">
             <div class="m-3">
-              <h5>Shortcut</h5>
+              <h5 class="blue-border" style="width: fit-content; background: #b6bbf9; transform: rotate(-2deg);">Shortcut</h5>
             </div>
             {% if curr_user == request.user %}
               <div class="m-3">
@@ -23,9 +23,9 @@
           </div>
 
           <!-- badges -->
-          <div class="col-3 white-border">
+          <div class="col white-border">
             <div class="m-3">
-              <h5>Badges</h5>
+              <h5 class="blue-border" style="width: fit-content; background: #b6bbf9; transform: rotate(-2deg);">Badges</h5>
             </div>
             <div class="m-3 d-flex flex-row flex-wrap gap-3">
               {% for badge in curr_user.profile.badge.all %}
@@ -38,8 +38,33 @@
             </div>
           </div>
 
+          <!-- creation status -->
           <div class="col white-border">
-            <div class="m-3"></div>
+            <div class="m-3">
+              <h5 class="blue-border" style="width: fit-content; background: #b6bbf9; transform: rotate(-2deg);">Creation status</h5>
+            </div>
+            <div class="m-3 d-flex flex-column flex-wrap gap-3">
+              <div class="d-flex flex-row gap-2 justify-content-between">
+                <p class="text-nowrap d-flex gap-2 justify-content-between">
+                  <span>Quiz</span> 
+                  <span id="quiz-all">{{ quizs.count }}/{{ all_quizs.count }}</span>
+                </p>
+                <div class="progress" role="progressbar" aria-label="Basic example" id="quiz-all-progress"
+                  aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="max-width: 125px; width: 100%;">
+                  <div class="progress-bar" style="width: 25%"></div>
+                </div>
+              </div>
+              <div class="d-flex flex-row gap-2 justify-content-between">
+                <p class="text-nowrap d-flex gap-2 justify-content-between">
+                  <span>Course</span> 
+                  <span id="course-all">{{ courses.count }}/{{ all_courses.count }}</span>
+                </p>
+                <div class="progress" role="progressbar" aria-label="Basic example" id="course-all-progress"
+                  aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="max-width: 125px; width: 100%;">
+                  <div class="progress-bar bg-info" style="width: 25%"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -47,7 +72,8 @@
         <div class="mt-3 row m-0" style="gap: 1rem;">
           <!-- quiz side -->
           <section class="col white-border p-3" style="width: 100%;">
-            <div class="m-2">              
+            <div class="m-3 table-responsive">
+              <h5 class="blue-border" style="width: fit-content; background: #b6bbf9; transform: rotate(-2deg);">Quiz</h5>
               <table class="table table-bordered small-font-size">
                 <thead>
                   <tr>
@@ -68,19 +94,15 @@
                         <td>{{ quiz.publication }}</td>
                         <td class="text-nowrap"><a href="{% url 'quiz-result' quiz.id %}">{{ quiz.name }}</a></td>
                         <td>{{ quiz.child_count }}</td>
+                        <td style="display: flex; align-items: center;">
                         {% if quiz.difficulty == 'Easy' %}
-                          <td style="display: flex; align-items: center;">
                             <span class="badge text-bg-success">{{ quiz.difficulty }}</span>
-                          </td>
                         {% elif quiz.difficulty == 'Medium' %}
-                          <td style="display: flex; align-items: center;">
                             <span class="badge text-bg-warning">{{ quiz.difficulty }}</span>
-                          </td>
                         {% else %}
-                          <td style="display: flex; align-items: center;">
                             <span class="badge text-bg-danger">{{ quiz.difficulty }}</span>
-                          </td>
                         {% endif %}
+                        </td>
                         <td>{{ quiz.required_score }} %</td>
                         <td class="text-nowrap">{{ quiz.duration|date:"i" }} minutes</td>
                         <td>{{ quiz.pts }}</td>
@@ -89,21 +111,17 @@
                     {% else %}
                       <tr class="table-danger">
                         <td>{{ quiz.publication }}</td>
-                        <td><a href="{% url 'quiz-result' quiz.id %}">{{ quiz.name }}</a></td>
+                        <td class="text-nowrap"><a href="{% url 'quiz-result' quiz.id %}">{{ quiz.name }}</a></td>
                         <td>{{ quiz.child_count }}</td>
+                        <td style="display: flex; align-items: center;">
                         {% if quiz.difficulty == 'Easy' %}
-                          <td style="display: flex; align-items: center;">
-                            <span class="badge text-bg-success">{{ quiz.difficulty }}</span>
-                          </td>
+                          <span class="badge text-bg-success">{{ quiz.difficulty }}</span>
                         {% elif quiz.difficulty == 'Medium' %}
-                          <td style="display: flex; align-items: center;">
-                            <span class="badge text-bg-warning">{{ quiz.difficulty }}</span>
-                          </td>
+                          <span class="badge text-bg-warning">{{ quiz.difficulty }}</span>
                         {% else %}
-                          <td style="display: flex; align-items: center;">
-                            <span class="badge text-bg-danger">{{ quiz.difficulty }}</span>
-                          </td>
+                          <span class="badge text-bg-danger">{{ quiz.difficulty }}</span>
                         {% endif %}
+                        </td>
                         <td>{{ quiz.required_score }} %</td>
                         <td>{{ quiz.duration|date:"c" }}</td>
                         <td>{{ quiz.pts }}</td>
@@ -111,7 +129,9 @@
                       </tr>
                     {% endif %}
                     {% empty %}
-                    <tr><td>No quiz has been created</td></tr>
+                    <tr><td>No quiz has been created</td>
+                      <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
                   {% endfor %}
                 </tbody>
               </table>
@@ -120,7 +140,8 @@
 
           <!-- course side -->
           <section class="col white-border p-3" style="width: 100%;">
-            <div class="m-2">              
+            <div class="m-3 table-responsive">
+              <h5 class="blue-border" style="width: fit-content; background: #b6bbf9; transform: rotate(-2deg);">Course</h5>
               <table class="table table-bordered small-font-size">
                 <thead>
                   <tr>
@@ -169,7 +190,9 @@
                       </tr>
                     {% endif %}
                   {% empty %}
-                    <tr><td>Currently, no course has been created by this user.</td></tr>
+                    <tr><td class="text-nowrap">Currently, no course has been created by this user.</td>
+                      <td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
                 {% endfor %}
                 </tbody>
               </table>
@@ -181,38 +204,50 @@
   {% else %}
     <section class="m-3">
       <div class="m-3">
-        <div class="row m-0 mb-3" style="gap: 1rem;">
+        <div class="row m-0 d-flex flex-wrap mb-3" style="gap: 1rem;">
           <!-- solved quizes -->
-          <div class="col-3 white-border">
+          <div class="col white-border">
             <div class="m-3">
-              <h5>Solved Quizes</h5>
-              <div class="row small-font-size">
-                <div class="col">
-                  <p class="text-nowrap">
+              <h5 class="blue-border" style="transform: rotate(-2deg); width: fit-content;">Solved Quizes</h5>
+              <div class="small-font-size d-flex flex-column flex-wrap gap-3">
+                <div class="d-flex flex-row gap-2 justify-content-between">
+                  <p class="text-nowrap d-flex gap-2 justify-content-between">
                     <span>Easy</span> 
-                    <span>{{ comp_easy }}/{{ quizs_easy }}</span>
+                    <span id="quiz-easy">{{ comp_easy }}/{{ quizs_easy }}</span>
                   </p>
+                  <div class="progress" role="progressbar" aria-label="Basic example" id="quiz-easy-progress"
+                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="max-width: 125px; width: 100%;">
+                    <div class="progress-bar bg-success" style="width: 25%"></div>
+                  </div>
                 </div>
-                <div class="col">
-                  <p class="text-nowrap">
+                <div class="d-flex flex-row gap-2 justify-content-between">
+                  <p class="text-nowrap d-flex gap-2 justify-content-between">
                     <span>Medium</span> 
-                    <span>{{ comp_medium }}/{{ quizs_medium }}</span>
+                    <span id="quiz-medium">{{ comp_medium }}/{{ quizs_medium }}</span>
                   </p>
+                  <div class="progress" role="progressbar" aria-label="Basic example" id="quiz-medium-progress"
+                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="max-width: 125px; width: 100%;">
+                    <div class="progress-bar bg-warning" style="width: 25%"></div>
+                  </div>
                 </div>
-                <div class="col">
-                  <p class="text-nowrap">
+                <div class="d-flex flex-row gap-2 justify-content-between">
+                  <p class="text-nowrap d-flex gap-2 justify-content-between">
                     <span>Hard</span> 
-                    <span>{{ comp_hard }}/{{ quizs_hard }}</span>
+                    <span id="quiz-hard">{{ comp_hard }}/{{ quizs_hard }}</span>
                   </p>
+                  <div class="progress" role="progressbar" aria-label="Basic example" id="quiz-hard-progress"
+                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="max-width: 125px; width: 100%;">
+                    <div class="progress-bar bg-danger" style="width: 25%"></div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- badges -->
-          <div class="col-3 white-border">
+          <div class="col white-border">
             <div class="m-3">
-              <h5>Badges</h5>
+              <h5 class="blue-border" style="transform: rotate(-2deg); width: fit-content;">Badges</h5>
             </div>
             <div class="m-3 d-flex flex-row flex-wrap gap-3">
               {% for badge in curr_user.profile.badge.all %}
@@ -226,23 +261,49 @@
           </div>
 
           <div class="col white-border">
-            <div class="m-3"></div>
+            <div class="m-3">
+              <h5 class="blue-border" style="transform: rotate(-2deg); width: fit-content;">Completion Status</h5>
+            </div>
+            <div class="m-3 small-font-size d-flex flex-column flex-wrap gap-3">
+              <div class="d-flex flex-row gap-2 justify-content-between">
+                <p class="text-nowrap d-flex gap-2 justify-content-between">
+                  <span>Quiz</span> 
+                  <span id="quiz-all">{{ complete_quiz.count }}/{{ quiz_count }}</span>
+                </p>
+                <div class="progress" role="progressbar" aria-label="Basic example" id="quiz-all-progress"
+                  aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="max-width: 125px; width: 100%;">
+                  <div class="progress-bar" style="width: 25%"></div>
+                </div>
+              </div>
+              <div class="d-flex flex-row gap-2 justify-content-between">
+                <p class="text-nowrap d-flex gap-2 justify-content-between">
+                  <span>Course</span> 
+                  <span id="course-all">{{ complete_course.count }}/{{ course_count }}</span>
+                </p>
+                <div class="progress" role="progressbar" aria-label="Basic example" id="course-all-progress"
+                  aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="max-width: 125px; width: 100%;">
+                  <div class="progress-bar bg-info" style="width: 25%"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="row m-0" style="gap: 1rem;">
+        <div class="m-0">
           <!-- result data -->
-          <div class="col white-border">
+          <div class="p-3 white-border">
             <div class="m-3">
-              <h5>Result data</h5>
+              <h5 class="blue-border" style="transform: rotate(-2deg); width: fit-content;">Result data</h5>
             </div>
-            <div class="m-3">
+            <div class="m-3 table-responsive">
               <table class="table table-bordered">
                 <thead>
                   <tr>
                     <th style="width: 10px;">#</th>
                     <th>Quiz</th>
                     <th>Difficulty</th>
+                    <th>Points</th>
+                    <th>Experience</th>
                     <th>Score</th>
                     <th>Date</th>
                   </tr>
@@ -253,35 +314,14 @@
                     <td>{{ forloop.counter }}</td>
                     <td><a href="{% url 'quiz-result' average_result.quiz.id %}">{{ average_result.quiz.name }}</a></td>
                     <td>{{ average_result.quiz.difficulty }}</td>
-                    <td>{{ average_result.score|floatformat:2 }}</td>
+                    <td>{{ average_result.quiz.pts }}</td>
+                    <td>{{ average_result.quiz.exp }}</td>
+                    <td>{{ average_result.score|floatformat:2 }}%</td>
                     <td>{{ average_result.created_at|naturaltime }}</td>
                   </tr>
                   {% empty %}
                     <tr><td class="text-nowrap">This user has not taken any test.</td></tr>
                   {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- completion status -->
-          <div class="col white-border">
-            <div class="m-3">
-              <h5>Completion Status</h5>
-            </div>
-            <div class="m-3">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Quiz</th>
-                    <th>Course</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{{ complete_quiz.count }} / {{ quiz_count }}</td>
-                    <td>{{ complete_course.count }} / {{ course_count }}</td>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -296,6 +336,57 @@
 <script>
   var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
   document.getElementById('notification-bell').innerHTML = list_count;
+
+  try{
+    let quiz_easy = document.getElementById('quiz-easy');
+    let quiz_easy_data =  (quiz_easy.innerHTML).split('/');
+    quiz_easy_data = parseFloat(quiz_easy_data[0]) / parseFloat(quiz_easy_data[1]) * 100;
+
+    let easy_progress = document.getElementById('quiz-easy-progress');
+    easy_progress.setAttribute('aria-valuenow', `${quiz_easy_data}`);
+    easy_progress.children[0].setAttribute('style', `width: ${quiz_easy_data}%;`);
+    easy_progress.children[0].innerHTML = `${Math.floor(quiz_easy_data)}%`;
+
+    let quiz_medium = document.getElementById('quiz-medium');
+    let quiz_medium_data =  (quiz_medium.innerHTML).split('/');
+    quiz_medium_data = parseFloat(quiz_medium_data[0]) / parseFloat(quiz_medium_data[1]) * 100;
+
+    let medium_progress = document.getElementById('quiz-medium-progress');
+    medium_progress.setAttribute('aria-valuenow', `${quiz_medium_data}`);
+    medium_progress.children[0].setAttribute('style', `width: ${quiz_medium_data}%;`);
+    medium_progress.children[0].innerHTML = `${Math.floor(quiz_medium_data)}%`;
+
+    let quiz_hard = document.getElementById('quiz-hard');
+    let quiz_hard_data =  (quiz_hard.innerHTML).split('/');
+    quiz_hard_data = parseFloat(quiz_hard_data[0]) / parseFloat(quiz_hard_data[1]) * 100;
+
+    let hard_progress = document.getElementById('quiz-hard-progress');
+    hard_progress.setAttribute('aria-valuenow', `${quiz_hard_data}`);
+    hard_progress.children[0].setAttribute('style', `width: ${quiz_hard_data}%;`);
+    hard_progress.children[0].innerHTML = `${Math.floor(quiz_hard_data)}%`;
+  }
+  catch (e){
+    console.log(e);
+  }
+
+  let quiz_all = document.getElementById('quiz-all');
+  let quiz_all_data =  (quiz_all.innerHTML).split('/');
+  quiz_all_data = parseFloat(quiz_all_data[0]) / parseFloat(quiz_all_data[1]) * 100;
+
+  let quiz_all_progress = document.getElementById('quiz-all-progress');
+  quiz_all_progress.setAttribute('aria-valuenow', `${quiz_all_data}`);
+  quiz_all_progress.children[0].setAttribute('style', `width: ${quiz_all_data}%;`);
+  quiz_all_progress.children[0].innerHTML = `${Math.floor(quiz_all_data)}%`;
+
+  let course_all = document.getElementById('course-all');
+  let course_all_data =  (course_all.innerHTML).split('/');
+  course_all_data = parseFloat(course_all_data[0]) / parseFloat(course_all_data[1]) * 100;
+
+  let course_all_progress = document.getElementById('course-all-progress');
+  course_all_progress.setAttribute('aria-valuenow', `${course_all_data}`);
+  course_all_progress.children[0].setAttribute('style', `width: ${course_all_data}%;`);
+  course_all_progress.children[0].innerHTML = `${Math.floor(course_all_data)}%`;
+
 </script>
 
 {% endblock %}

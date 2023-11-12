@@ -9,7 +9,10 @@
       </a>
     </div>
     <div>
-      <a class="me-3" style="text-decoration: none;" href="{% url 'user-path' %}">Users</a>
+      <a class="me-3" style="text-decoration: none;" href="{% url 'user-path' %}"
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Users">
+        <i class="fa-solid fa-user-group"></i>
+      </a>
       <a class="me-3 tt" style="text-decoration: none;" href="{% url 'notifications' %}"
         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Notifications">
         <span id="notification-bell" style="color:crimson; font-weight: 600;"></span>

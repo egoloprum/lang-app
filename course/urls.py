@@ -21,7 +21,4 @@ urlpatterns = [
 
   path('chapter/<str:pk>/edit/quiz/create', views.createQuizFromChapter, name='chapter-quiz-create'),
   path('chapter/edit/quiz/<str:pk>/delete', views.deleteQuizFromChapter, name='chapter-quiz-delete'),
-
-  path('topic/<str:pk>/', views.topic, name='topic'),
-
 ]

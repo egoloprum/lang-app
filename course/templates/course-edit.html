@@ -6,70 +6,77 @@
   <form method="POST" action="" id="course-edit-form">
     {% csrf_token %}
 
-    <div class="white-border p-4 mb-4">
-      <div class="mb-3">
+    <!-- top part -->
+    <div class="white-border p-2 mb-4 d-flex flex-column gap-3">
+      <div class="p-2">
         <h4>Course Edit Form ({{ course.id }})</h4>
         <p onclick="load_everyting()">click here to load form !!!</p>
       </div>
 
       <!-- course part -->
-      <div class="mb-3" style="display: flex;">
-        <label class="form-label me-3">Name</label>
-        <input class="form-control" type="text" name="course-name" placeholder="Name" value="{{ course.name }}" required>
+      <div class="row m-0 d-flex gap-2">
+        <div class="col d-flex align-items-center gap-2">
+          <label class="form-label">Name</label>
+          <input class="form-control" style="min-width: 140px;" type="text" 
+            name="course-name" placeholder="Name" value="{{ course.name }}" required>
+        </div>
+
+        <!-- topics -->
+        <div class="col d-flex align-items-center gap-2">
+          <label class="form-label">Topic</label>
+          <select class="form-select" name="course-topic" style="min-width: 140px;">
+            <option>{{ course.topic }}</option>
+            <option>Advice</option>
+            <option>Development</option>
+          </select>
+        </div>
+
+        <!-- tags -->
+        <div class="col d-flex align-items-center gap-2">
+          <label class="form-label">Tag</label>
+          <select class="form-select" name="course-tag" style="min-width: 140px;">
+            <option>{{ course.tag }}</option>
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select>
+        </div>
       </div>
 
-      <div class="mb-3" style="display: flex;">
-        <label class="form-label me-3">Topic</label>
-        <input class="form-control me-3" type="text" name="course-topic">
-        <select class="form-select">
-          {% for topic in topics %}
-            <option class="form-control">{{ topic.name }}</option>
-          {% endfor %}
-        </select>
+      <!-- body -->
+      <div class="row m-0 d-flex flex-row gap-2">
+        <label class="col" style="max-width: fit-content;">Body</label>
+        <textarea class="mytextarea form-control me-2 col" style="min-width: 140px;" name="course-body">{{ course.body }}</textarea>
       </div>
 
-      <div class="mb-3" style="display: flex;">
-        <label class="form-label me-3">Tag</label>
-        <input class="form-control me-3" type="text" name="course-tag">
-        <select class="form-select">
-          {% for tag in tags %}
-            <option class="form-control">{{ tag.name }}</option>
-          {% endfor %}
-        </select>
-      </div>
-
-      <div class="mb-3" style="display: flex;">
-        <label class="form-label me-3">Body</label>
-        <textarea class="mytextarea form-control" style="width: 100%;" name="course-body">{{ course.body }}</textarea>
-      </div>
-
-      <div class="mb-3" style="display: flex;">
-        <div style="width: 100%; display: flex;" class="me-3">
-          <label class="form-label me-3" style="width: 100px;">Start Date</label>
+      <!-- public start end date -->
+      <div class="row m-0 d-flex gap-2">
+        <div class="col d-flex align-items-center gap-2" style="max-width: fit-content;">
+          <label class="form-label me-3">Publication</label>
+          {% if course.publication == True %}
+            <input type="checkbox" class="form-check-input" name="course-public" id="course-publication" checked>
+          {% else %}
+            <input type="checkbox" class="form-check-input" name="course-public" id="course-publication">
+          {% endif %}
+        </div>
+        <div class="col d-flex align-items-center gap-2">
+          <label class="text-nowrap">Start Date</label>
           <input class="form-control" type="date" name="course-start" value="{{ course.start_date|date:'Y-m-d' }}">
         </div>
 
-        <div style="width: 100%; display: flex;" class="">
-          <label class="form-label me-3" style="width: 100px;">End Date</label>
+        <div class="col d-flex align-items-center gap-2">
+          <label class="text-nowrap">End Date</label>
           <input class="form-control" type="date" name="course-end" value="{{ course.end_date|date:'Y-m-d' }}">
         </div>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label me-3">Publication</label>
-        {% if course.publication == True %}
-          <input type="checkbox" class="form-check-input" name="course-public" id="course-publication" checked>
-        {% else %}
-          <input type="checkbox" class="form-check-input" name="course-public" id="course-publication">
-        {% endif %}
-      </div>
-      
-      <div style="display: flex; justify-content: space-between;">
-        <div>
-          <button class="btn btn-outline-primary me-2" id="course-edit-button">Save form</button>
+      <!-- buttons -->
+      <div class="d-flex row m-0 justify-content-between gap-2">
+        <div class="col d-flex flex-wrap gap-2">
+          <button class="btn btn-outline-primary" id="course-edit-button">Save form</button>
           <a class="btn btn-secondary" href="{% url 'course' %}">Discard</a>
         </div>
-        <div>
+        <div class="col" style="max-width: fit-content;">
           <a class="btn btn-danger" data-bs-toggle="modal" 
             data-bs-target="#exampleModal-delete">Delete</a>
         </div>
@@ -157,8 +164,8 @@
                   </div>
                   <div style="display: flex; flex-direction: row;" class="mb-3">
                     <label class="mb-3 me-3">file</label>
-                    <input class="form-control mb-3" style="width: 100%;"
-                      name="cour-file-{{ forloop.counter }}">{{ file.file }}</textarea>
+                    <p class="form-control mb-3" style="width: 100%;"
+                      name="cour-file-{{ forloop.counter }}">{{ file.file }}</p>
                   </div>
                 </div>
               </div>

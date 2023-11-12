@@ -4,10 +4,10 @@
 
 <section class="m-3">
   <div class="m-3">
-    <div class="row m-0">
+    <div class="row d-flex flex-wrap gap-3 m-0">
 
       <!-- left side div -->
-      <div class="col-2 me-3 white-border" style="height: fit-content;">
+      <div class="col white-border" style="max-width: 300px; height: fit-content;">
         <div class="m-1 mt-3 mb-2">
           <h4>{{ course.name }}</h4>
         </div>
@@ -96,18 +96,6 @@
             {% endfor %}
           </div>
         </div>
-  
-        <!-- discuss -->
-        <div class="m-1 mt-2 mb-2">
-          <h5>Discuss</h5>
-          <div class="small-font-size ms-3">
-            {% if discuss.exists %}
-
-            {% else %}
-              <p>There is no discuss here.</p>
-            {% endif %}
-          </div>
-        </div>
       </div>
   
       <!-- right side div -->
@@ -139,24 +127,6 @@
           </div>
         </div>
   
-        <!-- videos div -->
-        <div class="m-3 border">
-          <div style="border-bottom: 1px solid rgba(0,0,0,0.2)">
-            <h5 class="m-2 p-2">Videos</h5>
-          </div>
-          <div class="" style="display: grid; grid-template-columns: auto auto;">
-            {% for video in videos %}
-              <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
-                <p class="m-2 p-2"><a href="">video 1</a></p>
-              </div>
-            {% empty %}
-              <div class="" style="border: 1px solid rgba(0,0,0,0.2); width: max-content;">
-                <p class="m-2 p-2">There is no video here.</p>
-              </div>
-            {% endfor %}
-          </div>
-        </div>
-  
         <!-- files div -->
         <div class="m-3 border">
           <div style="border-bottom: 1px solid rgba(0,0,0,0.2)">
@@ -165,7 +135,10 @@
           <div class="" style="display: grid; grid-template-columns: auto auto;">
             {% for file in files %}
               <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
-                <p class="m-2 p-2">TOEFL first edition book</p>
+                <p class="m-2 p-2">{{ file.description }}</p>
+                <p class="m-2 p-2"><a href="{{ file.file.url }}" class="file-id"
+                  id="{{ file.file.url }}" download="{{ file.file }}">Download</a>
+                </p>
               </div>
             {% empty %}
               <div class="" style="border: 1px solid rgba(0,0,0,0.2); width: max-content;">
@@ -184,6 +157,17 @@
 <script>
   var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
   document.getElementById('notification-bell').innerHTML = list_count;
+
+  let files = document.getElementsByClassName('file-id');
+
+  for (let i = 0; i < files.length; i++) {
+    let file_id = files[i].id.split('/');
+    if (file_id.includes('files') == false) {
+      file_id = file_id[0] + '/' + file_id[1] + '/' + 'files/' + file_id[2];
+      files[i].setAttribute('href', file_id);
+    }
+  }
+
 </script>
 
 {% endblock %}

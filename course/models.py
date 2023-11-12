@@ -1,14 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class Topic(models.Model):
-  name = models.CharField(unique=True, null=False, max_length=200)
-
-  def __str__(self):
-    if self.name == None:
-      return f" {self.id} empty"
-    else:
-      return f" {self.id} {self.name}"
+from .validators import validate_file_size
 
 TAG_CHOICES = (
   ('Beginner', 'beginner'),
@@ -16,12 +9,17 @@ TAG_CHOICES = (
   ('Advanced', 'advanced'),
 )
 
+TOPIC_CHOICES = (
+  ('Advice', 'advice'),
+  ('Development', 'development'),
+)
+
 class Course(models.Model):
   host = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name='course_host')
   user = models.ManyToManyField(User, blank=True, related_name='course_user')
-  topic = models.ForeignKey(Topic, on_delete=models.CASCADE, null=True, blank=True, related_name='course_topic')
-
-  tag = models.CharField(max_length=50, choices=TAG_CHOICES, default=None, null=True, blank=True)
+  
+  topic = models.CharField(max_length=50, choices=TAG_CHOICES, default=None, null=True, blank=True)
+  tag = models.CharField(max_length=50, choices=TOPIC_CHOICES, default=None, null=True, blank=True)
   name = models.CharField(unique=True, max_length=200, null=True)
   body = models.TextField(null=True, blank=True) 
   pts = models.IntegerField(default=0, null=True, blank=True)
@@ -56,7 +54,7 @@ class File(models.Model):
   course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True, related_name='file_course')
   content = models.ForeignKey(Content, on_delete=models.CASCADE, null=True, blank=True, related_name='file_content')
   
-  file = models.FileField(null=False, upload_to='files/')
+  file = models.FileField(null=False, upload_to='files/', validators=[validate_file_size])
   description = models.CharField(max_length=200, null=False)
 
   def __str__(self):

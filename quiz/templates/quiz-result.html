@@ -5,39 +5,55 @@
 <section class="m-3">
   <div class="m-3">
     {% if request.user.is_staff %}
-      <div class="p-3 white-border text-nowrap">
-        <div class="mb-3">
+      <div class="p-3 white-border text-nowrap d-flex flex-column gap-3">
+        <div>
           <h3>Staff side</h3>
         </div>
-        <div class="mb-3" style="display: flex; align-items: center;">
-          <label class="me-3">Quiz name</label>
-          <p class="form-control">{{ quiz.name }}</p>
-          <label class="me-3 ms-3">Quiz creator</label>
-          <p class="form-control">{{ quiz.host }}</p>
+        <div class="row m-0 d-flex flex-row flex-wrap align-items-center gap-3">
+          <div class="col row d-flex flex-row flex-wrap align-items-center gap-2" style="width: 100%;">
+            <label class="col" style="max-width: fit-content;">Quiz name</label>
+            <p class="col form-control" style="min-width: 150px;">{{ quiz.name }}</p>
+          </div>
+          <div class="col row d-flex flex-row flex-wrap align-items-center gap-2" style="width: 100%;">
+            <label class="col" style="max-width: fit-content;">Quiz creator</label>
+            <p class="col form-control" style="min-width: 150px;">{{ quiz.host }}</p>
+          </div>
         </div>
-        <div class="mb-3" style="display: flex; align-items: center;">
-          <label class="me-3">Course</label>
-          <p class="form-control">{{ quiz.course }}</p>
-          <label class="me-3 ms-3">Content</label>
-          <p class="form-control">{{ quiz.content }}</p>
+        <div class="row m-0 d-flex flex-wrap align-items-center gap-3">
+          <div class="col row d-flex flex-wrap align-items-center gap-2">
+            <label class="col" style="max-width: fit-content;">Course</label>
+            <p class="col form-control" style="min-width: 150px;">{{ quiz.course }}</p>
+          </div>
+          <div class="col row d-flex flex-wrap align-items-center gap-2">
+            <label class="col" style="max-width: fit-content;">Content</label>
+            <p class="col form-control" style="min-width: 150px;">{{ quiz.content }}</p>
+          </div>
         </div>
-        <div class="mb-3" style="display: flex; align-items: center;">
-          <label class="me-3">Minimum score</label>
-          <p class="form-control">{{ quiz.required_score }}%</p>
-          <label class="me-3 ms-3">Average score</label>
-          <p class="form-control">
-            {% if average_score.average_score %}{{ average_score.average_score|floatformat:-2 }}%{% else %}0{% endif %}
-          </p>
+        <div class="row m-0 d-flex flex-wrap align-items-center gap-3">
+          <div class="col row d-flex flex-wrap align-items-center gap-2">
+            <label class="col" style="max-width: fit-content;">Minimum score</label>
+            <p class="col form-control" style="min-width: 150px;">{{ quiz.required_score }}%</p>
+          </div>
+          <div class="col row d-flex flex-wrap align-items-center gap-2">
+            <label class="col" style="max-width: fit-content;">Average score</label>
+            <p class="col form-control" style="min-width: 150px;">
+              {% if average_score.average_score %}{{ average_score.average_score|floatformat:-2 }}%{% else %}0{% endif %}
+            </p>
+          </div>
         </div>
-        <div class="mb-3" style="display: flex; align-items: center;">
-          <label class="me-3">Attempts</label>
-          <p class="form-control">{{ all_results.count }}</p>
-        </div>
-        <div class="mb-3" style="display: flex; align-items: center;">
-          <label class="me-3">Created at</label>
-          <p class="form-control">{{ quiz.created_at|naturaltime }}</p>
-          <label class="me-3 ms-3">Duration</label>
-          <p class="form-control">{{ quiz.duration|date:'i' }} minutes</p>
+        <div class="row m-0 d-flex flex-wrap align-items-center gap-3">
+          <div class="col row d-flex flex-wrap align-items-center gap-2">
+            <label class="col" style="max-width: fit-content;">Attempts</label>
+            <p class="col form-control" style="min-width: 150px;">{{ all_results.count }}</p>
+          </div>
+          <div class="col row d-flex flex-wrap align-items-center gap-2">
+            <label class="col" style="max-width: fit-content;">Created at</label>
+            <p class="col form-control" style="min-width: 150px;">{{ quiz.created_at|naturaltime }}</p>
+          </div>
+          <div class="col row d-flex flex-wrap align-items-center gap-2">
+            <label class="col" style="max-width: fit-content;">Duration</label>
+            <p class="col form-control" style="min-width: 150px;">{{ quiz.duration|date:'i' }} minutes</p>
+          </div>
         </div>
       </div>
 
@@ -46,7 +62,7 @@
         <div class="mb-3">
           <h3>Result data</h3>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 table-responsive">
           <table class="table table-bordered">
             <thead>
               <tr>
@@ -63,6 +79,10 @@
                 <td>{{ all_result.user.username }}</td>
                 <td>{{ all_result.score|floatformat:-2 }}%</td>
                 <td>{{ all_result.created_at|naturaltime }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td>No results yet.</td><td></td><td></td><td></td>
               </tr>
               {% endfor %}
             </tbody>
@@ -101,7 +121,7 @@
         <div class="mb-3">
           <h3>Result data</h3>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 table-responsive">
           <table class="table table-bordered">
             <thead>
               <tr>
@@ -124,12 +144,6 @@
               {% endfor %}
             </tbody>
           </table>
-        </div>
-      </div>
-
-      <div class="p-3 mt-3 white-border text-nowrap">
-        <div class="mb-3">
-          <h3>Result graph</h3>
         </div>
       </div>
     {% endif %}

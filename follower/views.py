@@ -51,6 +51,13 @@ def send_follow_request(request, pk):
 
     else:
         follow_request = FollowRequest.objects.create(sender=request.user, reciever=reciever)
+        notification = Notification.objects.create(user=follow_request.sender, body=f'{follow_request.sender} has sent you follow request.')
+        try:
+            list = NotificationList.objects.get(user=reciever)
+        except NotificationList.DoesNotExist:
+            list = NotificationList.objects.create(user=reciever)
+
+        list.notification.add(notification)
         payload = "Follow request sent."
 
     return redirect('/user/profile/%d/'%reciever.id)
@@ -81,6 +88,13 @@ def cancel_request(request, pk):
         return HttpResponse('Something is wrong')
     if follow_request:
         follow_request.delete()
+        notification = Notification.objects.create(user=follow_request.reciever, body=f'{follow_request.reciever} has declined your follow request.')
+        try:
+            list = NotificationList.objects.get(user=follow_request.sender)
+        except NotificationList.DoesNotExist:
+            list = NotificationList.objects.create(user=follow_request.sender)
+
+        list.notification.add(notification)
         payload = "Follow request has been cancelled"
     else:
         payload = "There is no follow request"
@@ -99,6 +113,15 @@ def accept_follow_request(request, pk):
     if follow_request:
         follow_request.accept()
         follow_request.delete()
+
+        notification = Notification.objects.create(user=follow_request.reciever, body=f'{follow_request.reciever} has accepted your follow request.')
+        try:
+            list = NotificationList.objects.get(user=follow_request.sender)
+        except NotificationList.DoesNotExist:
+            list = NotificationList.objects.create(user=follow_request.sender)
+
+        list.notification.add(notification)
+
         payload = "Follow request has been accepted"
     else:
         payload = "There is no follow request"
@@ -162,6 +185,10 @@ def removeChat(request, pk, name):
     chatroom = ChatRoom.objects.get(id=pk)
     user = User.objects.get(username=name)
     chatroom.user.remove(user)
+
+    if chatroom.user.all().count() == 0:
+        chatroom.delete()
+    
     return HttpResponse('Successfully removed user')
 
 def deleteChat(request, pk):
@@ -172,6 +199,10 @@ def deleteChat(request, pk):
 @login_required(login_url='login')
 def eachChat(request, pk):
     chatroom = ChatRoom.objects.get(id=pk)
+    if chatroom.user.all().count() == 0:
+        chatroom.delete()
+        return redirect('chatroom')
+
     chatroom.user.add(request.user)
 
     out_users = User.objects.filter(chatroom_user=None)

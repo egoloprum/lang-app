@@ -4,10 +4,10 @@
 
 <section class="m-3">
   <div class="m-3">
-    <div class="row d-flex flex-wrap flex-row gap-2 m-0">
+    <div class="row d-flex flex-wrap flex-row gap-3 m-0">
 
       <!-- left side div -->
-      <div class="col white-border" style="min-width: 200px; max-width: 300px; height: fit-content;">
+      <div class="col white-border" style="max-width: 300px; height: fit-content;">
         <div class="m-1 mt-3 mb-2">
           <h4>{{ course.name }}</h4>
         </div>
@@ -93,30 +93,18 @@
             {% endfor %}
           </div>
         </div>
-  
-        <!-- discuss -->
-        <div class="m-1 mt-2 mb-2">
-          <h5>Discuss</h5>
-          <div class="small-font-size ms-3">
-            {% if discuss.exists %}
-
-            {% else %}
-              <p>There is no discuss here.</p>
-            {% endif %}
-          </div>
-        </div>
       </div>
   
       <!-- right side div -->
       <div class="col white-border">
         <!-- Introduction div -->
         <div class="m-3 mb-5">
-            <h3>Introduction</h3>
-            {% if course.body|safe == 'None' %}
-              <p class="text-muted">There is no introduction here.</p>
-            {% else %}
-              <p class="text-muted">{{ course.body|safe }}</p>
-            {% endif %}
+          <h3>Introduction</h3>
+          {% if course.body|safe == 'None' %}
+            <p class="text-muted">There is no introduction here.</p>
+          {% else %}
+            <p class="text-muted">{{ course.body|safe }}</p>
+          {% endif %}
         </div>
   
         <!-- chapters div -->
@@ -130,7 +118,7 @@
                 <p class="m-2 p-2"><a href="{% url 'content-each' content.id %}">{{ content.name }}</a></p>
               </div>
               {% empty %}
-              <div class="" style="border: 1px solid rgba(0,0,0,0.2); width: max-content;">
+              <div class="" style="border: 1px solid rgba(0,0,0,0.2); max-width: max-content;">
                 <p class="m-2 p-2">There is no chapter here.</p>
               </div>
             {% endfor %}
@@ -146,10 +134,12 @@
             {% for file in files %}
               <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
                 <p class="m-2 p-2">{{ file.description }}</p>
-                <p class="m-2 p-2"><a href="{{ file.url }}" download>download</a></p>
+                <p class="m-2 p-2"><a href="{{ file.file.url }}" class="file-id"
+                  id="{{ file.file.url }}" download="{{ file.file }}">Download</a>
+                </p>
               </div>
               {% empty %}
-              <div class="" style="border: 1px solid rgba(0,0,0,0.2); width: max-content;">
+              <div class="" style="border: 1px solid rgba(0,0,0,0.2); max-width: max-content;">
                 <p class="m-2 p-2">There is no file here.</p>
               </div>
             {% endfor %}
@@ -166,6 +156,15 @@
 <script>
   var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
   document.getElementById('notification-bell').innerHTML = list_count;
+
+  let files = document.getElementsByClassName('file-id');
+
+  for (let i = 0; i < files.length; i++) {
+    let file_id = files[i].id.split('/');
+    file_id = file_id[0] + '/' + file_id[1] + '/' + 'files/' + file_id[2];
+    files[i].setAttribute('href', file_id);
+  }
+
 </script>
 
 {% endblock %}

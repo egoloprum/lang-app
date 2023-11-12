@@ -14,9 +14,9 @@
               <!-- information -->
               <div class="mb-3">
                 <h5 style="text-align: center; font-weight: 600;">Information</h5><hr>
-                <div style="display: flex;">
-                  <img src="{{ curr_user.profile.avatar.url }}" style="width: 120px;">
-                  <div class="ms-3">
+                <div class="d-flex flex-wrap gap-3">
+                  <img src="{{ curr_user.profile.avatar.url }}" style="max-width: 120px; max-height: 120px;">
+                  <div>
                     <p>Username: <b>{{ curr_user.username|title }}</b></p>
                     <p>Role: Staff</p>
                     <p>Email: {{ curr_user.email }}</p>
