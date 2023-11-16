@@ -119,6 +119,8 @@
   var todays_date = new Date();
 
   courses_date = courses_date.innerHTML.replaceAll('T00:00:00Z', '').replace('[', '').replace(']', '').split(',');
+  console.log(courses_date.length);
+  console.log(course_start_btns.length);
 
   for (let i = 0; i < course_start_btns.length; i++) {
     let course_date = courses_date[i].split('-');

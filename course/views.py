@@ -27,11 +27,10 @@ def course(request):
   courses = Course.objects.select_related('host').order_by('-created_at')
   courses_secure = []
 
-  for course in courses:
+  for course in courses.filter(publication=True):
     courses_secure.append(course.start_date)
   
   context['courses_secure'] = courses_secure
-
   course_progresses = []
 
   if request.user.is_staff:
@@ -45,7 +44,7 @@ def course(request):
     courses = courses.filter(publication=True)
     for course in courses:
       try:
-        progress = Progress.objects.get(course=course, user=request.user)
+        progress = Progress.objects.select_related('user').get(course=course, user=request.user)
       except Progress.DoesNotExist:
         progress = 'course'
       course_progresses.append(progress)
@@ -114,12 +113,36 @@ def searchCourse(request):
 
   return render(request, 'course-partial.html', context)
 
+
+def deleteFile(request, pk):
+  file = File.objects.get(id=pk)
+
+  try:
+    file_course = file.course
+  except Exception:
+    file_course = None
+
+  if file_course:
+    file.delete()
+    return redirect('course-edit', file_course.id)
+  
+  try:
+    file_content = file.content
+  except Exception:
+    file_content = None
+
+  if file_content:
+    file.delete()
+    return redirect('chapter-edit', file_content.course.id , file_content.id)
+  
+  return HttpResponse('Something is wrong')
+
+
 @login_required(login_url='login')
 def editCourse(request, pk):
   course = Course.objects.select_related('host').get(id=pk)
   quizs = Quiz.objects.select_related('course').filter(course=course).annotate(questions_count=models.Count('question_quiz'))
   contents = Content.objects.select_related('course').filter(course=course)
-  contents = contents.annotate(quizs_count=models.Count('quiz_content'), files_count=models.Count('file_content'))
 
   if request.method == 'POST':
     name = None if request.POST.get('course-name') == '' else request.POST.get('course-name')
@@ -179,7 +202,7 @@ def deleteCourse(request, pk):
 
 @login_required(login_url='login')
 def resultCourse(request, pk):
-  course = Course.objects.select_related('host', 'topic').get(id=pk)
+  course = Course.objects.select_related('host').get(id=pk)
   contents = Content.objects.select_related('course').filter(course=course)
   files = File.objects.select_related('course').filter(course=course)
   quizs = Quiz.objects.select_related('course').filter(course=course)

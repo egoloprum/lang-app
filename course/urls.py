@@ -12,6 +12,8 @@ urlpatterns = [
   path('<str:pk>/edit', views.editCourse, name='course-edit'),
   path('<str:pk>/delete', views.deleteCourse, name='course-delete'),
 
+  path('edit/file/<str:pk>/delete', views.deleteFile, name='file-delete'),
+
   path('<str:pk>/edit/chapter/create', views.createChapter, name='chapter-create'),
   path('edit/chapter/<str:pk>/delete', views.deleteChapter, name='chapter-delete'),
   path('<str:pk>/edit/chapter/<str:id>/edit', views.editChapter, name='chapter-edit'),

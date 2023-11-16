@@ -86,7 +86,7 @@
     <!-- chapter part -->
     <div class="white-border p-4 row m-0 mb-3">
       <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
-        <a class="btn btn-light" style="width: 100%;" id="{{ course.id }}" onclick="add_chapter(this.id)">Add chapter</a>
+        <a class="btn btn-light" style="width: 100%;" id="add-chapter-{{ course.id }}" onclick="add_chapter(this.id)">Add chapter</a>
         <div id="success-chapter" style="display: none;"></div>
       </div>
       <div class="col p-3 ms-3" id="cour-chap-side">
@@ -101,7 +101,7 @@
               </h2>
               <div class="accordion-collapse collapse" id="flush-collapse1-{{ forloop.counter }}">
                 <div class="accordion-body" id="accordion-body1-{{ forloop.counter }}">
-                  <div style="display: flex; flex-direction: row;" class="mb-3">
+                  <div class="d-flex flex-row align-items-center mb-3">
                     <label class="me-3">name</label>
                     <p class="form-control me-3">{{ chapter.name }}</p>
                     <a class="btn btn-light me-3 text-nowrap" onclick="del_chapter(this.id)" 
@@ -110,11 +110,11 @@
                       <span>Delete chapter</span>
                     </a>
                     <a class="btn btn-light text-nowrap" style="width: max-content;" href="{% url 'chapter-edit' course.id chapter.id %}" target="_blank">
-                      <i class="fa-solid fa-trash"></i>
+                      <i class="fa-regular fa-pen-to-square"></i>
                       <span>Edit chapter</span>
                     </a>
                   </div>
-                  <div style="display: flex;" class="mb-3">
+                  <div class="d-flex flex-row align-items-center mb-3">
                     <label class="me-3">body</label>
                     <p class="form-control">
                       {{ chapter.body|safe }}
@@ -122,11 +122,11 @@
                   </div>
                   <div style="display: flex;" class="mb-3">
                     <label class="me-3">Quizes total:</label>
-                    <p class="text-muted">{{ chapter.quizs_count }}</p>
+                    <p class="text-muted">{{ chapter.quiz_content.all|length }}</p>
                   </div>
                   <div style="display: flex;" class="mb-3">
                     <label class="me-3">Files total:</label>
-                    <p class="text-muted">{{ chapter.files_count }}</p>
+                    <p class="text-muted">{{ chapter.file_content.all|length }}</p>
                   </div>
                 </div>
               </div>
@@ -153,19 +153,20 @@
               </h2>
               <div class="accordion-collapse collapse" id="flush-collapse2-{{ forloop.counter }}">
                 <div class="accordion-body" id="accordion-body2-{{ forloop.counter }}">
-                  <div style="display: flex; flex-direction: row;" class="mb-3" id="testing">
+                  <div class="mb-3 d-flex flex-row align-items-center">
                     <label class="me-3">Description</label>
-                    <input class="form-control me-3" type="text" placeholder="Description here..." name="cour-file-desc-{{ forloop.counter }}"
-                      required value="{{ file.description }}">
-                    <a class="btn btn-light me-3 text-nowrap" onclick="del_cour_file(this.id)" id="del-cour-file-{{ forloop.counter }}" style="width: max-content;">
+                    <input class="form-control me-3" type="text" placeholder="Description here..." 
+                      name="cour-file-desc-{{ forloop.counter }}" value="{{ file.description }}" required>
+                    <a class="btn btn-light me-3 text-nowrap" href="{% url 'file-delete' file.id %}"
+                        style="width: max-content;">
                       <i class="fa-solid fa-trash"></i>
                       <span>Delete file</span>
                     </a>
                   </div>
-                  <div style="display: flex; flex-direction: row;" class="mb-3">
-                    <label class="mb-3 me-3">file</label>
+                  <div class="mb-3 d-flex flex-row align-items-center text-nowrap" class="mb-3">
+                    <label class="mb-3 me-3">File here</label>
                     <p class="form-control mb-3" style="width: 100%;"
-                      name="cour-file-{{ forloop.counter }}">{{ file.file }}</p>
+                      name="cour-file-{{ forloop.counter }}"><a href="{{ file.file.url }}" download="{{ file.file }}">{{ file.file }}</a></p>
                   </div>
                 </div>
               </div>
@@ -178,7 +179,7 @@
     <!-- quiz part -->
     <div class="white-border p-4 row m-0 mb-3">
       <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
-        <a class="btn btn-light" style="width: 100%;" id="{{ course.id }}"
+        <a class="btn btn-light" style="width: 100%;" id="add-quiz-{{ course.id }}"
           onclick="add_quiz(this.id)">Add quiz</a>
         <div id="success-quiz" style="display: none;"></div>
       </div>
@@ -205,7 +206,7 @@
                       <span>Delete quiz</span>
                     </a>
                     <a class="btn btn-light text-nowrap" style="width: fit-content;" href="{% url 'quiz-edit' quiz.id %}" target="_blank">
-                      <i class="fa-solid fa-trash"></i>
+                      <i class="fa-regular fa-pen-to-square"></i>
                       <span>Edit quiz</span>
                     </a>
                   </div>
@@ -225,6 +226,7 @@
   </form>
 </section>
 
+<!-- toast notif -->
 <div class="custom-toast" id="toast" style="display: none;">
   <div class="toast-content">
       <i class="fa fa-solid fa-check check"></i>
