@@ -124,8 +124,6 @@ def logoutUser(request):
     logout(request)
     return redirect('home')
 
-def forgotPass(request):
-    pass
 
 def get_follow_request_or_false(sender, reciever):
     try:

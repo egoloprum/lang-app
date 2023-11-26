@@ -25,7 +25,7 @@
               <p>End date</p>
             </div>
             <div class="small-font-size text-muted" style="display: flex; justify-content: space-between;">
-              <p>{{ course.start_date|date:'Y-m-d' }}</p>
+              <p id="course-date-{{ forloop.counter }}">{{ course.start_date|date:'Y-m-d' }}</p>
               <p>{{ course.end_date|date:'Y-m-d' }}</p>
             </div>
           </div>
@@ -58,7 +58,7 @@
         <div class="mb-2">
           {% if course.publication %}
             {% if not request.user.is_staff %}
-              <a class="btn btn-dark btn-sm course-start-btn" href="" data-bs-toggle="modal"
+              <a class="btn btn-dark btn-sm course-start-btn" href="" data-bs-toggle="modal" id="course-btn-{{ forloop.counter }}"
                 data-bs-target="#exampleModal-{{ course.id }}" style="width: 100%;">Here to start</a>
             {% else %}
               <a class="btn btn-dark btn-sm" href="" data-bs-toggle="modal"
@@ -118,20 +118,19 @@
   var course_start_btns = document.getElementsByClassName("course-start-btn");
   var todays_date = new Date();
 
-  courses_date = courses_date.innerHTML.replaceAll('T00:00:00Z', '').replace('[', '').replace(']', '').split(',');
-  console.log(courses_date.length);
-  console.log(course_start_btns.length);
-
   for (let i = 0; i < course_start_btns.length; i++) {
-    let course_date = courses_date[i].split('-');
-    course_date = new Date(courses_date[i]);
-
-    if (course_date > todays_date) {
-      course_start_btns[i].setAttribute('class', 'btn btn-dark btn-sm course-start-btn disabled');
-      course_start_btns[i].parentNode.setAttribute('data-bs-toggle', 'tooltip');
-      course_start_btns[i].parentNode.setAttribute('data-bs-placement', 'bottom');
-      course_start_btns[i].parentNode.setAttribute('title', 'Course has not started yet');
+    let j = i + 1;
+    try {
+      let course_date = document.getElementById("course-date-" + j).innerHTML.split('-');
+      course_date = new Date(course_date);
+      if (course_date > todays_date) {
+        course_start_btns[i].setAttribute('class', 'btn btn-dark btn-sm course-start-btn disabled');
+        course_start_btns[i].parentNode.setAttribute('data-bs-toggle', 'tooltip');
+        course_start_btns[i].parentNode.setAttribute('data-bs-placement', 'bottom');
+        course_start_btns[i].parentNode.setAttribute('title', 'Course has not started yet');
+      }
     }
+    catch (e) {}
   }
 
   var courses = document.getElementsByClassName('courses');

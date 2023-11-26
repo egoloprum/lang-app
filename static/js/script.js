@@ -30,17 +30,22 @@ if (sidebar_scroll == 'enable') {
   enableScroll();
 }
 
-sidebar_toggle.addEventListener('click', () => {
-  sidebar_scroll = localStorage.getItem('sidebarScroll');
-  if (sidebar_scroll != 'enable') {
-    enableScroll();
-    console.log(sidebar_scroll);
-  }
-  else {
-    disableScroll();
-    console.log(sidebar_scroll);
-  }
-});
+try{
+  sidebar_toggle.addEventListener('click', () => {
+    sidebar_scroll = localStorage.getItem('sidebarScroll');
+    if (sidebar_scroll != 'enable') {
+      enableScroll();
+      console.log(sidebar_scroll);
+    }
+    else {
+      disableScroll();
+      console.log(sidebar_scroll);
+    }
+  });
+}
+catch (e) {
+  console.log(e);
+}
 
 // course-edit.html
 if (current_url.split('/').find((element) => element == 'course') == 'course') {

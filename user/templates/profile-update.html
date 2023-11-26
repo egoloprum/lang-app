@@ -4,9 +4,9 @@
 
 <section class="m-3">
   <div class="m-3">
-    <div class="m-0 row gap-3">
+    <div class="m-0 d-flex flex-wrap flex-row gap-3">
     <!-- sidebar -->
-      <div class="col p-3 white-border" style="max-width: 400px;">
+      <div class="p-3 white-border flex-fill" style="max-width: 300px;">
         <div>
           <a class="btn" style="width: 100%;" href="{% url 'profile-update' %}">Basic Info</a>
         </div>
@@ -15,7 +15,7 @@
         </div>
       </div>
 
-      <div class="col p-3 white-border">
+      <div class="p-3 white-border flex-fill">
         {% if request.path == '/user/profile-update' %}
           <div class="me-3 ms-3">
             <div class="mt-1 mb-3">

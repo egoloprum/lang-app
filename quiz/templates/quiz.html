@@ -7,11 +7,11 @@
   <div class="white-border p-3 m-3">
     <form class="d-flex flex-row flex-wrap justify-content-between gap-2" method="POST" action="">  
       {% csrf_token %}
-      <div style="max-width: 200px; width: 100%;">
+      <div class="flex-fill">
         <input type="search" class="form-control" name="search-quiz" placeholder="Search..."
           hx-post="{% url 'search-quiz' %}" hx-target="#quiz-table" hx-trigger="keyup changed delay:300ms">
       </div>
-      <div style="max-width: 200px; width: 100%;">
+      <div class="flex-fill">
         <select class="form-select" name="search-difficulty">
           <option>Difficulty</option>
           <option>Easy</option>
@@ -19,14 +19,14 @@
           <option>Hard</option>
         </select>
       </div>
-      <div style="max-width: 200px; width: 100%;">
+      <div class="flex-fill">
         <select class="form-select" name="search-duration">
           <option>Duration</option>
           <option>Ascending</option>
           <option>Descending</option>
         </select>
       </div>
-      <div style="max-width: 200px; width: 100%;">
+      <div class="flex-fill">
         <select class="form-select" name="search-date">
           <option>Date</option>
           <option>Not Started</option>
@@ -34,7 +34,7 @@
           <option>Finished</option>
         </select>
       </div>
-      <div class="">
+      <div class="flex-fill">
         <button class="btn btn-outline-success" hx-post="{% url 'search-quiz' %}" hx-boost="true" hx-target="#quiz-table">Search</button>
       </div>
     </form>

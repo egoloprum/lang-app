@@ -54,40 +54,60 @@
   <div class="m-5 mt-0 mb-0 p-5" style="display: flex;">
     <div class="m-3 me-5" style="width: 500px;">
       <div class="p-3 pt-0">
-        <h2 class="mb-4">Unlocking the Power of Your Brand.</h2>
-        <p class="mb-4">Where your vision meets identity. Empowering brands for a bold tomorrow.</p>
+        <h2 class="mb-4">Welcome to <b>English Study</b> - Your Gateway to English Mastery!</h2>
+        <p class="mb-4">
+          Are you ready to embark on an exciting journey of language discovery and fluency? Look no further! 
+          <b>English Study</b> is your ultimate destination for mastering the English language.
+        </p>
         <a href="{% url 'login' %}" style="display: flex; justify-content: center; align-items: center; 
           width: 200px; height: 50px; border-radius: 20px; background: #ffea7b;">
           <span>Get connected</span>
           <span></span>
         </a>
       </div>
-      <div class="p-3 pt-0">
-        <div style="display: flex; justify-content: center;">
-          <img src="{% static 'images/index/earth1.jpg' %}" style="width: 380px; border-radius: 20px; ">
+      <div class="pt-0">
+        <div class="d-flex justify-content-center">
+          <img src="{% static 'images/index/earth1.jpg' %}" style="width: 350px; border-radius: 20px;">
         </div>
         <p style="display: flex; justify-content: center;" class="mt-3">Study from anywhere.</p>
       </div>
     </div>
 
-    <div class="m-3 ms-5" style="width: 800px;">
+    <div class="m-3 ms-5" style="width: 700px;">
+      <div class="mb-4 d-flex gap-3 small-font-size" style="font-weight: 600;">
+        <p class="blue-border p-2" style="background: #959dff;">
+          Dive into a rich array of courses designed to enhance your English skills.
+        </p>
+        <p class="blue-border p-2" style="background: #ffcc3d;">
+          Receive instant feedback and track your progress as you advance.
+        </p>
+        <p class="blue-border p-2" style="background: #f72585;">
+          Connect with fellow learners from around the globe!
+        </p>
+        <p class="blue-border p-2" style="background: #57bee6;">
+          Earn badges as you conquer each course and test.
+        </p>
+        <p class="blue-border p-2" style="background: #00dd73;">
+          Receive personalized notifications to stay informed about upcoming courses
+        </p>
+      </div>
       <div class="mb-4">
-        <img src="{% static 'images/index/pic1.jpg' %}" style="border-radius: 15px; max-width: 800px;">
+        <img src="{% static 'images/index/pic1.jpg' %}" style="border-radius: 15px; max-width: 700px;">
       </div>
       <div style="display: flex; justify-content: space-between;">
         <div class="p-3" style="width: 200px; display: flex; flex-direction: column; background: #fcfcfc;
           border: 5px solid rgb(215, 215, 215); border-radius: 20px;">
-          <h4 style="margin: 0;">10+</h4>
+          <h4 style="margin: 0;">3+</h4>
           <p>Years experience</p>
         </div>
         <div class="p-3" style="width: 200px; display: flex; flex-direction: column; background: #fcfcfc;
           border: 5px solid rgb(215, 215, 215); border-radius: 20px;">
-          <h4 style="margin: 0;">600+</h4>
-          <p>Projects done</p>
+          <h4 style="margin: 0;">10+</h4>
+          <p>Courses done</p>
         </div>
         <div class="p-3" style="width: 200px; display: flex; flex-direction: column; background: #ffffff;
           border: 5px solid rgb(215, 215, 215); border-radius: 20px;">
-          <h4 style="margin: 0;">800+</h4>
+          <h4 style="margin: 0;">100+</h4>
           <p>Happy clients</p>
         </div>
       </div>
@@ -100,8 +120,13 @@
 {{ list_count|json_script:"json-list-count" }}
 
 <script>
-  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
-  document.getElementById('notification-bell').innerHTML = list_count;
+  try {
+    var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+    document.getElementById('notification-bell').innerHTML = list_count;
+  }
+  catch (e) {
+    console.log(e);
+  }
 </script>
 
 {% endblock %}

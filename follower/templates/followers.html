@@ -1,11 +1,11 @@
 {% extends 'main.html' %}
-
+{% load humanize %}
 {% block content %}
 
 <section class="m-3">
   <div class="m-3 d-flex flex-wrap flex-row justify-content-between gap-3">
       <!-- followers list -->
-    <div class="p-3 white-border table-responsive" style="max-width: 450px; width: 100%;">
+    <div class="p-3 white-border table-responsive flex-fill">
       <p class="mb-2">Followers list</p>
       <table class="table table-bordered">
         <thead class="small-font-size">
@@ -42,7 +42,7 @@
     </div>
 
     <!-- request recieved -->
-    <div class="p-3 white-border table-responsive" style="max-width: 450px; width: 100%;">
+    <div class="p-3 white-border table-responsive flex-fill">
       <p class="mb-2">Request recieved</p>
       <table class="table table-bordered">
         <thead class="small-font-size">
@@ -61,8 +61,8 @@
               <td>{{ forloop.counter }}</td>
               <td><a href="{% url 'profile' request.sender.id %}"></a>{{ request.sender.username }}</td>
               <td>{{ request.timestamp }}</td>
-              <td><a href="{% url 'accept-follow-request' request.id %}">Accept</a></td>
-              <td><a hx-boost="true" href="{% url 'cancel-request' request.id %}">Cancel</a>
+              <td><a class="btn btn-outline-success" href="{% url 'accept-follow-request' request.id %}">Accept</a></td>
+              <td><a class="btn btn-secondary" href="{% url 'cancel-request' request.id %}">Cancel</a>
               </td>
             </tr>
               {% empty %}
@@ -80,7 +80,7 @@
     </div>
 
     <!-- request sent -->
-    <div class="p-3 white-border table-responsive" style="max-width: 450px; width: 100%;">
+    <div class="p-3 white-border table-responsive flex-fill">
       <p class="mb-2">Requests sent</p>
       <table class="table table-bordered">
         <thead class="small-font-size">
@@ -97,8 +97,9 @@
               <tr>
                 <td>{{ forloop.counter }}</td>
                 <td><a href="{% url 'profile' request.reciever.user.id %}">{{ request.reciever.user }}</a></td>
-                <td>{{ request.timestamp }}</td>
-                <td><a hx-boost="true" href="{% url 'cancel-request' request.id %}">Cancel</a>
+                <td>{{ request.timestamp|naturaltime }}</td>
+                <td class="d-flex align-items-center justify-content-center">
+                  <a class="btn btn-secondary" href="{% url 'cancel-request' request.id %}">Cancel</a>
                 </td>
               </tr>
               {% empty %}
