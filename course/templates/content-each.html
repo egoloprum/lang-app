@@ -4,10 +4,15 @@
 
 <section class="m-3">
   <div class="m-3">
-    <div class="row m-0">
+    <div class="row d-flex flex-wrap gap-3 m-0">
 
       <!-- left side div -->
-      <div class="col-2 me-3 white-border" style="height: fit-content;">
+      <div class="col white-border" style="max-width: 300px; height: fit-content;">
+        <div class="m-1 mt-3 mb-2">
+          <h4>{{ course.name }}</h4>
+        </div>
+
+        <!-- overview -->
         <div class="m-1 mt-3 mb-2">
           <h5>Overview</h5>
           <div class="small-font-size ms-3">
@@ -19,14 +24,15 @@
           </div>
         </div>
 
+        <!-- chapters -->
         <div class="m-1 mt-2 mb-2">
           <h5>Chapters</h5>
           <div class="small-font-size ms-3">
             {% for con in contents %}
               {% if con.id == content.id %}
-                <p><a style="color: rgb(0, 255, 162);" href="{% url 'content-each' con.id %}">{{ con.name }}</a></p>
+                <p><a style="color: rgb(0, 255, 162);" href="{% url 'content-each' con.id %}">Chapter {{ forloop.counter }}</a></p>
               {% else %}
-                <p><a href="{% url 'content-each' con.id %}">{{ con.name }}</a></p>
+                <p><a href="{% url 'content-each' con.id %}">Chapter {{ forloop.counter }}</a></p>
               {% endif %}
             {% empty %}
               <p>There is no chapter here.</p>
@@ -34,25 +40,60 @@
           </div>
         </div>
   
+        <!-- quizs -->
         <div class="m-1 mt-2 mb-2">
           <h5>Tests</h5>
           <div class="small-font-size ms-3">
-            {% for quiz in quizs %}
+            {% for quiz, completion in completion_quizs %}
+              <p style="display: flex; flex-direction: row; align-items: center;">
+                <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal-{{ quiz.id }}">Chapter test {{ forloop.counter }}</a>
+                {% if completion.completed %}
+                  <span class="ms-2" style="background: green; width: 10px; height: 10px; border-radius: 50%;"></span>
+                {% else %}
+                  <span class="ms-2" style="background: rgb(30, 238, 249); width: 10px; height: 10px; border-radius: 50%;"></span>
+                {% endif %}
+              </p>
 
+              <!-- quiz modal -->
+              <div class="modal fade" id="exampleModal-{{ quiz.id }}" tabindex="-1" aria-labelledby="exampleModalLabel-{{ quiz.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content rounded-3 shadow">
+                    <div class="modal-body p-4 text-center" id="modal-body">
+                      <div style="display: flex; align-items: center; justify-content: end;">
+                        <h5 class="pe-3">Please choose your action</h5>
+                        <a class="btn-close mb-2 ms-5" type="button" aria-label="close" 
+                        data-bs-dismiss="modal"></a>
+                      </div>
+                      <p>You can always change your mind.</p>
+                    </div>
+                    <div class="modal-footer flex-nowrap p-0">
+                      {% if request.user == quiz.host %}
+                        <a class="btn btn-lg btn-link fs-6 text-decoration-none text-nowrap col py-3 m-0 rounded-0 border-end" 
+                          href="{% url 'quiz-each' quiz.id %}">
+                          <strong>Start test</strong>
+                        </a>
+                        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+                          href="{% url 'quiz-result' quiz.id %}" style="color: green;">Result</a>
+                        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+                        href="{% url 'quiz-edit' quiz.id %}" style="color: rgb(221, 232, 23);">Edit</a>
+                        <a class="btn btn-lg btn-link fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+                        href="{% url 'quiz-delete' quiz.id %}" style="color: red;">Delete</a>
+                      {% else %}
+                        <a class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" 
+                          href="{% url 'quiz-each' quiz.id %}">
+                          <strong>Start test</strong>
+                        </a>
+                        <a class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"
+                          href="{% url 'quiz-result' quiz.id %}" style="color: green;">Result</a>
+                      {% endif %}
+  
+                    </div>                  
+                  </div>
+                </div>
+              </div>
             {% empty %}
               <p>There is no test here.</p>
             {% endfor %}
-          </div>
-        </div>
-  
-        <div class="m-1 mt-2 mb-2">
-          <h5>Discuss</h5>
-          <div class="small-font-size ms-3">
-            {% if discuss.exists %}
-
-            {% else %}
-              <p>There is no discuss here.</p>
-            {% endif %}
           </div>
         </div>
       </div>
@@ -86,24 +127,6 @@
           </div>
         </div>
   
-        <!-- videos div -->
-        <div class="m-3 border">
-          <div style="border-bottom: 1px solid rgba(0,0,0,0.2)">
-            <h5 class="m-2 p-2">Videos</h5>
-          </div>
-          <div class="" style="display: grid; grid-template-columns: auto auto;">
-            {% for video in videos %}
-              <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
-                <p class="m-2 p-2"><a href="">video 1</a></p>
-              </div>
-            {% empty %}
-              <div class="" style="border: 1px solid rgba(0,0,0,0.2); width: max-content;">
-                <p class="m-2 p-2">There is no video here.</p>
-              </div>
-            {% endfor %}
-          </div>
-        </div>
-  
         <!-- files div -->
         <div class="m-3 border">
           <div style="border-bottom: 1px solid rgba(0,0,0,0.2)">
@@ -112,7 +135,10 @@
           <div class="" style="display: grid; grid-template-columns: auto auto;">
             {% for file in files %}
               <div class="" style="border: 1px solid rgba(0,0,0,0.2)">
-                <p class="m-2 p-2">TOEFL first edition book</p>
+                <p class="m-2 p-2">{{ file.description }}</p>
+                <p class="m-2 p-2"><a href="{{ file.file.url }}" class="file-id"
+                  id="{{ file.file.url }}" download="{{ file.file }}">Download</a>
+                </p>
               </div>
             {% empty %}
               <div class="" style="border: 1px solid rgba(0,0,0,0.2); width: max-content;">
@@ -124,7 +150,24 @@
       </div>
     </div>
   </div>
-
 </section>
+
+{{ list_count|json_script:"json-list-count" }}
+
+<script>
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
+
+  let files = document.getElementsByClassName('file-id');
+
+  for (let i = 0; i < files.length; i++) {
+    let file_id = files[i].id.split('/');
+    if (file_id.includes('files') == false) {
+      file_id = file_id[0] + '/' + file_id[1] + '/' + 'files/' + file_id[2];
+      files[i].setAttribute('href', file_id);
+    }
+  }
+
+</script>
 
 {% endblock %}

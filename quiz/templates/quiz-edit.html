@@ -3,7 +3,7 @@
 {% block content %}
 
 <section class="m-3">
-  <form method="POST" action="" class="m-3">
+  <form method="POST" action="" class="m-3" id="quiz-edit-form">
     {% csrf_token %}
 
     <div class="white-border p-4 mb-4">
@@ -20,22 +20,23 @@
       <div class="mb-3" style="display: flex; ">
         <div style="width: 100%; display: flex; align-items: center;" class="me-3 text-nowrap">
           <label class="form-label me-3" style="width: 100px;">Duration</label>
-          <input class="form-control" type="time" name="quiz-duration" value="{{ quiz.duration }}">
+          <input class="form-control" type="time" name="quiz-duration" min="00:00" max="00:59" 
+           value="{{ quiz.duration|time:'H:i' }}">
         </div>
         <div style="width: 100%; display: flex; align-items: center;" class="me-3 text-nowrap">
           <label class="form-label me-3" style="width: 100px;">Start Date</label>
-          <input class="form-control" type="date" name="quiz-start" value="{{ quiz.start_date }}">
+          <input class="form-control" type="date" name="quiz-start" value="{{ quiz.start_date|date:'Y-m-d' }}">
         </div>
         <div style="width: 100%; display: flex; align-items: center;" class="text-nowrap">
           <label class="form-label me-3" style="width: 100px;">End Date</label>
-          <input class="form-control" type="date" name="quiz-end" value="{{ quiz.end_date }}">
+          <input class="form-control" type="date" name="quiz-end" value="{{ quiz.end_date|date:'Y-m-d' }}">
         </div>
       </div>
 
       <div class="mb-3" style="display: flex; ">
         <div style="width: 100%; display: flex; align-items: center;" class="me-3">
           <label class="form-label me-3" style="width: 100px;">Minimum score</label>
-          <input class="form-control" type="number" name="quiz-score" value="{{ quiz.required_score }}" min="50">
+          <input class="form-control" type="number" name="quiz-score" value="{{ quiz.required_score }}" min="50" max="100">
         </div>
         <div style="width: 100%; display: flex; align-items: center;" class="">
           <label class="form-label me-3" style="width: 100px;">Difficulty</label>
@@ -50,26 +51,32 @@
       <div class="mb-3" style="display: flex; ">
         <div style="width: 100%; display: flex; align-items: center;" class="me-3">
           <label class="form-label me-3" style="width: 100px;">Points</label>
-          <input class="form-control" type="number" name="quiz-pts" value="{{ quiz.pts }}">
+          <input class="form-control" type="number" name="quiz-pts" value="{{ quiz.pts }}" min="0">
         </div>
         <div style="width: 100%; display: flex; align-items: center;" class="">
           <label class="form-label me-3" style="width: 100px;">Experience</label>
-          <input class="form-control" type="number" name="quiz-exp" value="{{ quiz.exp }}">
+          <input class="form-control" type="number" name="quiz-exp" value="{{ quiz.exp }}" min="0">
         </div>
       </div>
 
       <div class="mb-3">
         <label class="form-label me-3">Publication</label>
         {% if quiz.publication == True %}
-          <input type="checkbox" name="quiz-public" checked>
+          <input class="form-check-input" type="checkbox" name="quiz-public" id="quiz-publication" checked>
         {% else %}
-          <input type="checkbox" name="quiz-public">
+          <input class="form-check-input" type="checkbox" name="quiz-public" id="quiz-publication">
         {% endif %}
       </div>
       
-      <div>
-        <button class="btn btn-outline-primary me-2">Save form</button>
-        <a class="btn btn-secondary" href="{% url 'quiz' %}">Discard</a>
+      <div style="display: flex; justify-content: space-between;">
+        <div>
+          <button class="btn btn-outline-primary me-2" id="quiz-edit-button">Save form</button>
+          <a class="btn btn-secondary" href="{% url 'quiz' %}">Discard</a>
+        </div>
+        <div>
+          <a class="btn btn-danger" data-bs-toggle="modal" 
+          data-bs-target="#exampleModal-delete">Delete</a>
+        </div>
       </div>
     </div>
 
@@ -125,10 +132,10 @@
                         id="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" 
                         name="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
                         {% if answer.correct %}
-                          <input class="me-3" type="checkbox" checked
+                          <input class="me-3 form-check-input" type="checkbox" checked
                             name="answer-cor-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
                         {% else %}
-                          <input class="me-3" type="checkbox" 
+                          <input class="me-3 form-check-input" type="checkbox" 
                             name="answer-cor-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
                         {% endif %}
                         <input type="hidden" value="{{ answer.id }}" id="answer-id-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"
@@ -155,6 +162,7 @@
   </div>
 </section>
 
+<!-- toast notif -->
 <div class="custom-toast" id="toast" style="display: none;">
   <div class="toast-content">
       <i class="fa fa-solid fa-check check"></i>
@@ -165,5 +173,66 @@
   </div>
 </div>
 
+<!-- delete modal -->
+<div class="modal fade" id="exampleModal-delete" tabindex="-1" 
+  aria-labelledby="exampleModalLabel-delete" aria-hidden="true">
+  <div class="modal-dialog" style="width: 400px;">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-bottom-0">
+        <h1 class="modal-title fs-5">Delete quiz {{ quiz.name }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-0">
+        <p>This action will delete the quiz you are editing. Are you sure to continue ?</p>
+      </div>
+      <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+        <a type="button" class="btn btn-danger" href="{% url 'quiz-delete' quiz.id %}">Delete</a>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{ quiz.name|json_script:"json-quiz-name" }}
+{{ request.user.username|json_script:"json-request-user" }}
+{{ quiz.host.username|json_script:"json-quiz-host" }}
+{{ list_count|json_script:"json-list-count" }}
+
+<script>
+  var quiz_name = JSON.parse(document.getElementById('json-quiz-name').textContent);
+  var quiz_host = JSON.parse(document.getElementById('json-quiz-host').textContent);
+  var request_user = JSON.parse(document.getElementById('json-request-user').textContent);
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
+
+  try {
+    document.querySelector('#quiz-edit-form').addEventListener('submit', 
+      function(e) {
+
+        let quiz_public = document.getElementById('quiz-publication');
+        let notif_body = `User (${ quiz_host }) has just created (${ quiz_name }) quiz. Find out more.`;
+
+        if(quiz_public.checked) {
+          const data = {
+            'notif_body': notif_body,
+            'notif_type': quiz_name,
+            'notif_sender': quiz_host,
+            'request_user': request_user,
+          }
+          notificationSocket.send(JSON.stringify(data));
+
+          let edit_btn = document.getElementById('quiz-edit-button');
+          edit_btn.click();
+        }
+        else {
+          console.log(`${ quiz_name } is not published`);
+        }
+      }
+    );
+  }
+  catch (e) {
+    console.log(e);
+  }  
+</script>
 
 {% endblock %}

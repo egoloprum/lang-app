@@ -4,10 +4,10 @@
 
 <section class="m-3" style="scroll-margin-inline-start: 100px; scroll-behavior: smooth;">
   <div class="m-3">
-    <form class="row me-0" method="POST" action="">
+    <form class="row m-0 gap-3" method="POST" action="">
       {% csrf_token %}
       <!-- left side -->
-      <div class="col">
+      <div class="col p-0">
         <div class="white-border p-4 mb-3">
           <h4>{{ quiz.name }}</h4>
           <p>For the questions below, please choose the best option to complete the sentence or conversation.</p>
@@ -19,7 +19,7 @@
             <ul id="answers-{{ forloop.counter }}">
               {% for answer in answers %}
                 {% if answer.question == question %}
-                <li class="p-2 m-3 border" style="display: flex; align-items: center; background: #f4f4f4;" 
+                <li class="p-2 ms-0 me-0 m-3 border" style="display: flex; align-items: center; background: #f4f4f4;" 
                   id="answer-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" onclick="answer_check(this.id)">
                   <input type="checkbox" class="me-2 ms-2 answer_cor">
                   <span>{{ answer.body }}</span>
@@ -32,7 +32,9 @@
         {% endfor %}
       </div>
   
-      <div class="col-3 p-0 ms-3" style="position: sticky; top: 0; height: fit-content;">
+      <!-- time side -->
+      <div class="col p-0" style="max-width: 350px;  position: sticky; top: 0; height: fit-content;">
+        <!-- time -->
         <div class="white-border mb-3">
           <div class="launch-time p-3" style="display: flex; justify-content: space-evenly; align-items: center;">
             <div style="text-align: center;">
@@ -46,24 +48,39 @@
           </div>
         </div>
   
+        <!-- questions -->
         <div class="white-border">
-          <div class="m-2 p-2 pb-0 ms-0 row row-cols-5">
+          <div class="m-2 p-2 pb-0 ms-3 me-3 d-flex flex-wrap justify-content-around gap-2">
             {% for question in questions %}
-            <div class="mb-2" >
-              <a href="#question-{{ forloop.counter }}" class="btn btn-info" id="question-num-{{ forloop.counter }}"
-                style="width: 45px; height: 45px;">{{ forloop.counter }}</a>
+            <div style="min-width: 50px; min-height: 50px; max-width: 70px; max-height: 70px;">
+              <a href="#question-{{ forloop.counter }}" class="btn btn-info d-flex justify-content-center align-items-center" 
+                id="question-num-{{ forloop.counter }}" style="width: 100%; height: 100%;">
+                <span>{{ forloop.counter }}</span>
+              </a>
             </div>
             {% endfor %}
           </div>
     
           <div class="m-2" style="display: flex; justify-content: space-between;">
-              <button class="btn btn-primary m-2" style="width: 100%;" type="submit" id="{{ quiz.id }}"">Finish</button>
-              <a class="btn btn-secondary m-2" style="width: 100%;" href="{% url 'quiz' %}">Discard</a>
+            <button class="btn btn-primary m-2" style="width: 100%;" type="submit" id="finish-quiz">Finish</button>
+            <a class="btn btn-secondary m-2" style="width: 100%;" href="{% url 'quiz' %}">Discard</a>
           </div>
         </div>
       </div>
     </form>
   </div>
 </section>
+
+{% block script %}
+
+{{ quiz.duration|time:'i'|json_script:"json-minute" }}
+{{ list_count|json_script:"json-list-count" }}
+
+<script>
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
+</script>
+
+{% endblock %}
 
 {% endblock %}

@@ -12,43 +12,44 @@
     </a>
   </div>
   <div class="mt-3" style="display: flex; flex-direction: column;">
-    <a class="btn btn-light pt-2 pb-2" href="{% url 'profile' request.user.id %}" style="text-align: left;
-      display: flex; flex-direction: row; align-items: center;">
-      <i class="fa-solid fa-address-card me-2"></i>
+    <a class="btn btn-light pt-2 pb-2 d-flex flex-row align-items-center" href="{% url 'dashboard' request.user.id %}" 
+      style="text-align: left;">
+      <i class="fa-solid fa-address-card me-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard"></i>
       <span class="sidebar-tags">Dashboard</span>
     </a>
-    <a class="btn btn-light pt-2 pb-2" href="{% url 'profile-update' %}" style="text-align: left;
-      display: flex; flex-direction: row; align-items: center;">
-      <i class="fa-solid fa-gears me-2"></i>
+    <a class="btn btn-light pt-2 pb-2 d-flex flex-row align-items-center" href="{% url 'profile-update' %}" style="text-align: left;">
+      <i class="fa-solid fa-gears me-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Account Settings"></i>
       <span class="sidebar-tags">Account Settings</span>
     </a>
     <p class="mt-2 ms-3 mb-2">
       <span class=" text-muted sidebar-tags">Pages</span>
     </p>
-    <a class="btn btn-light pt-2 pb-2" href="{% url 'home' %}" style="text-align: left;
-      display: flex; flex-direction: row; align-items: center;">
-      <i class="fa-solid fa-house me-2"></i>
+    <a class="btn btn-light pt-2 pb-2 d-flex flex-row align-items-center" href="{% url 'home' %}" style="text-align: left;">
+      <i class="fa-solid fa-house me-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Home"></i>
       <span class="sidebar-tags">Home</span>
     </a>
-    <a class="btn btn-light pt-2 pb-2" href="{% url 'calendar' %}" style="text-align: left;
-      display: flex; flex-direction: row; align-items: center;">
-      <i class="fa-solid fa-calendar me-2"></i>
+    {% comment %} <a class="btn btn-light pt-2 pb-2 d-flex flex-row align-items-center" href="{% url 'calendar' %}" style="text-align: left;">
+      <i class="fa-solid fa-calendar me-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Calendar"></i>
       <span class="sidebar-tags">Calendar</span>
-    </a>
-    <a class="btn btn-light pt-2 pb-2" href="{% url 'course' %}" style="text-align: left;
-      display: flex; flex-direction: row; align-items: center;">
-      <i class="fa-solid fa-person-chalkboard me-2"></i>
+    </a> {% endcomment %}
+    <a class="btn btn-light pt-2 pb-2 d-flex flex-row align-items-center" href="{% url 'course' %}" style="text-align: left;">
+      <i class="fa-solid fa-person-chalkboard me-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Courses"></i>
       <span class="sidebar-tags">Courses</span>
     </a>
-    <a class="btn btn-light pt-2 pb-2" href="{% url 'quiz' %}" style="text-align: left;
-      display: flex; flex-direction: row; align-items: center;">
-      <i class="fa-solid fa-check me-2"></i>
+    <a class="btn btn-light pt-2 pb-2 d-flex flex-row align-items-center" href="{% url 'quiz' %}" style="text-align: left;">
+      <i class="fa-solid fa-check me-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Tests"></i>
       <span class="sidebar-tags">Tests</span>
     </a>
-    <a class="btn btn-light pt-2 pb-2" href="" style="text-align: left;
-      display: flex; flex-direction: row; align-items: center;">
-      <i class="fa-regular fa-comment me-2"></i>
+    <a class="btn btn-light pt-2 pb-2 d-flex flex-row align-items-center" href="{% url 'chatroom' %}" style="text-align: left;">
+      <i class="fa-regular fa-comment me-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Discuss"></i>
       <span class="sidebar-tags">Discuss</span>
+    </a>
+    <p class="mt-2 ms-3 mb-2">
+      <span class="text-muted sidebar-tags">Additional</span>
+    </p>
+    <a class="btn btn-light pt-2 pb-2 d-flex flex-row align-items-center" href="{% url 'badges' %}" style="text-align: left;">
+      <i class="fa-solid fa-certificate me-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Badges"></i>
+      <span class="sidebar-tags">Badges</span>
     </a>
   </div>
 </section>

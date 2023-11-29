@@ -1,3 +1,6 @@
+import datetime
+import math
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import *
@@ -8,6 +11,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator 
 from django.contrib import messages
 from django.db.models import Avg, Count, Q
+
+from follower.models import NotificationList
+from user.models import Profile, Badge
 # Create your views here.
 
 @login_required(login_url='login')
@@ -22,34 +28,95 @@ def quiz(request):
     # sort_diff = ['a', 'e', 'i',]
     # difficulties.sort(key = lambda i: sort_diff.index(i[0]))     
 
-    if request.method == 'POST':
-        quiz_id = Quiz.objects.get(pk=request.POST.get('quiz-id'))
-        quiz_id.delete()
-
+    context = {}
     completions = Completion.objects.filter(user=request.user, completed=True).select_related('quiz')
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
+    context['completions'] = completions
+    context['list_count'] = list_count
 
     if request.user.is_staff:
         quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(content=None, course=None)
-        context = {'quizs': quizs, 'completions': completions}
+        context['quizs'] = quizs
     else:
-        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(publication=True)
-        context = {'quizs': quizs, 'completions': completions}
+        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(publication=True, content=None, course=None)
+        context['quizs'] = quizs
+
     return render(request, 'quiz.html', context)
+
+def searchQuiz(request):
+    search_quiz = request.POST.get('search-quiz')
+    search_status = request.POST.get('search-status')
+    search_diff = request.POST.get('search-difficulty')
+    search_date = request.POST.get('search-date')
+    search_duration = request.POST.get('search-duration')
+
+    current_time = datetime.datetime.now()
+    completions = Completion.objects.filter(user=request.user, completed=True).select_related('quiz')
+
+    context = {}
+    context['completions'] = completions
+
+    if request.user.is_staff:
+        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(
+            content=None, course=None)
+        
+        if search_duration == 'Ascending':
+            quizs = quizs.order_by('duration')
+        elif search_duration == 'Descending':
+            quizs = quizs.order_by('-duration')
+
+        if search_date == 'Not Started':
+            quizs = quizs.filter(Q(start_date__lte=current_time))
+        elif search_date == 'Started':
+            quizs = quizs.filter(Q(start_date__gte=current_time))
+        elif search_date == 'Finished':
+            quizs = quizs.filter(Q(end_date__lte=current_time))
+
+
+        if search_diff == 'Difficulty':
+            quizs = quizs.filter(Q(name__icontains=search_quiz))
+        else:
+            quizs = quizs.filter(Q(name__icontains=search_quiz, difficulty=search_diff))
+
+        context['quizs'] = quizs
+    else:
+        quizs = Quiz.objects.annotate(child_count=models.Count('question_quiz')).select_related('host').filter(
+            publication=True, content=None, course=None)
+        
+        if search_duration == 'Ascending':
+            quizs = quizs.order_by('duration')
+        elif search_duration == 'Descending':
+            quizs = quizs.order_by('-duration')
+
+        if search_date == 'Not Started':
+            quizs = quizs.filter(Q(start_date__lte=current_time))
+        elif search_date == 'Started':
+            quizs = quizs.filter(Q(start_date__gte=current_time))
+        elif search_date == 'Finished':
+            quizs = quizs.filter(Q(end_date__lte=current_time))
+
+
+        if search_diff == 'Difficulty':
+            quizs = quizs.filter(Q(name__icontains=search_quiz))
+        else:
+            quizs = quizs.filter(Q(name__icontains=search_quiz, difficulty=search_diff))
+
+        context['quizs'] = quizs
+
+    return render(request, 'quiz-partial.html', context)
 
 @login_required(login_url='login')
 def quizCreate(request):
     host = request.user
-    quiz = Quiz.objects.create(host=host)
+    quiz = Quiz.objects.create(host=host, name='New Quiz')
     return redirect('quiz-edit', quiz.id)
 
 @login_required(login_url='login')
 def quizDelete(request, pk):
     quiz = Quiz.objects.get(id=pk)
-    try:
-        quiz.delete()
-        return redirect(request.META.get('HTTP_REFERER'))
-    except Exception:
-        return HttpResponse('Something is wrong')
+    quiz.delete()
+    return redirect('quiz')
 
 @login_required(login_url='login')
 def quizEdit(request, pk):
@@ -63,13 +130,13 @@ def quizEdit(request, pk):
     if request.method == 'POST':
         quiz_name = request.POST.get('quiz-name')
         quiz_duration = None if request.POST.get('quiz-duration') == "" else request.POST.get('quiz-duration')
-        quiz_required_score = None if request.POST.get('quiz-score') == "" else request.POST.get('quiz-score')
+        quiz_required_score = 60 if request.POST.get('quiz-score') == "" else request.POST.get('quiz-score')
         quiz_difficulty = None if request.POST.get('quiz-diff') == "" else request.POST.get('quiz-diff')
         quiz_pts = None if request.POST.get('quiz-pts') == "" else request.POST.get('quiz-pts')
         quiz_exp = None if request.POST.get('quiz-exp') == "" else request.POST.get('quiz-exp')
         quiz_public = True if request.POST.get('quiz-public') == 'on' else False
-        quiz_start = None if request.POST.get('quiz-duration') == "" else request.POST.get('quiz-start')
-        quiz_end = None if request.POST.get('quiz-duration') == "" else request.POST.get('quiz-end')
+        quiz_start = None if request.POST.get('quiz-start') == "" else request.POST.get('quiz-start')
+        quiz_end = None if request.POST.get('quiz-end') == "" else request.POST.get('quiz-end')
 
         quiz.name = quiz_name
         quiz.duration = quiz_duration
@@ -107,10 +174,13 @@ def quizEdit(request, pk):
 
         return redirect('quiz')
     
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
     context = {
         'quiz': quiz,
         'questions': questions,
-        'answers': answers
+        'answers': answers,
+        'list_count': list_count,
     }
     return render(request, 'quiz-edit.html', context)
 
@@ -162,10 +232,13 @@ def quizEach(request, pk):
         answers.extend(Answer.objects.filter(question=question).select_related('question'))
         cor_answers.append(Answer.objects.filter(question=question, correct=True).select_related('question'))
 
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
     context = {
         'quiz': quiz,
         'questions': questions,
         'answers': answers,
+        'list_count': list_count,
     }
 
     sel_answers = [[] for _ in range(len(questions))]
@@ -175,7 +248,23 @@ def quizEach(request, pk):
             request.path = "http://127.0.0.1:8000/quiz/" + str(quiz.id)
         iter = 1
 
-        result = Result.objects.create(quiz=quiz, user=request.user)
+        try:
+            comp = Completion.objects.get(user=request.user, quiz=quiz)
+        except:
+            comp = Completion.objects.create(user=request.user, quiz=quiz)
+
+        if quiz.content:
+            result = Result.objects.create(quiz=quiz, user=request.user, has_content=True)
+            comp.contest = quiz.content
+            comp.save()
+
+        if quiz.course:
+            result = Result.objects.create(quiz=quiz, user=request.user, has_course=True)
+            comp.course = quiz.course
+            comp.save()
+
+        if not quiz.content and not quiz.course:
+            result = Result.objects.create(quiz=quiz, user=request.user)
 
         for x in range(len(questions)):
             while(request.POST.get('answer-id-' + str(iter))):
@@ -195,17 +284,29 @@ def quizEach(request, pk):
                 if len(sel_answers[x]) == len(cor_answers[x]) and sel_answers[x][y] == cor_answers[x][y].id:
                     points += 1
 
-        result.score = points
+        try:
+            result.score = (points / questions.count()) * 100
+        except ZeroDivisionError:
+            result.score = 0
         result.save()
 
-        try:
-            comp = Completion.objects.get(user=request.user, quiz=quiz)
-        except:
-            comp = Completion.objects.create(user=request.user, quiz=quiz)
-
-        if not comp.completed:
+        if not comp.completed and quiz.required_score <= result.score:
             comp.completed = True
             comp.save()
+
+            profile = Profile.objects.get(user=request.user)
+            profile.points += quiz.pts
+            profile.experience += quiz.exp
+            profile.level = math.floor(profile.experience / 500) + 1
+            
+            quiz_comp = Completion.objects.filter(user=request.user, completed=True, course=None, content=None).count()
+            if quiz_comp >= 5:
+                try:
+                    profile.badge.add(Badge.objects.get(name='Hot Start'))
+                except Badge.DoesNotExist:
+                    print('current badge does not exist')
+
+            profile.save()
 
         return redirect('quiz-result', quiz.id)
     
@@ -215,10 +316,12 @@ def quizEach(request, pk):
 def quizResult(request, pk):
     quiz = Quiz.objects.select_related('host').get(id=pk)
     questions = Question.objects.select_related('quiz').filter(quiz=quiz)
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
     context = {}
     context['quiz'] = quiz
     context['questions'] = questions
+    context['list_count'] = list_count
 
     if request.user.is_staff:
         all_results = Result.objects.select_related('quiz', 'user').filter(quiz=quiz).order_by('-created_at')
@@ -236,7 +339,7 @@ def quizResult(request, pk):
         context['all_results'] = all_results
         context['average_score'] = average_score
 
-    if request.META.get('HTTP_REFERER').replace("http://127.0.0.1:8000", "") == request.path.replace("/result", ""):
+    if request.META.get('HTTP_REFERER').replace("http://127.0.0.1:8000", "") == request.path.replace("/result", "").replace("/each", ""):
         result = Result.objects.filter(user=request.user).last()
         cor_answers = []
         sel_answers = []

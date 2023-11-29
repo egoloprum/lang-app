@@ -11,4 +11,13 @@ urlpatterns = [
   # FROM RECIEVER SIDE
   path('<str:pk>/cancel_request', views.cancel_request, name='cancel-request'),
 
+  path('chats', views.chatRoom, name='chatroom'),
+  path('chats/<str:pk>', views.eachChat, name='chat-each'),
+  path('chat-create/<str:pk>', views.createChatroom, name='create-chatroom'),
+  path('chat-leave/<str:pk>', views.leaveChat, name='leave-chat'),
+  path('chat-add/<str:pk>/<str:name>', views.addChat, name='add-chat'),
+  path('chat-remove/<str:pk>/<str:name>', views.removeChat, name='remove-chat'),
+  path('chat-delete/<str:pk>', views.deleteChat, name='delete-chat'),
+
+  path('notifications', views.Notifications, name='notifications'),
 ]

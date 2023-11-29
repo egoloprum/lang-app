@@ -1,0 +1,40 @@
+{% extends 'main.html' %}
+{% load humanize %}
+{% block content %}
+
+<section class="m-3">
+  <div class="m-3">
+
+    <div class="white-border p-3">
+      <h5>Chatrooms</h5>
+      <div class="row d-flex flex-wrap">
+        <div class="col" style="min-width: 275px; max-width: 325px;">
+          {% for chatroom in chatrooms %}
+            <div class="m-3">
+              <p>
+                <a class="btn btn-light" style="width: 100%;" id="{{ chatroom.id }}"
+                  hx-get="/follower/chats/{{ chatroom.id }}" hx-target="#chat">
+                  {{ chatroom.name }}
+                </a>
+                <span class="small-font-size">{{ chatroom.created_at|naturaltime }}</span>
+              </p>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="col" style="min-width: 500px; border-left: 1px solid #000;" id="chat">
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{ list_count|json_script:"json-list-count" }}
+
+<script>
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
+</script>
+
+{% endblock %}

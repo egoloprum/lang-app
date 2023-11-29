@@ -26,9 +26,9 @@
       <div class="mb-3" style="display: flex;">
         <label class="form-label me-3">Publication</label>
         {% if content.publication is True %}
-          <input type="checkbox" name="content-pub" checked>
+          <input type="checkbox" class="form-check-input" name="content-pub" checked>
         {% else %}
-          <input type="checkbox" name="content-pub">
+          <input type="checkbox" class="form-check-input" name="content-pub">
         {% endif %}
       </div>
       
@@ -38,10 +38,11 @@
       </div>
     </div>
 
+    <!-- add quiz -->
     <div class="white-border p-4 row m-0 mb-3">
       <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
         <a class="btn btn-light" style="width: 100%;" id="{{ content.id }}" onclick="add_chap_quiz(this.id)">Add quiz</a>
-        <div id="chapter-quiz">
+        <div id="chapter-quiz" style="display: none;">
 
         </div>
       </div>
@@ -57,7 +58,7 @@
             </h2>
             <div class="accordion-collapse collapse" id="flush-collapse1-{{ forloop.counter }}">
               <div class="accordion-body" id="accordion-body1-{{ forloop.counter }}">
-                <div style="display: flex; flex-direction: row;" class="mb-3">
+                <div class="mb-3 d-flex flex-row align-items-center text-nowrap">
                   <label class="me-3">name</label>
                   <p class="form-control me-3">
                     {{ quiz.name }}
@@ -68,11 +69,11 @@
                     <span>Delete quiz</span>
                   </a>
                   <a class="btn btn-light text-nowrap" style="width: fit-content;" href="{% url 'quiz-edit' quiz.id %}" target="_blank">
-                    <i class="fa-solid fa-trash"></i>
+                    <i class="fa-regular fa-pen-to-square"></i>
                     <span>Edit quiz</span>
                   </a>
                 </div>
-                <div style="display: flex;" class="mb-3">
+                <div class="mb-3 d-flex flex-row align-items-center text-nowrap">
                   <label class="me-3">Number of Questions</label>
                   <p class="form-control">
                     {{ quiz.questions_count }}
@@ -86,23 +87,68 @@
       </div>
     </div>
 
-    <div class="white-border p-4 row m-0 mb-3">
-      <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
-        <a class="btn btn-light" style="width: 100%;" onclick="add_chap_video()">Add video</a>
-      </div>
-      <div class="col p-3 ms-3" id="chap-video-side">
-      </div>
-    </div>
-
+    <!-- add files -->
     <div class="white-border p-4 row m-0 mb-3">
       <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
         <a class="btn btn-light" style="width: 100%;" onclick="add_chap_file()">Add file</a>
       </div>
       <div class="col p-3 ms-3" id="chap-file-side">
+        {% for file in files %}
+          <div class="accordion accordion-flush" style="border-bottom: 1px solid #e4e4e4;" id="chap-file-{{ forloop.counter }}">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <a class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapse2-{{ forloop.counter }}"
+                  aria-controls="#flush-collapse2-{{ forloop.counter }}" aria-expanded="false">
+                  <p>{{ forloop.counter }}</p>
+                </a>
+              </h2>
+              <div class="accordion-collapse collapse" id="flush-collapse2-{{ forloop.counter }}">
+                <div class="accordion-body" id="accordion-body2-{{ forloop.counter }}">
+                  <div class="mb-3 d-flex flex-row align-items-center text-nowrap">
+                    <label class="me-3">Description</label>
+                    <input class="form-control me-3" type="text" placeholder="Description here..." 
+                      name="chap-file-desc-{{ forloop.counter }}" value="{{ file.description }}" required>
+                    <a href="{% url 'file-delete' file.id %}" class="btn btn-light me-3 text-nowrap" style="width: max-content;">
+                      <i class="fa-solid fa-trash"></i>
+                      <span>Delete file</span>
+                    </a>
+                  </div>
+                  <div class="mb-3 d-flex flex-row align-items-center text-nowrap">
+                    <label class="mb-3 me-3">File here</label>
+                    <p class="form-control mb-3" style="width: 100%;" name="chap-file-{{ forloop.counter }}">
+                      {% if file.file %}
+                      <a href="{{ file.file.url }}" download="{{ file.file }}">{{ file.file }}</a>
+                      {% else %}
+                        None
+                      {% endif %}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
       </div>
     </div>
   </form>
-
 </section>
+
+{{ list_count|json_script:"json-list-count" }}
+
+<!-- toast notif -->
+<div class="custom-toast" id="toast" style="display: none;">
+  <div class="toast-content">
+    <i class="fa fa-solid fa-check check"></i>
+    <div class="message">
+      <span class="text text-1" id="text-1">Success</span>
+      <span class="text text-2" id="text-2">Your changes has been saved</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
+</script>
 
 {% endblock %}

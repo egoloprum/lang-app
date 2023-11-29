@@ -3,78 +3,91 @@
 {% block content %}
 
 <section class="m-3 p-3">
-  <form method="POST" action="">
+  <form method="POST" action="" id="course-edit-form">
     {% csrf_token %}
 
-    <div class="white-border p-4 mb-4">
-      <div class="mb-3">
+    <!-- top part -->
+    <div class="white-border p-2 mb-4 d-flex flex-column gap-3">
+      <div class="p-2">
         <h4>Course Edit Form ({{ course.id }})</h4>
         <p onclick="load_everyting()">click here to load form !!!</p>
       </div>
 
       <!-- course part -->
-      <div class="mb-3" style="display: flex;">
-        <label class="form-label me-3">Name</label>
-        <input class="form-control" type="text" name="course-name" placeholder="Name" value="{{ course.name }}" required>
-      </div>
-
-      <div class="mb-3" style="display: flex;">
-        <label class="form-label me-3">Topic</label>
-        <input class="form-control me-3" type="text" name="course-topic">
-        <select class="form-select">
-          {% for topic in topics %}
-            <option class="form-control">{{ topic.name }}</option>
-          {% endfor %}
-        </select>
-      </div>
-
-      <div class="mb-3" style="display: flex;">
-        <label class="form-label me-3">Tag</label>
-        <input class="form-control me-3" type="text" name="course-tag">
-        <select class="form-select">
-          {% for tag in tags %}
-            <option class="form-control">{{ tag.name }}</option>
-          {% endfor %}
-        </select>
-      </div>
-
-      <div class="mb-3" style="display: flex;">
-        <label class="form-label me-3">Body</label>
-        <textarea class="mytextarea form-control" style="width: 100%;" name="course-body">{{ course.body }}</textarea>
-      </div>
-
-      <div class="mb-3" style="display: flex;">
-        <div style="width: 100%; display: flex;" class="me-3">
-          <label class="form-label me-3" style="width: 100px;">Start Date</label>
-          <input class="form-control" type="date" name="course-start" value="{{ course.start_date }}">
+      <div class="row m-0 d-flex gap-2">
+        <div class="col d-flex align-items-center gap-2">
+          <label class="form-label">Name</label>
+          <input class="form-control" style="min-width: 140px;" type="text"
+            name="course-name" placeholder="Name" value="{{ course.name }}" required>
         </div>
-        <div style="width: 100%; display: flex;" class="">
-          <label class="form-label me-3" style="width: 100px;">End Date</label>
-          <input class="form-control" type="date" name="course-end" value="{{ course.end_date }}">
+
+        <!-- topics -->
+        <div class="col d-flex align-items-center gap-2">
+          <label class="form-label">Topic</label>
+          <select class="form-select" name="course-topic" style="min-width: 140px;">
+            <option>{{ course.topic }}</option>
+            <option>Advice</option>
+            <option>Development</option>
+          </select>
+        </div>
+
+        <!-- tags -->
+        <div class="col d-flex align-items-center gap-2">
+          <label class="form-label">Tag</label>
+          <select class="form-select" name="course-tag" style="min-width: 140px;">
+            <option>{{ course.tag }}</option>
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select>
         </div>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label me-3">Publication</label>
-        {% if course.publication == True %}
-          <input type="checkbox" name="course-public" checked>
-        {% else %}
-          <input type="checkbox" name="course-public">
-        {% endif %}
+      <!-- body -->
+      <div class="row m-0 d-flex flex-row gap-2">
+        <label class="col" style="max-width: fit-content;">Body</label>
+        <textarea class="mytextarea form-control me-2 col" style="min-width: 140px;" name="course-body">{{ course.body }}</textarea>
       </div>
-      
-      <div>
-        <button class="btn btn-outline-primary me-2">Save form</button>
-        <a class="btn btn-secondary" href="{% url 'course' %}">Discard</a>
+
+      <!-- public start end date -->
+      <div class="row m-0 d-flex gap-2">
+        <div class="col d-flex align-items-center gap-2" style="max-width: fit-content;">
+          <label class="form-label me-3">Publication</label>
+          {% if course.publication == True %}
+            <input type="checkbox" class="form-check-input" name="course-public" id="course-publication" checked>
+          {% else %}
+            <input type="checkbox" class="form-check-input" name="course-public" id="course-publication">
+          {% endif %}
+        </div>
+        <div class="col d-flex align-items-center gap-2">
+          <label class="text-nowrap">Start Date</label>
+          <input class="form-control" type="date" name="course-start" value="{{ course.start_date|date:'Y-m-d' }}">
+        </div>
+
+        <div class="col d-flex align-items-center gap-2">
+          <label class="text-nowrap">End Date</label>
+          <input class="form-control" type="date" name="course-end" value="{{ course.end_date|date:'Y-m-d' }}">
+        </div>
+      </div>
+
+      <!-- buttons -->
+      <div class="d-flex row m-0 justify-content-between gap-2">
+        <div class="col d-flex flex-wrap gap-2">
+          <button class="btn btn-outline-primary" id="course-edit-button">Save form</button>
+          <a class="btn btn-secondary" href="{% url 'course' %}">Discard</a>
+        </div>
+        <div class="col" style="max-width: fit-content;">
+          <a class="btn btn-danger" data-bs-toggle="modal" 
+            data-bs-target="#exampleModal-delete">Delete</a>
+        </div>
       </div>
     </div>
 
+    <!-- chapter part -->
     <div class="white-border p-4 row m-0 mb-3">
       <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
-        <a class="btn btn-light" style="width: 100%;" id="{{ course.id }}" onclick="add_chapter(this.id)">Add chapter</a>
-        <div id="success-chapter">
-
-        </div>
+        <a class="btn btn-light" style="width: 100%;" id="add-chapter-{{ course.id }}" onclick="add_chapter(this.id)">Add chapter</a>
+        <div id="success-chapter" style="display: none;"></div>
       </div>
       <div class="col p-3 ms-3" id="cour-chap-side">
         {% for chapter in contents %}
@@ -88,7 +101,7 @@
               </h2>
               <div class="accordion-collapse collapse" id="flush-collapse1-{{ forloop.counter }}">
                 <div class="accordion-body" id="accordion-body1-{{ forloop.counter }}">
-                  <div style="display: flex; flex-direction: row;" class="mb-3">
+                  <div class="d-flex flex-row align-items-center mb-3">
                     <label class="me-3">name</label>
                     <p class="form-control me-3">{{ chapter.name }}</p>
                     <a class="btn btn-light me-3 text-nowrap" onclick="del_chapter(this.id)" 
@@ -97,11 +110,11 @@
                       <span>Delete chapter</span>
                     </a>
                     <a class="btn btn-light text-nowrap" style="width: max-content;" href="{% url 'chapter-edit' course.id chapter.id %}" target="_blank">
-                      <i class="fa-solid fa-trash"></i>
+                      <i class="fa-regular fa-pen-to-square"></i>
                       <span>Edit chapter</span>
                     </a>
                   </div>
-                  <div style="display: flex;" class="mb-3">
+                  <div class="d-flex flex-row align-items-center mb-3">
                     <label class="me-3">body</label>
                     <p class="form-control">
                       {{ chapter.body|safe }}
@@ -109,11 +122,11 @@
                   </div>
                   <div style="display: flex;" class="mb-3">
                     <label class="me-3">Quizes total:</label>
-                    <p class="text-muted">{{ chapter.quizs_count }}</p>
+                    <p class="text-muted">{{ chapter.quiz_content.all|length }}</p>
                   </div>
                   <div style="display: flex;" class="mb-3">
                     <label class="me-3">Files total:</label>
-                    <p class="text-muted">{{ chapter.files_count }}</p>
+                    <p class="text-muted">{{ chapter.file_content.all|length }}</p>
                   </div>
                 </div>
               </div>
@@ -123,6 +136,7 @@
       </div>
     </div>
 
+    <!-- files part -->
     <div class="white-border p-4 row m-0 mb-3">
       <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
         <a class="btn btn-light" style="width: 100%;" onclick="add_file()">Add file</a>
@@ -139,19 +153,20 @@
               </h2>
               <div class="accordion-collapse collapse" id="flush-collapse2-{{ forloop.counter }}">
                 <div class="accordion-body" id="accordion-body2-{{ forloop.counter }}">
-                  <div style="display: flex; flex-direction: row;" class="mb-3" id="testing">
+                  <div class="mb-3 d-flex flex-row align-items-center">
                     <label class="me-3">Description</label>
-                    <input class="form-control me-3" type="text" placeholder="Description here..." name="cour-file-desc-{{ forloop.counter }}"
-                      required value="{{ file.description }}">
-                    <a class="btn btn-light me-3 text-nowrap" onclick="del_cour_file(this.id)" id="del-cour-file-{{ forloop.counter }}" style="width: max-content;">
+                    <input class="form-control me-3" type="text" placeholder="Description here..." 
+                      name="cour-file-desc-{{ forloop.counter }}" value="{{ file.description }}" required>
+                    <a class="btn btn-light me-3 text-nowrap" href="{% url 'file-delete' file.id %}"
+                        style="width: max-content;">
                       <i class="fa-solid fa-trash"></i>
                       <span>Delete file</span>
                     </a>
                   </div>
-                  <div style="display: flex; flex-direction: row;" class="mb-3">
-                    <label class="mb-3 me-3">file</label>
-                    <input class="form-control mb-3" style="width: 100%;"
-                      name="cour-file-{{ forloop.counter }}">{{ file.file }}</textarea>
+                  <div class="mb-3 d-flex flex-row align-items-center text-nowrap" class="mb-3">
+                    <label class="mb-3 me-3">File here</label>
+                    <p class="form-control mb-3" style="width: 100%;"
+                      name="cour-file-{{ forloop.counter }}"><a href="{{ file.file.url }}" download="{{ file.file }}">{{ file.file }}</a></p>
                   </div>
                 </div>
               </div>
@@ -161,11 +176,12 @@
       </div>
     </div>
 
+    <!-- quiz part -->
     <div class="white-border p-4 row m-0 mb-3">
       <div class="col-3 p-3" style="border-right: 1px solid #e4e4e4;">
-        <a class="btn btn-light" style="width: 100%;" id="{{ course.id }}"
+        <a class="btn btn-light" style="width: 100%;" id="add-quiz-{{ course.id }}"
           onclick="add_quiz(this.id)">Add quiz</a>
-        <div id="success-quiz"></div>
+        <div id="success-quiz" style="display: none;"></div>
       </div>
       <div class="col p-3 ms-3" id="cour-quiz-side">
         {% for quiz in quizs %}
@@ -190,7 +206,7 @@
                       <span>Delete quiz</span>
                     </a>
                     <a class="btn btn-light text-nowrap" style="width: fit-content;" href="{% url 'quiz-edit' quiz.id %}" target="_blank">
-                      <i class="fa-solid fa-trash"></i>
+                      <i class="fa-regular fa-pen-to-square"></i>
                       <span>Edit quiz</span>
                     </a>
                   </div>
@@ -209,5 +225,82 @@
     </div>
   </form>
 </section>
+
+<!-- toast notif -->
+<div class="custom-toast" id="toast" style="display: none;">
+  <div class="toast-content">
+      <i class="fa fa-solid fa-check check"></i>
+      <div class="message">
+          <span class="text text-1" id="text-1">Success</span>
+          <span class="text text-2" id="text-2">Your changes has been saved</span>
+      </div>
+  </div>
+</div>
+
+<!-- delete modal -->
+<div class="modal fade" id="exampleModal-delete" tabindex="-1" 
+  aria-labelledby="exampleModalLabel-delete" aria-hidden="true">
+  <div class="modal-dialog" style="width: 400px;">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-bottom-0">
+        <h1 class="modal-title fs-5">Delete course {{ course.name }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-0">
+        <p>This action will delete the course you are editing. Are you sure to continue ?</p>
+      </div>
+      <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+        <a type="button" class="btn btn-danger" href="{% url 'course-delete' course.id %}">Delete</a>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block script %}
+
+{{ course.name|json_script:"json-course-name" }}
+{{ request.user.username|json_script:"json-request-user" }}
+{{ course.host.username|json_script:"json-course-host" }}
+{{ list_count|json_script:"json-list-count" }}
+
+<script>
+  var course_name = JSON.parse(document.getElementById('json-course-name').textContent);
+  var course_host = JSON.parse(document.getElementById('json-course-host').textContent);
+  var request_user = JSON.parse(document.getElementById('json-request-user').textContent);
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
+
+  try {
+    document.querySelector('#course-edit-form').addEventListener('submit', 
+      function(e) {
+
+        let course_public = document.getElementById('course-publication');
+        let notif_body = `User (${ course_host }) has just created (${ course_name }) course. Find out more.`;
+
+        if(course_public.checked) {
+          const data = {
+            'notif_body': notif_body,
+            'notif_type': course_name,
+            'notif_sender': course_host,
+            'request_user': request_user,
+          }
+          notificationSocket.send(JSON.stringify(data));
+
+          let edit_btn = document.getElementById('course-edit-button');
+          edit_btn.click();
+        }
+        else {
+          console.log(`${ course_name } is not published`);
+        }
+      }
+    );
+  }
+  catch (e) {
+    console.log(e);
+  }
+</script>
+
+{% endblock %}
 
 {% endblock %}

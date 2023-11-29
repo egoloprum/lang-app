@@ -7,15 +7,23 @@
       <a href="{% url 'home' %}" class="me-2" style="text-decoration: none;">
         <img src="{% static 'images/kiwi.png' %}" style="width: 50px;">
       </a>
-      <a class="navbar-link me-3 btn btn-warning" href="{% url 'subscribe' %}">Premium</a>
     </div>
     <div>
-      <a class="me-3" style="text-decoration: none;" href="{% url 'user-path' %}">Users</a>
-      <a class="me-3" style="text-decoration: none;" href=""><i class="fa-regular fa-bell"></i></a>  
-      <a class="me-3" style="text-decoration: none;" href="{% url 'profile' request.user.id %}">
+      <a class="me-3" style="text-decoration: none;" href="{% url 'user-path' %}"
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Users">
+        <i class="fa-solid fa-user-group"></i>
+      </a>
+      <a class="me-3 tt" style="text-decoration: none;" href="{% url 'notifications' %}"
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Notifications">
+        <span id="notification-bell" style="color:crimson; font-weight: 600;"></span>
+        <i class="fa-regular fa-bell"></i>
+      </a>
+      <a class="me-3" style="text-decoration: none;" href="{% url 'profile' request.user.id %}"
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Profile">
         <i class="fa-regular fa-user"></i>
       </a>
-      <a class="me-3" style="text-decoration: none;" href="{% url 'logout' %}">
+      <a class="me-3" style="text-decoration: none;" href="{% url 'logout' %}"
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Logout">
         <i class="fa-solid fa-arrow-right-from-bracket"></i>
       </a>
     </div>  
@@ -35,7 +43,7 @@
       </a>
     </div>
 
-    <div style="background: rgb(127, 255, 42); height: 50px; border-radius: 20px; 
+    {% comment %} <div style="background: rgb(127, 255, 42); height: 50px; border-radius: 20px; 
       display: flex; justify-content: center; align-items: center;">
       <a href="" style="height: 50px; border-radius: 20px; 
         display: flex; justify-content: center; align-items: center; width: 100px;">
@@ -51,17 +59,14 @@
       display: flex; justify-content: center; align-items: center; width: 100px;">
       <span>Portfolio</span>
       <span></span>
-    </a>
-    </div>
+      </a>
+    </div> {% endcomment %}
     
     <div>
       <a class="me-2" href="{% url 'login' %}">Log In</a>/
       <a href="{% url 'register' %}">Register</a>
     </div>
   </div>
-
-  </div>
-
 </section>
 
 {% endif %}

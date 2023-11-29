@@ -1,59 +1,161 @@
+import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.db.models import Q
 
 from .models import *
 from quiz.models import Quiz
+from user.models import Completion, Profile, Badge
+from follower.models import NotificationList
 
 @login_required(login_url='login')
 def createCourse(request):
   host = request.user
   course = Course.objects.create(host=host)
-  course.name = f"New Course {course.id}"
+  course.name = f"Course {course.id}"
   course.save()
   return redirect('course-edit', course.id)
 
 @login_required(login_url='login')
 def course(request):
-  topics = Topic.objects.all()
+  list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
+  context = {}
+  context['list_count'] = list_count
+
   courses = Course.objects.select_related('host').order_by('-created_at')
+  courses_secure = []
 
-  if request.method == 'POST':
-    status = None if request.POST.get('course-status') == '' else request.POST.get('course-status')
-    tag = None if request.POST.get('course-tags') == '' else request.POST.get('course-tags')
-    topic = None if request.POST.get('course-topics') == '' else request.POST.get('course-topics')
-    date = None if request.POST.get('course-date') == '' else request.POST.get('course-date')
-    search = None if request.POST.get('course-search') == '' else request.POST.get('course-search')
-
-    return redirect('course')
+  for course in courses.filter(publication=True):
+    courses_secure.append(course.start_date)
+  
+  context['courses_secure'] = courses_secure
+  course_progresses = []
 
   if request.user.is_staff:
-    context = {'topics': topics, 'courses': courses}
+    for course in courses:
+      course_progresses.append('course')
+
+    course_progresses = zip(courses, course_progresses)
+    context['course_progresses'] = course_progresses
+
   else:
     courses = courses.filter(publication=True)
-    context = {'topics': topics, 'courses': courses}
+    for course in courses:
+      try:
+        progress = Progress.objects.select_related('user').get(course=course, user=request.user)
+      except Progress.DoesNotExist:
+        progress = 'course'
+      course_progresses.append(progress)
+
+      if not progress == 'course' and progress.value == 100.0:
+        try:
+          course_completed = Completion.objects.get(course=course, user=request.user, content=None, quiz=None)
+        except Completion.DoesNotExist:
+          course_completed = Completion.objects.create(course=course, user=request.user, content=None, quiz=None)
+
+        course_completed.completed = True
+        course_completed.save()
+
+    courses_completion = Completion.objects.select_related('course').filter(completed=True, user=request.user, content=None, quiz=None).count()
+
+    course_progresses = zip(courses, course_progresses)
+    context['course_progresses'] = course_progresses
 
   return render(request, 'course.html', context)
+
+def searchCourse(request):
+  search_tag = request.POST.get('course-tags')
+  search_date = request.POST.get('course-date')
+  search_name = request.POST.get('course-search')
+
+  course_progresses = []
+  context = {}
+
+  current_time = datetime.datetime.now()
+  courses = Course.objects.select_related('host').order_by('-created_at')
+
+  courses = courses.filter(Q(name__icontains=search_name))
+
+  if search_tag == 'Beginner':
+    courses = courses.filter(Q(tag=search_tag))
+  elif search_tag == 'Intermediate':
+    courses = courses.filter(Q(tag=search_tag))
+  elif search_tag == 'Advanced':
+    courses = courses.filter(Q(tag=search_tag))
+
+  if search_date == 'Started':
+    courses = courses.filter(Q(start_date__lte=current_time))
+  elif search_date == 'Ended':
+    courses = courses.filter(Q(end_date__lte=current_time))
+  elif search_date == 'Not yet':
+    courses = courses.filter(Q(start_date__gte=current_time))
+
+  if request.user.is_staff:
+    for course in courses:
+      course_progresses.append('course')
+
+    course_progresses = zip(courses, course_progresses)
+    context['course_progresses'] = course_progresses
+
+  else:
+    courses = courses.filter(publication=True)
+    for course in courses:
+      try:
+        progress = Progress.objects.get(course=course, user=request.user)
+      except Progress.DoesNotExist:
+        progress = ''
+      course_progresses.append(progress)
+
+    course_progresses = zip(courses, course_progresses)
+    context['course_progresses'] = course_progresses
+
+  return render(request, 'course-partial.html', context)
+
+
+def deleteFile(request, pk):
+  file = File.objects.get(id=pk)
+
+  try:
+    file_course = file.course
+  except Exception:
+    file_course = None
+
+  if file_course:
+    file.delete()
+    return redirect('course-edit', file_course.id)
+  
+  try:
+    file_content = file.content
+  except Exception:
+    file_content = None
+
+  if file_content:
+    file.delete()
+    return redirect('chapter-edit', file_content.course.id , file_content.id)
+  
+  return HttpResponse('Something is wrong')
+
 
 @login_required(login_url='login')
 def editCourse(request, pk):
   course = Course.objects.select_related('host').get(id=pk)
   quizs = Quiz.objects.select_related('course').filter(course=course).annotate(questions_count=models.Count('question_quiz'))
   contents = Content.objects.select_related('course').filter(course=course)
-  contents = contents.annotate(quizs_count=models.Count('quiz_content'), files_count=models.Count('file_content'))
-  topics = Topic.objects.all()
-  tags = Tag.objects.all()
 
   if request.method == 'POST':
-    name = request.POST.get('course-name')
-    topic = request.POST.get('course-topic')
-    tag = request.POST.get('course-tag')
-    body = request.POST.get('course-body')
-    start = request.POST.get('course-start')
-    end = request.POST.get('course-end')
+    name = None if request.POST.get('course-name') == '' else request.POST.get('course-name')
+    topic = None if request.POST.get('course-topic') == '' else request.POST.get('course-topic')
+    tag = None if request.POST.get('course-tag') == '' else request.POST.get('course-tag')
+    body = None if request.POST.get('course-body') == '' else request.POST.get('course-body')
+    start = None if request.POST.get('course-start') == '' else request.POST.get('course-start')
+    end = None if request.POST.get('course-end') == '' else request.POST.get('course-end')
     public = True if request.POST.get('course-public') == 'on' else False
 
     course.name = name
+    course.topic = topic
+    course.tag = tag
     course.body = body
     course.start_date = start
     course.end_date = end
@@ -78,38 +180,174 @@ def editCourse(request, pk):
     for file in File.objects.filter(content=content).select_related('content'):
       content_files.append(file)
 
+  list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
   context = {
     'course': course,
     'quizs': quizs,
     'contents': contents,
-    'topics': topics,
-    'tags': tags,
     'cour_files': course_files,
     'cont_files': content_files,
+    'list_count': list_count,
+    'TAG_CHOICES': TAG_CHOICES,
   }
 
   return render(request, 'course-edit.html', context)
 
 @login_required(login_url='login')
+def deleteCourse(request, pk):
+  course = Course.objects.get(id=pk)
+  course.delete()
+  return redirect('course')
+
+@login_required(login_url='login')
+def resultCourse(request, pk):
+  course = Course.objects.select_related('host').get(id=pk)
+  contents = Content.objects.select_related('course').filter(course=course)
+  files = File.objects.select_related('course').filter(course=course)
+  quizs = Quiz.objects.select_related('course').filter(course=course)
+  course_users = course.user.all()
+  progresses = Progress.objects.select_related('course', 'user').filter(course=course)
+
+  course_users = list(zip(course_users, progresses))
+  list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
+  context = {
+    'course': course,
+    'course_users': course_users,
+    'contents': contents,
+    'files': files,
+    'quizs': quizs,
+    'progresses': progresses,
+    'list_count': list_count,
+  }
+  return render(request, 'course-result.html', context)
+
+@login_required(login_url='login')
 def eachCourse(request, pk):
   course = Course.objects.get(id=pk)
+  course.user.add(request.user)
   contents = Content.objects.filter(course=course)
+  quizs = Quiz.objects.select_related('course').filter(course=course)
+  completion_quizs = []
+  course_quiz_completed = 0
+  contents_completed_count = 0
+
+  try:
+    Completion.objects.get(course=course, content=None, quiz=None, user=request.user)
+  except Completion.DoesNotExist:
+    Completion.objects.create(course=course, content=None, quiz=None, user=request.user)
+
+  if not request.user.is_staff:
+    for content in contents:
+      content_quizs = Quiz.objects.select_related('content').filter(content=content)
+      try:
+        content_completion = Completion.objects.get(course=course, content=content, quiz=None, user=request.user)
+      except Completion.DoesNotExist:
+        content_completion = Completion.objects.create(course=course, content=content, quiz=None, user=request.user)
+
+      content_quiz_completed = 0
+      for quiz in content_quizs:
+        try:
+          content_quiz_completion = Completion.objects.get(course=course, content=content, quiz=quiz, user=request.user)
+        except Completion.DoesNotExist:
+          content_quiz_completion = Completion.objects.create(course=course, content=content, quiz=quiz, user=request.user)
+
+        if content_quiz_completion.completed:
+          content_quiz_completed += 1
+
+      try:
+        if content_quiz_completed / content_quizs.count() == 1:
+          content_completion.completed = True
+          content_completion.save()
+          contents_completed_count += 1
+
+      except ZeroDivisionError:
+        print('content quizs is empty')
+          
+  for quiz in quizs:
+    if not request.user.is_staff:
+      try:
+        course_quiz_completion = Completion.objects.get(course=course, content=None, quiz=quiz, user=request.user)
+
+        if course_quiz_completion.completed:
+          course_quiz_completed += 1
+
+      except Completion.DoesNotExist:
+        course_quiz_completion = Completion.objects.create(course=course, content=None, quiz=quiz, user=request.user)
+
+      completion_quizs.append(course_quiz_completion)
+    else:
+      completion_quizs.append('completion')
+
+  if not request.user.is_staff:
+    try:
+      progress = Progress.objects.get(user=request.user, course=course)
+    except Progress.DoesNotExist:
+      progress = Progress.objects.create(user=request.user, course=course)
+      profile = Profile.objects.get(user=request.user)
+      profile.badge.add(Badge.objects.get(name='Time to Study'))
+      profile.save()
+
+    course_elements = quizs.count() + contents.count()
+
+    try:
+      course_quizs_completed_count = quizs.count() / course_quiz_completed
+    except ZeroDivisionError:
+      course_quizs_completed_count = 0
+
+    progress.value = (course_quizs_completed_count + contents_completed_count) / course_elements * 100
+    progress.save()
+
+    print(progress.value)
+  
   files = File.objects.filter(course=course)
+  completion_quizs = zip(quizs, completion_quizs)
+
+  list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
   context = {
     'course': course,
     'contents': contents,
+    'completion_quizs': completion_quizs,
     'files': files,
+    'list_count': list_count,
   }
   return render(request, 'course-each.html', context)
 
 @login_required(login_url='login')
 def eachChapter(request, pk):
-   content = Content.objects.get(id=pk)
-   course = Course.objects.select_related('host').get(id=content.course.id)
-   contents = Content.objects.filter(course=course)
+  content = Content.objects.select_related('course')
 
-   context = {'content': content, 'course': course, 'contents': contents}
-   return render(request, 'content-each.html', context)   
+  this_content = content.get(id=pk)
+  course = Course.objects.select_related('host').get(id=this_content.course.id)
+  contents = content.filter(course=course)
+
+  quizs = Quiz.objects.select_related('content').filter(content=this_content)
+  files = File.objects.filter(content=this_content)
+
+  completion_quizs = []
+  for quiz in quizs:
+    try:
+      completion = Completion.objects.get(quiz=quiz, user=request.user)
+    except Completion.DoesNotExist:
+      completion = Completion.objects.create(quiz=quiz, user=request.user)
+
+    completion_quizs.append(completion)
+
+  completion_quizs = zip(quizs, completion_quizs)
+  list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
+  context = {
+    'content': this_content, 
+    'course': course, 
+    'contents': contents,
+    'files': files,
+    'completion_quizs': completion_quizs,
+    'list_count': list_count
+  }
+  
+  return render(request, 'content-each.html', context)   
 
 @login_required(login_url='login')
 def createChapter(request, pk):
@@ -133,15 +371,18 @@ def deleteChapter(request, pk):
 
 @login_required(login_url='login')
 def editChapter(request, id, pk):
-  print(id, pk)
   content = Content.objects.get(id=id)
   course = Course.objects.get(id=pk)
   quizs = Quiz.objects.filter(content=content).annotate(questions_count=models.Count('question_quiz'))
+  files = File.objects.filter(content=content)
+  list_count = NotificationList.objects.get(user=request.user).notification.all().count()
 
   context = {
     'content': content,
     'course': course,
     'quizs': quizs,
+    'files': files,
+    'list_count': list_count,
   }
 
   if request.method == "POST":
@@ -199,13 +440,3 @@ def deleteQuizFromChapter(request, pk):
     return HttpResponse('Quiz successfully deleted')
   except Exception:
     return HttpResponse('Something is wrong')
-
-@login_required(login_url='login')
-def topic(request, pk):
-  topic = Topic.objects.get(id=pk)
-  courses = Course.objects.select_related('topic').filter(topic=topic)
-
-  context = {'courses':courses }
-
-  return render(request, 'topic.html', context)
-

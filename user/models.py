@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from quiz.models import Quiz
-from course.models import Course
+from course.models import Course, Content
 
 class Badge(models.Model):
   host = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -16,7 +16,7 @@ class Badge(models.Model):
 
 class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
-  badge = models.ForeignKey(Badge, on_delete=models.CASCADE,null=True , blank=True)
+  badge = models.ManyToManyField(Badge, blank=True)
   points = models.IntegerField(default=0, null=False)
   experience = models.IntegerField(default=0, null=False)
 
@@ -37,7 +37,8 @@ class Completion(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
   quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, blank=True, related_name='completion_quiz')
   course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
-  completed = models.BooleanField(default=False)  
+  content = models.ForeignKey(Content, on_delete=models.CASCADE, null=True, blank=True)
+  completed = models.BooleanField(default=False)
 
   def __str__(self):
-    return self.user.username
+    return f"user==({ 'none' if self.user == None else self.user.username }) { '' if self.quiz == None else f'quiz = {self.quiz.name}' } { '' if self.course == None else f'course = {self.course.name}' } { '' if self.content == None else  f'content = {self.content.name}' }"

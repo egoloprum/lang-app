@@ -1,0 +1,316 @@
+{% load humanize %}
+<!-- hx-ext="ws" ws-connect="/ws/follower/chats/{{ chatroom.id }}/" -->
+<section class="m-3">
+  <div class="m-3">
+
+    <div class="white-border p-3" style="max-height: 500px; height: 500px; display: flex;
+      flex-direction: column; justify-content: space-between;">
+      <div>
+        <p style="display: flex; justify-content: space-between;">
+          <span>{{ chatroom.name }}</span>
+          {% if request.user == chatroom.host %}
+          <span>
+            <a class="btn btn-light" href="" data-bs-toggle="modal" data-bs-target="#modal-add">Add</a>
+            <a class="btn btn-light" href="" data-bs-toggle="modal" data-bs-target="#modal-remove">Remove</a>
+            <a class="btn btn-light" href="" data-bs-toggle="modal" data-bs-target="#modal-delete">Delete</a>
+          </span>
+          {% else %}
+          <span>
+            <a class="btn btn-light" href="" data-bs-toggle="modal" data-bs-target="#modal-leave">Leave</a>
+          </span>
+          {% endif %}
+        </p>
+        <div class="m-3" id="messages"
+          style="height: 350px; overflow-y: scroll;">
+          {% for message in messages %}
+            {% if message.user == request.user %}
+            <div style="display: flex; justify-content: flex-end;">
+              <div class="p-3 form-floating" style="width: 90%;">
+                <p class="form-control">{{ message.body }}</p>
+                <label style="color: blue;">{{ message.user }}</label>
+                <p class="small-font-size">{{ message.created_at|naturaltime }}</p>
+              </div>
+            </div>
+            {% else %}
+            <div style="display: flex; justify-content: flex-start;">
+              <div class="p-3 form-floating" style="width: 90%;">
+                <p class="form-control">{{ message.body }}</p>
+                <label style="color: red;">{{ message.user }}</label>
+                <p class="small-font-size">{{ message.created_at|naturaltime }}</p>
+              </div>
+            </div>
+            {% endif %}
+          {% empty %}
+            <div class="p-3">
+              <p>No messages yet.</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <form method="POST" action="." class="d-flex gap-3">
+        <textarea class="form-control " style="height: 50px;" id="chat-message-input"
+          name="chat-message" placeholder="message here..."  required></textarea>
+        <button class="btn btn-light" id="chat-message-submit">Send</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="modal-add" tabindex="-1" aria-labelledby="modal-add" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-3 shadow">
+      <div class="modal-body p-4 text-center" id="modal-body">
+        <div style="display: flex; align-items: center; justify-content: end;">
+          <h5 class="pe-3">Please choose user to add</h5>
+          <a class="btn-close mb-2 ms-5" type="button" aria-label="close" 
+          data-bs-dismiss="modal"></a>
+        </div>
+        <select class="form-select" id="select-add">
+          <option>Select user</option>
+          {% for user in out_users %}
+            <option>{{ user.username }}</option>
+            {% empty %}
+            <option>There is no users to add to this chatroom.</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="modal-footer flex-nowrap p-0">
+        <a class="btn btn-lg btn-success fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+          id="add-user-button">Add</a>
+        <a class="btn btn-lg btn-secondary fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+          aria-label="close" data-bs-dismiss="modal" id="add-user-cancel">Cancel</a>
+      </div>                  
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-remove" tabindex="-1" aria-labelledby="modal-remove" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-3 shadow">
+      <div class="modal-body p-4 text-center" id="modal-body">
+        <div style="display: flex; align-items: center; justify-content: end;">
+          <h5 class="pe-3">Please choose user to remove</h5>
+          <a class="btn-close mb-2 ms-5" type="button" aria-label="close" 
+          data-bs-dismiss="modal"></a>
+        </div>
+        <select class="form-select" id="select-remove">
+          <option>Select user</option>
+          {% for user in chatroom_users %}
+            <option>{{ user.username }}</option>
+            {% empty %}
+            <option>There is no user to remove from this chatroom.</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="modal-footer flex-nowrap p-0">
+        <a class="btn btn-lg btn-warning fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+          id="remove-user-button">Remove</a>
+        <a class="btn btn-lg btn-secondary fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+          aria-label="close" data-bs-dismiss="modal" id="remove-user-cancel">Cancel</a>
+      </div>                  
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-delete" tabindex="-1" aria-labelledby="modal-delete" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-3 shadow">
+      <div class="modal-body p-4 text-center" id="modal-body">
+        <div style="display: flex; align-items: center; justify-content: end;">
+          <h5 class="pe-3">Please choose your action</h5>
+          <a class="btn-close mb-2 ms-5" type="button" aria-label="close" 
+          data-bs-dismiss="modal"></a>
+        </div>
+        <p>You can always change your mind.</p>
+      </div>
+      <div class="modal-footer flex-nowrap p-0">
+        <a class="btn btn-lg btn-danger fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+          href="{% url 'delete-chat' chatroom.id %}">Delete</a>
+        <a class="btn btn-lg btn-secondary fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+          aria-label="close" data-bs-dismiss="modal">Cancel</a>
+      </div>                  
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-leave" tabindex="-1" aria-labelledby="modal-leave" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-3 shadow">
+      <div class="modal-body p-4 text-center" id="modal-body">
+        <div style="display: flex; align-items: center; justify-content: end;">
+          <h5 class="pe-3">Please choose your action</h5>
+          <a class="btn-close mb-2 ms-5" type="button" aria-label="close" 
+          data-bs-dismiss="modal"></a>
+        </div>
+        <p>You can always change your mind.</p>
+      </div>
+      <div class="modal-footer flex-nowrap p-0">
+        <a class="btn btn-lg btn-danger fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+          href="{% url 'leave-chat' chatroom.id %}">Leave</a>
+        <a class="btn btn-lg btn-secondary fs-6 text-decoration-none col py-3 m-0 rounded-0 border-end"
+          aria-label="close" data-bs-dismiss="modal">Cancel</a>
+      </div>                  
+    </div>
+  </div>
+</div>
+
+<div id="success-chatroom">
+
+</div>
+
+{% block script %}
+
+{{ chatroom.id|json_script:"json-roomname" }}
+{{ request.user.username|json_script:"json-username" }}
+{{ list_count|json_script:"json-list-count" }}
+
+
+<script>
+  let add_user_btn = document.getElementById('add-user-button');
+  let remove_user_btn = document.getElementById('remove-user-button');
+  var room_id = JSON.parse(document.getElementById('json-roomname').textContent);
+
+  add_user_btn.addEventListener('click', function(e) {
+    let selected = '';
+    let select_user = document.getElementById('select-add');
+
+    for (let i = 0; i < select_user.children.length; i++) {
+      if (select_user.children[i].selected) {
+        selected = select_user.children[i];
+        select_user.removeChild(selected);
+        break;
+      }
+    }
+    try{
+      htmx.ajax('GET', '/follower/' + 'chat-add/' + room_id + '/' + selected.innerHTML, {target:'#success-chatroom', swap:'innerHTML'});
+      document.getElementById('add-user-cancel').click();
+    }
+    catch (e){
+      console.log(e);
+    }
+  });
+
+  remove_user_btn.addEventListener('click', function(e) {
+    let selected = '';
+    let select_user = document.getElementById('select-remove');
+
+    for (let i = 0; i < select_user.children.length; i++) {
+      if (select_user.children[i].selected) {
+        selected = select_user.children[i];
+        select_user.removeChild(selected);
+        break;
+      }
+    }
+
+    try{
+      htmx.ajax('GET', '/follower/' + 'chat-remove/' + room_id + '/' + selected.innerHTML, {target:'#success-chatroom', swap:'innerHTML'});
+      document.getElementById('remove-user-cancel').click();
+    }
+    catch (e){
+      console.log(e);
+    }
+  });
+
+  var roomName = JSON.parse(document.getElementById('json-roomname').textContent);
+  var userName = JSON.parse(document.getElementById('json-username').textContent);
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
+
+  var chatSocket = new WebSocket(
+    'ws://'
+    + window.location.host
+    + '/ws/'
+    + 'follower/'
+    + 'chats/'
+    + roomName
+    + '/'
+  );
+
+  chatSocket.onopen = function (e) {
+    console.log('Chat socket connected');
+  }
+
+  chatSocket.onmessage = function(e) {
+    alert(e.data);
+  }
+
+  chatSocket.onmessage = function(e) {
+    console.log('Message recieved');
+    const data = JSON.parse(e.data);
+
+    if (data.message) {
+      let message = document.createElement("div");
+      let message_user = document.createElement("label");
+      message_user.innerHTML = data.username;
+
+      if (data.username != userName) {
+        message.setAttribute("style", "display: flex; justify-content: flex-start;");
+        message_user.setAttribute("style", "color: red;");
+      }
+
+      else {
+        message.setAttribute("style", "display: flex; justify-content: flex-end;");
+        message_user.setAttribute("style", "color: blue;");
+      }
+
+      let message_form = document.createElement("div");
+      message_form.setAttribute("style", "width: 90%;");
+      message_form.className = "p-3 form-floating";
+
+      let message_body = document.createElement("p");
+      message_body.className = "form-control";
+      message_body.innerHTML = data.message;
+
+      let message_time = document.createElement("p");
+      message_time.className = "small-font-size";
+      message_time.innerHTML = "just now";
+
+      message_form.append(message_body);
+      message_form.append(message_user);
+      message_form.append(message_time);
+      message.append(message_form);
+
+      document.getElementById('messages').append(message);
+    } 
+    else {
+      alert('The message was empty!');
+    }
+
+    scrollToBottom();
+  };
+
+  chatSocket.onclose = function(e) {
+    console.log('Chat socked disconnected');
+  }
+  
+  document.querySelector('#chat-message-submit').onclick = function(e) {
+    e.preventDefault();
+
+    const messageInputDom = document.querySelector('#chat-message-input');
+    const message = messageInputDom.value;
+
+    const data = {
+      'message': message,
+      'username': userName,
+      'room': roomName,
+    }
+
+    console.log(data);
+    chatSocket.send(JSON.stringify(data));
+
+    messageInputDom.value = '';
+
+    return false
+  };
+
+  function scrollToBottom() {
+        let objDiv = document.getElementById("messages");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    }
+
+    // Add this below the function to trigger the scroll on load.
+  scrollToBottom();
+
+</script>
+
+{% endblock %}

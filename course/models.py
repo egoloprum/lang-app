@@ -1,35 +1,27 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class Topic(models.Model):
-  name = models.CharField(unique=True, null=False, max_length=200)
+from .validators import validate_file_size
 
-  def __str__(self):
-    if self.name == None:
-      return f" {self.id} empty"
-    else:
-      return f" {self.id} {self.name}"
-  
-class Tag(models.Model):
-  name = models.CharField(unique=True, null=False, max_length=200)
+TAG_CHOICES = (
+  ('Beginner', 'beginner'),
+  ('Intermediate', 'intermediate'),
+  ('Advanced', 'advanced'),
+)
 
-  def __str__(self):
-    if self.name == None:
-      return f" {self.id} empty"
-    else:
-      return f" {self.id} {self.name}"
-  
+TOPIC_CHOICES = (
+  ('Advice', 'advice'),
+  ('Development', 'development'),
+)
+
 class Course(models.Model):
   host = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name='course_host')
   user = models.ManyToManyField(User, blank=True, related_name='course_user')
-  topic = models.ForeignKey(Topic, on_delete=models.CASCADE, null=True, related_name='course_topic')
-  tag = models.ManyToManyField(Tag, blank=True, related_name='course_tag')
   
-  # if all quizs of it is completed 
-  # completion = models.ManyToManyField(Completion)
-
+  topic = models.CharField(max_length=50, choices=TAG_CHOICES, default=None, null=True, blank=True)
+  tag = models.CharField(max_length=50, choices=TOPIC_CHOICES, default=None, null=True, blank=True)
   name = models.CharField(unique=True, max_length=200, null=True)
-  body = models.TextField(null=True)
+  body = models.TextField(null=True, blank=True) 
   pts = models.IntegerField(default=0, null=True, blank=True)
   exp = models.IntegerField(default=0, null=True, blank=True)
 
@@ -40,10 +32,7 @@ class Course(models.Model):
   publication = models.BooleanField(default=False) 
 
   def __str__(self):
-    if self.name == None:
-      return f" {self.id} empty"
-    else:
-      return f" {self.id} {self.name}"
+      return f"host==({ self.host.username }) name==({ self.name })"
 
   def get_quiz_count(self):
     try:
@@ -59,21 +48,28 @@ class Content(models.Model):
   publication = models.BooleanField(default=False)
   
   def __str__(self):
-    if self.name == None:
-      return f" {self.id} empty"
-    else:
-      return f" {self.id} {self.name}"
+    return f"course==({ self.course.name }) name==({ self.name })"
 
 class File(models.Model):
-  file = models.FileField(null=False, upload_to='files/')
-  description = models.CharField(max_length=200, null=False)
   course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True, related_name='file_course')
   content = models.ForeignKey(Content, on_delete=models.CASCADE, null=True, blank=True, related_name='file_content')
+  
+  file = models.FileField(null=False, upload_to='files/', validators=[validate_file_size])
+  description = models.CharField(max_length=200, null=False)
 
   def __str__(self):
-    if self.description == None:
-      return f" {self.id} empty"
+    if self.course:
+      return f"course==({ self.course.name }) id==({ self.id })"
+    elif self.content:
+      return f"content==({ self.content.id }) id==({ self.id })"
     else:
-      return f" {self.id} {self.description}"
+      return f"id==({ self.id })"
     
-    
+class Progress(models.Model):
+  user = models.ForeignKey(User, null=False, on_delete=models.CASCADE, related_name='progress_user')
+  course = models.ForeignKey(Course, null=False, on_delete=models.CASCADE, related_name='progress_course')
+
+  value = models.FloatField(default=0, null=False, blank=False)
+
+  def __str__(self):
+    return f"course=={ self.course.name } user=={ self.user.username } value=={ self.value }"

@@ -20,7 +20,10 @@ class FollowList(models.Model):
   def unfollow(self, removee):
     remover_followers_list = self
     remover_followers_list.remove_follower(removee)
-    follwers_list = FollowList.objects.get(user=removee)
+    try:
+      follwers_list = FollowList.objects.get(user=removee)
+    except:
+      follwers_list = FollowList.objects.create(user=removee)
     follwers_list.remove_follower(self.user)
 
   def is_mutual_follower(self, follower):
@@ -44,7 +47,11 @@ class FollowRequest(models.Model):
     reciever_follow_list = FollowList.objects.get(user=self.reciever)
     if reciever_follow_list:
       reciever_follow_list.add_follower(self.sender)
-      sender_follow_list = FollowList.objects.get(user=self.sender)
+      try:
+        sender_follow_list = FollowList.objects.get(user=self.sender)
+      except FollowList.DoesNotExist:
+        sender_follow_list = FollowList.objects.create(user=self.sender)
+
       if sender_follow_list:
         sender_follow_list.add_follower(self.reciever)
         self.is_active = True
@@ -56,3 +63,40 @@ class FollowRequest(models.Model):
   def cancel(self):
     self.is_active = False
     self.save()
+
+
+class ChatRoom(models.Model):
+  host = models.ForeignKey(User, on_delete=models.CASCADE, related_name='chatroom_host')
+  user = models.ManyToManyField(User, related_name='chatroom_user', blank=True)
+  name = models.CharField(max_length=200, null=True, blank=True)
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return self.name
+
+class Message(models.Model):
+  room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, related_name='message_chatroom')
+  user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='message_user')
+
+  body = models.TextField()
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return f"{self.body} by {self.user.username} in {self.room.name}"
+
+class Notification(models.Model):
+  user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notif_sender')
+  body = models.TextField(null=True, blank=True)
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  is_read = models.BooleanField(default=False)
+
+  def __str__(self):
+    return f"{self.user} has recieved {self.body}"
+
+class NotificationList(models.Model):
+  user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='list_user')
+  notification = models.ManyToManyField(Notification, related_name='list_notification')
+
+  def __str__(self):
+    return f"{self.user.username}"

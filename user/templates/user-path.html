@@ -3,62 +3,62 @@
 {% block content %}
 
 <section class="m-3 ps-3 pe-3">
-  <div class="row p-3 m-0 white-border">
+  <div class="p-3 m-0 white-border">
     <!-- search bar -->
     <div class="mb-3">
       <label class="form-label">Search User</label>
-      <form method="POST" action="">
+      <form method="POST" action="" class="d-flex flex-row flex-wrap justify-content-between gap-2">
         {% csrf_token %}
-        <input class="form-control" type="search" name="q">
+        <input class="form-control" type="search" name="search-users" style="max-width: 200px; width: 200%;"
+          hx-post="{% url 'search-user-path' %}" hx-target="#users-table" 
+          hx-trigger="keyup changed delay:500ms">
+
+        <select class="form-select" name="search-type" style="max-width: 200px;">
+          <option>Type user</option>
+          <option>User</option>
+          <option>Staff</option>
+        </select>
+
+        <select class="form-select" name="search-country" style="max-width: 200px;">
+          <option>Country</option>
+          <option>Ascending</option>
+          <option>Descending</option>
+        </select>
+
+        <select class="form-select" name="search-gender" style="max-width: 200px;">
+          <option>Gender</option>
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+
+        <select class="form-select" name="search-birthday" style="max-width: 200px;">
+          <option>Birthday</option>
+          <option>Ascending</option>
+          <option>Descending</option>
+        </select>
+
+        <select class="form-select" name="search-level" style="max-width: 200px;">
+          <option>Level</option>
+          <option>Ascending</option>
+          <option>Descending</option>
+        </select>
+
+        <button class="btn btn-outline-success" hx-post="{% url 'search-user-path' %}" 
+          hx-boost="true" hx-target="#users-table">Search</button>
       </form>
-      {% if messages %}
-        <ul class="messages" style="color:#e80d0d;">
-          {% for message in messages %}
-          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
     </div>
 
-    <div class="p-3">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th style="width: 10px;">#</th>
-            <th>Username</th>
-            <th>Active</th>
-            <th>Country</th>
-            <th>Level</th>
-            <th>Badges</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for user in users %}
-          <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>
-              <a href="{% url 'profile' user.id %}">
-                <img src="{{ user.profile.avatar.url }}" style="width: 30px; border-radius: 50%;" class="me-2 ms-2">{{ user.username }}
-              </a>
-            </td>
-            <td>
-              {% if user.profile.active %}
-                Active now
-              {% else %}
-                False
-              {% endif %}
-            </td>
-            <td>{{ user.profile.country }}</td>
-            <td>{{ user.profile.level }}</td>
-            <td>{{ user.profile.badges.count }}</td>
-          </tr>
-          {% empty %}
-            There is no user.
-          {% endfor %}
-        </tbody>
-      </table>
+    <div class="p-3 table-responsive" id="users-table">
+      {% include 'user-path-partial.html' %}
     </div>
   </div>
 </section>
+
+{{ list_count|json_script:"json-list-count" }}
+
+<script>
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
+</script>
 
 {% endblock %}

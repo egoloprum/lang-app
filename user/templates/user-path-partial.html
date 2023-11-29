@@ -1,0 +1,46 @@
+<table class="table table-bordered">
+   <thead>
+      <tr>
+      <th style="width: 10px;">#</th>
+      <th>Points</th>
+      <th>Level</th>
+      <th>Username</th>
+      <th>Role</th>
+      <th>Country</th>
+      <th>Gender</th>
+      <th>Birthday</th>
+      <th>Badges</th>
+      </tr>
+   </thead>
+   <tbody>
+      {% for user, profile in users %}
+      <tr>
+         <td>{{ forloop.counter }}</td>
+         <td>{{ profile.points }}</td>
+         <td>{{ profile.level }}</td>
+         <td>
+            <a href="{% url 'profile' user.id %}">
+               <img src="{{ user.profile.avatar.url }}" style="width: 30px; border-radius: 50%;" class="me-2 ms-2">
+               {{ user.username }}
+            </a>
+         </td>
+         <td>{% if user.is_staff %}Staff{% else %}User{% endif %}</td>
+         <td>{{ profile.country }}</td>
+         <td>{{ profile.gender }}</td>
+         <td>{{ profile.birthday|date:"Y-m-d" }}</td>
+         <td>
+            {% for badge in profile.badge.all %}
+               <img src="{{ badge.picture.url }}" style="width: 40px; height: 40px;"
+               data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ badge.description }}">
+            {% endfor %}
+         </td>
+      </tr>
+      {% empty %}
+      <tr>
+         <td>There is no user.</td>
+         <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+         
+      {% endfor %}
+   </tbody>
+ </table> 

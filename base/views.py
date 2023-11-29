@@ -1,18 +1,60 @@
+import json
+import random
 from django.shortcuts import render, redirect
-import math
+from itertools import chain
+
+from django.contrib.auth.models import User
+from course.models import Course
+from quiz.models import Quiz
+from follower.models import NotificationList
 
 # Create your views here.
 
 def home(request):
-    return render(request, 'index.html')
+    courses = Course.objects.select_related('host').order_by('-start_date')[:5]
+    quizs = Quiz.objects.prefetch_related('question_quiz').select_related('host').order_by('-start_date')[:5]
+    users = User.objects.select_related('profile').filter(is_staff=False).order_by('?')
+    staffs = User.objects.select_related('profile').filter(is_staff=True).order_by('?')
+    users_count = users.count()
+    staffs_count = staffs.count()
 
-def subscribe(request):
-    return render(request, 'subscribe.html')
+    list_count = 0
 
+    if request.user.is_authenticated:
+        list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
+    elements = set(chain(courses, quizs))
+    context = {
+        'courses': courses,
+        'quizs': quizs,
+        'elements': elements,
+        'list_count': list_count,
+        'users': users.exclude(id=request.user.id)[:20],
+        'staffs': staffs.exclude(id=request.user.id)[:20],
+        'users_count': users_count,
+        'staffs_count': staffs_count,
+    }
+    return render(request, 'index.html', context)
 
 def calendar(request):
-    return render(request, 'calendar.html')
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
+    context = {
+        'list_count': list_count,
+    }
+
+    return render(request, 'calendar.html', context)
 
 
+def custom_page_not_found_view(request, exception):
+    return render(request, "errors/404.html", status=404)
 
+def custom_error_view(request, exception=None):
+    return render(request, "errors/500.html", status=500)
+
+def custom_permission_denied_view(request, exception=None):
+    return render(request, "errors/403.html", {})
+
+def custom_bad_request_view(request, exception=None):
+    return render(request, "errors/400.html", {})
 

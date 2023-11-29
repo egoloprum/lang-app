@@ -1,23 +1,22 @@
 {% extends 'main.html' %}
 {% load humanize %}
-
+{% now "Y-m-d" as todays_date %}
 {% block content %}
 
 <section class="m-3">
   <div class="m-3 p-3 white-border">
 
     <!-- search bar -->
-    <div class="mt-3" style="display: flex; justify-content: space-between;">
-      <form method="POST" action="">
-        <div class="me-2" style="width: 100%;">
-          <select class="form-select" name="course-status">
-            <option selected>Status</option>
-            <option>Not Started</option>
-            <option>Attempted</option>
-            <option>Solved</option>
-          </select>
+    <div class="mt-3" >
+      <form method="POST" action="" class="d-flex flex-row flex-wrap gap-2 justify-content-between">
+        {% csrf_token %}
+        <div class="flex-fill">
+          <input type="search" class="form-control" name="course-search" placeholder="Search..."
+          hx-post="{% url 'course-search' %}" hx-target="#search-course" hx-trigger="keyup changed delay:300ms">
         </div>
-        <div class="me-2" style="width: 100%;">
+
+        <!-- tags -->
+        <div class="flex-fill">
           <select class="form-select" name="course-tags">
             <option selected>Tags</option>
             <option>Beginner</option>
@@ -25,74 +24,63 @@
             <option>Advanced</option>
           </select>
         </div>
-        <div class="me-2" style="width: 100%;">
+        <!-- topics -->
+        <div class="flex-fill">
           <select class="form-select" name="course-topics">
             <option selected>Topics</option>
             <option>Advice</option>
             <option>Self Development</option>
           </select>
         </div>
-        <div style="width: 100%;">
+        <!-- date -->
+        <div class="flex-fill">
           <select class="form-select" name="course-date">
             <option selected>Date</option>
-            <option>With time</option>
-            <option>Without time</option>
+            <option>Started</option>
+            <option>Ended</option>
+            <option>Not yet</option>
           </select>
         </div>
-        <div class="me-2" style="width: 150%; display: flex;">
-          <input type="search" class="form-control me-2" name="course-search" placeholder="Search...">
-          <a class="btn btn-outline-success" type="submit">Search</a>
+        <!-- search -->
+        <div class="flex-fill">
+          <button class="btn btn-outline-success" hx-post="{% url 'course-search' %}" hx-target="#search-course"
+            id="course-search-btn">Search</nutton>
         </div>
       </form>
     </div><hr>
 
-    <!-- course side div -->
-
-    <div class="row m-0 ps-5 pe-5">
-      {% for course in courses %}
-        <div class="col-3 p-3">
-          <div class="white-border p-3">
-            <p class=""><b>{{ course.name }}</b></p>
-            <p class="small-font-size text-muted mb-3">{{ course.created_at|naturaltime }}</p>
-            {% if course.body|safe == 'None' %}
-              <p class="mb-4 small-font-size">There is no introduction yet.</p>
-            {% else %}
-              <p class="mb-4">{{ course.body|truncatechars:100 }}</p>
-            {% endif %}
-
-            {% if course.start_date.exists and course.end_date.exists %}
-              <div class="mb-3" style="display: flex; justify-content: space-between;">
-                <p>{{ course.start_date }}</p>
-                <p>{{ course.end_date }}</p>
-              </div>
-            {% endif %}
-
-            <div class="mb-2 small-font-size" style="display: flex; justify-content: space-between;">
-              <p>Progress</p>
-              <p>10%</p>
-            </div>
-
-            <div class="mb-3" style="height: 10px; border: 1px solid #333; border-radius: 5px;">
-            </div>
-
-            <div class="mb-2">
-              <p class="mb-1">Tags</p>
-              {% if not tags %}
-                <p class="text-muted small-font-size">There is no tags.</p>
-              {% else %}
-                <p>Tagsssss</p>
-              {% endif %}
-            </div>
-
-            <div class="mb-2">
-              <a class="btn btn-info btn-sm" href="{% url 'course-each' course.id %}" style="width: 100%;">Here to start</a>
-            </div>
-
-          </div>
-        </div>
-      {% endfor %}
+    <div id="search-course">
+      {% include 'course-partial.html' %}
     </div>
+    
   </div>
 </section>
+
+{{ list_count|json_script:"json-list-count" }}
+
+<script>
+  var list_count = JSON.parse(document.getElementById('json-list-count').textContent);
+  document.getElementById('notification-bell').innerHTML = list_count;
+
+  var courses = document.getElementsByClassName('courses');
+  var course_color = [
+    '#C9E8F2', '#F8E6F4', '#D4DFF1', '#FFE9C2', '#ecc194', '#58f3a8', '#feae49', '#57bee6',
+    '#7ba697', '#f3b790', '#d08fa5', '#b6bbf9', '#fbc99a', '#d586d7', '#fcdde8', '#cfc2fc',
+    '#61c8a4', '#ffea7b', '#e6e6e6', '#C9E8F2', '#F8E6F4', '#D4DFF1', '#FFE9C2', '#ecc194',
+    '#C9E8F2', '#F8E6F4', '#D4DFF1', '#FFE9C2', '#ecc194', '#58f3a8', '#feae49', '#57bee6',
+    '#7ba697', '#f3b790', '#d08fa5', '#b6bbf9', '#fbc99a', '#d586d7', '#fcdde8', '#cfc2fc',
+    '#61c8a4', '#ffea7b', '#e6e6e6', '#C9E8F2', '#F8E6F4', '#D4DFF1', '#FFE9C2', '#ecc194',
+  ]
+
+  for (let i = 0; i < courses.length; i++) {
+    courses[i].setAttribute("style", `background: ${ course_color[i] }; border: 1px solid #000;`);
+  }
+
+  var progress_bars = document.getElementsByClassName('course-progress-bar');
+
+  for (let i = 0; i < progress_bars.length; i++) {
+  progress_bars[i].setAttribute("style", `width: ${ progress_bars[i].id }%;`);
+  }
+</script>
 
 {% endblock %}

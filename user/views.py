@@ -10,9 +10,13 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.password_validation import validate_password
 
 from .models import *
+from django.db.models import Q
 from course.models import Course
-from quiz.models import Quiz, Result, Average_score
-from follower.models import FollowList, FollowRequest
+from quiz.models import Quiz, Result
+from follower.models import FollowList, FollowRequest, NotificationList
+
+from faker import Faker
+
 
 def loginUser(request):
     context = {}
@@ -33,7 +37,20 @@ def loginUser(request):
             try:
                 Profile.objects.get(user=user)
             except Profile.DoesNotExist:
-                Profile.objects.create(user=user)
+                profile = Profile.objects.create(user=user)
+                profile.badge.add(Badge.objects.get(name='Welcome to English Study'))
+                profile.save()
+
+            try:
+                FollowList.objects.get(user=user)
+            except FollowList.DoesNotExist:
+                FollowList.objects.create(user=user)
+
+            try:
+                NotificationList.objects.get(user=user)
+            except NotificationList.DoesNotExist:
+                NotificationList.objects.create(user=user)
+
             user.profile.active = True
             user.profile.save()
             return redirect('home')
@@ -53,7 +70,7 @@ def registerUser(request):
         try:
             validate_password(password)
         except ValidationError:
-            messages.error(request, 'Your password sucks')
+            messages.error(request, 'Your password does not match standart')
             return redirect('register')
         
         try:
@@ -68,7 +85,14 @@ def registerUser(request):
         try:
             Profile.objects.get(user=user)
         except Profile.DoesNotExist:
-            Profile.objects.create(user=user)
+            profile = Profile.objects.create(user=user)
+            profile.badge.add(Badge.objects.get(name='Welcome to English Study'))
+            profile.save()
+
+        try:
+            NotificationList.objects.get(user=user)
+        except NotificationList.DoesNotExist:
+            NotificationList.objects.create(user=user)
 
         return redirect('home')
 
@@ -80,7 +104,17 @@ def checkUsername(request):
     if User.objects.filter(username=username).exists():
         return HttpResponse("<p>This username already exists</p>")
     else:
-        return HttpResponse("")
+        return HttpResponse("<p>This username is okay</p>")
+    
+def checkPassword(request):
+    password = request.POST.get('password')
+
+    try:
+        validate_password(password)
+    except Exception:
+        return HttpResponse("<p>bad password</p>")
+    
+    return HttpResponse("<p>okay password</p>")
 
 @login_required(login_url='login')
 def logoutUser(request):
@@ -90,8 +124,6 @@ def logoutUser(request):
     logout(request)
     return redirect('home')
 
-def forgotPass(request):
-    pass
 
 def get_follow_request_or_false(sender, reciever):
     try:
@@ -100,17 +132,109 @@ def get_follow_request_or_false(sender, reciever):
         return False
 
 @login_required(login_url='login')
+def dashboardPath(request, pk):
+    curr_user = User.objects.select_related('user').get(id=pk)
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
+    context = {}
+    context['curr_user'] = curr_user
+    context['list_count'] = list_count
+
+    quizs = Quiz.objects.select_related().filter(course=None, content=None)
+    courses = Course.objects.select_related()
+
+    if curr_user.is_staff:
+        all_quizs = quizs
+        all_courses = courses
+        quizs = quizs.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user)
+        courses = courses.filter(host=pk)
+
+        context['quizs'] = quizs
+        context['courses'] = courses
+        context['all_quizs'] = all_quizs
+        context['all_courses'] = all_courses
+    
+    else:
+        results = Result.objects.filter(user=curr_user, has_course=None, has_content=None).select_related('quiz')
+        context['results'] = results
+
+        quiz_count = quizs.filter(publication=True).count()
+        course_count = courses.filter(publication=True).count()
+
+        context['quiz_count'] = quiz_count
+        context['course_count'] = course_count
+
+        quizs_easy = 0
+        quizs_medium = 0
+        quizs_hard = 0
+
+        for quiz in quizs:
+            if quiz.difficulty == 'Easy':
+                quizs_easy += 1
+            if quiz.difficulty == 'Medium':
+                quizs_medium += 1
+            if quiz.difficulty == 'Hard':
+                quizs_hard += 1
+
+        comp_easy = 0
+        comp_medium = 0
+        comp_hard = 0
+
+        completions = Completion.objects.select_related('quiz', 'user').filter(user=curr_user, course=None, content=None)
+        for comp in completions:
+            if comp.quiz.difficulty == 'Easy':
+                comp_easy += 1
+            if comp.quiz.difficulty == 'Medium':
+                comp_medium += 1
+            if comp.quiz.difficulty == 'Hard':
+                comp_hard += 1
+
+        context['comp_easy'] = comp_easy
+        context['comp_medium'] = comp_medium
+        context['comp_hard'] = comp_hard
+
+        context['quizs_easy'] = quizs_easy
+        context['quizs_medium'] = quizs_medium
+        context['quizs_hard'] = quizs_hard
+        context['quizs'] = quizs
+
+        completions = Completion.objects.select_related()
+
+        try:
+            complete_quiz = completions.filter(user=curr_user, completed=True, course=None, content=None)
+        except Completion.DoesNotExist:
+            complete_quiz = None
+
+        try:
+            complete_course = completions.filter(user=curr_user, completed=True, quiz=None, content=None)
+        except Completion.DoesNotExist:
+            complete_course = None
+        
+        context['complete_quiz'] = complete_quiz
+        context['complete_course'] = complete_course
+
+    return render(request, 'dashboard.html', context)
+
+@login_required(login_url='login')
 def profilePath(request, pk):
     curr_user = User.objects.select_related('profile').get(id=pk)
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
     context = {}
+    context['list_count'] = list_count
 
     try:
         profile = Profile.objects.get(user=curr_user)
     except Profile.DoesNotExist:
         profile = Profile.objects.create(user=curr_user)
+        profile.badge.add(Badge.objects.get(name='Welcome to English Study'))
+        profile.save()
+        
+    badges = profile.badge.all()
 
     context['curr_user'] = curr_user
     context['profile'] = profile
+    context['badges'] = badges
 
     try:
         follow_list = FollowList.objects.get(user=curr_user)
@@ -118,6 +242,8 @@ def profilePath(request, pk):
         follow_list = FollowList.objects.create(user=curr_user)
 
     followers = follow_list.followers.all()
+    if followers.count() > 0:
+        profile.badge.add(Badge.objects.get(name="Let's get friends"))
 
     is_self = True
     is_follower = False
@@ -152,89 +278,15 @@ def profilePath(request, pk):
 
     follow_requests = FollowRequest.objects.filter(reciever=curr_user, is_active=True)
 
+    courses = Course.objects.select_related('host').filter(host=curr_user)
+    context['courses'] = courses
+
     context['follow_requests'] = follow_requests
     context['followers'] = followers
     context['is_self'] = is_self
     context['is_follower'] = is_follower
     context['request_sent'] = request_sent
     context['pending_follow_request_id'] = pending_follow_request_id
-
-    quiz_result = Average_score.objects.filter(user=curr_user)
-    results = Result.objects.filter(user=curr_user).select_related('quiz')
-
-    context['results'] = results
-    context['quiz_result'] = quiz_result
-
-    quizs = Quiz.objects.select_related().filter(course=None, content=None)
-    courses = Course.objects.select_related()
-
-    quiz_count = quizs.filter(publication=True).count
-    course_count = courses.count()
-
-    context['quiz_count'] = quiz_count
-    context['course_count'] = course_count
-
-    if curr_user.is_staff:
-        if curr_user == request.user:
-            quizs = quizs.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user)
-            courses = courses.filter(host=pk)
-        else:
-            quizs = quizs.annotate(child_count = models.Count('question_quiz')).filter(host=curr_user, publication=True)
-            courses = courses.filter(host=pk, publication=True)
-
-        context['courses'] = courses
-        context['quizs'] = quizs
-
-    else:
-        quizs = quizs.filter(course=None, content=None, publication=True)
-        quizs_easy = 0
-        quizs_medium = 0
-        quizs_hard = 0
-
-        for quiz in quizs:
-            if quiz.difficulty == 'Easy':
-                quizs_easy += 1
-            if quiz.difficulty == 'Medium':
-                quizs_medium += 1
-            if quiz.difficulty == 'Hard':
-                quizs_hard += 1
-
-        comp_easy = 0
-        comp_medium = 0
-        comp_hard = 0
-
-        completions = Completion.objects.select_related()
-        for comp in completions:
-            if comp.quiz.difficulty == 'Easy' and comp.user == curr_user:
-                comp_easy += 1
-            if comp.quiz.difficulty == 'Medium' and comp.user == curr_user:
-                comp_medium += 1
-            if comp.quiz.difficulty == 'Hard' and comp.user == curr_user:
-                comp_hard += 1
-
-        context['comp_easy'] = comp_easy
-        context['comp_medium'] = comp_medium
-        context['comp_hard'] = comp_hard
-
-        context['quizs_easy'] = quizs_easy
-        context['quizs_medium'] = quizs_medium
-        context['quizs_hard'] = quizs_hard
-        context['quizs'] = quizs
-
-    completions = Completion.objects.select_related()
-
-    try:
-        complete_quiz = completions.filter(user=curr_user, completed=True, course=None)
-    except Completion.DoesNotExist:
-        complete_quiz = None
-
-    try:
-        complete_course = completions.filter(user=curr_user, completed=True, quiz=None)
-    except Completion.DoesNotExist:
-        complete_course = None
-    
-    context['complete_quiz'] = complete_quiz
-    context['complete_course'] = complete_course
 
     return render(request, 'profile.html', context)
 
@@ -257,8 +309,10 @@ def deleteUser(request):
 
 @login_required(login_url='login')
 def profileUpdate(request):
-    user = User.objects.get(id=request.user.id)
-    context = {'user': user}
+    user = User.objects.select_related('profile').get(id=request.user.id)
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
+    context = {'user': user, 'list_count': list_count,}
 
     if request.method == "POST":
         if request.path == '/user/profile-update':
@@ -275,14 +329,16 @@ def profileUpdate(request):
             user_profile = Profile.objects.get(user=user)
             user_profile.gender = gender
             user_profile.country = country
+            
             if avatar:
                 user_profile.avatar = avatar
+                user_profile.badge.add(Badge.objects.get(name='New Look'))
             user_profile.save()
 
             return redirect('profile', user.id)
 
         if request.path == '/user/profile-update/account':
-            user_name = request.POST.get('user_name')
+            user_name = request.POST.get('username')
             email = request.POST.get('email')
             cur_password = request.POST.get('current-password')
             new_password = request.POST.get('password')
@@ -319,42 +375,116 @@ def profileUpdate(request):
             messages.success(request, 'Profile has been updated')
             return redirect('profile-update-account')
 
-        else:
-            messages.error(request, "Please enter correct password")
-            return redirect('profile-update-account')
-
     return render(request, 'profile-update.html', context)
 
 @login_required(login_url='login')
-def userPath(request):
-    users = User.objects.select_related('profile').exclude(id=request.user.id)
-
-    if request.method == 'POST':
-        username = request.POST.get('q').lower()
-
-        if users.filter(username__startswith=username).exists():
-            users = users.filter(username__startswith=username)
-            return redirect('user-path')
-
-        elif username == '':
-            users = users
-            return redirect('user-path')
-        else:
-            messages.error(request, 'This user does not exist')
-            return redirect('user-path')
-
-    context = {'users': users}
-
-    return render(request, 'user-path.html', context)
+def profileDelete(request, pk):
+    user = User.objects.get(id=pk)
+    user.delete()
+    logout(request)
+    return redirect('home')
 
 @login_required(login_url='login')
-def profileResult(request, pk):
+def userPath(request):
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+    profiles = Profile.objects.select_related('user').exclude(id=request.user.id).order_by('-points')
+    users = User.objects.select_related('profile').exclude(id=request.user.id)
+
+    users = list(zip(users, profiles))
+
+    context = {'list_count': list_count, 'users': users}
+    return render(request, 'user-path.html', context)
+
+def searchUserpath(request):
+    search_users = request.POST.get('search-users')
+    search_type = request.POST.get('search-type')
+    search_level = request.POST.get('search-level')
+    search_country = request.POST.get('search-country')
+    search_gender = request.POST.get('search-gender')
+    search_birthday = request.POST.get('search-birthday')
+
+    profiles = Profile.objects.select_related('user').exclude(id=request.user.id).order_by('points')
+    base_users = User.objects.select_related('profile').exclude(id=request.user.id)
+
+    search_value = 0
+
+    # searching by level
+    if search_level == 'Ascending':
+        profiles = profiles.order_by('level')
+        users = list(zip(base_users, profiles))
+        search_value = 1
+
+    elif search_level == 'Descending':
+        profiles = profiles.order_by('-level')
+        users = list(zip(base_users, profiles))
+        search_value = 1
+
+    # searching by country
+    if search_country == 'Ascending':
+        profiles = profiles.order_by('country')
+        users = list(zip(base_users, profiles))
+        search_value = 1
+
+    elif search_country == 'Descending':
+        profiles = profiles.order_by('-country')
+        users = list(zip(base_users, profiles))
+        search_value = 1
+
+    # searching by gender
+    if search_gender == 'Male':
+        profiles = profiles.filter(Q(gender='M'))
+        users = list(zip(base_users, profiles))
+        search_value = 1
+
+    elif search_gender == 'Female':
+        profiles = profiles.filter(Q(gender='F'))
+        users = list(zip(base_users, profiles))
+        search_value = 1
+
+    # searching by birthday
+    if search_birthday == 'Ascending':
+        profiles = profiles.order_by('birthday')
+        users = list(zip(base_users, profiles))
+        search_value = 1
+
+    elif search_birthday == 'Descending':
+        profiles = profiles.order_by('-birthday')
+        users = list(zip(base_users, profiles))      
+        search_value = 1
+
+    # searching by role
+    if search_type == 'Staff':
+        base_users = base_users.filter(Q(is_staff=True))
+        users = list(zip(base_users, profiles))    
+        search_value = 1
+
+    elif search_type == 'User':
+        base_users = base_users.filter(Q(is_staff=False))
+        users = list(zip(base_users, profiles))
+        search_value = 1
+
+    # searching by name
+    if search_users:
+        base_users = base_users.filter(Q(username__icontains=search_users))
+        users = list(zip(base_users, profiles))
+        search_value = 1
+
     context = {}
-    return render(request, 'profile-result.html', context)
+
+    if search_value == 0:
+        context['users'] = list(zip(base_users, profiles))
+
+    elif search_value == 1:
+        context['users'] = users
+
+    return render(request, 'user-path-partial.html', context)
 
 def badges(request):
     badges = Badge.objects.select_related()
+    list_count = NotificationList.objects.get(user=request.user).notification.all().count()
+
     context = {
         'badges': badges,
+        'list_count': list_count,
     }
     return render(request, 'badges.html', context)

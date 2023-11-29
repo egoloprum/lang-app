@@ -75,45 +75,8 @@ body li {
   padding: var(--form-padding);
 }
 
-.quiz-page-img {
-  height: auto;
-  width: 100%;
-  max-width: 300px;
-}
-
-.profile-skills-list-1::before {
-  content: "\2022";
-  color: #f02b39;
-  font-weight: bold;
-  display: inline-block;
-  width: 1em;
-}
-
-.profile-skills-list-2::before {
-  content: "\2022";
-  color: #f0bc1f;
-  font-weight: bold;
-  display: inline-block;
-  width: 1em;
-}
-
-.profile-skills-list-3::before {
-  content: "\2022";
-  color: #069d75;
-  font-weight: bold;
-  display: inline-block;
-  width: 1em;
-}
-
 .small-font-size {
   font-size: 13px;
-}
-
-.success {
-  color: green;
-}
-.error {
-  color: red;
 }
 
 .wrapper{

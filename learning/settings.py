@@ -28,12 +28,14 @@ DEBUG = True
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # SESSION_SAVE_EVERY_REQUEST = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.humanize',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
+
 
     'base',
     'course',
@@ -57,7 +60,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    # "debug_toolbar.middleware.DebugToolbarMiddleware",
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -92,8 +95,13 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 WSGI_APPLICATION = 'learning.wsgi.application'
+ASGI_APPLICATION = 'learning.asgi.application'
 
-
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
